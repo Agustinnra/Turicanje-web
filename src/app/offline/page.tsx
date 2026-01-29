@@ -1,9 +1,10 @@
 'use client';
 
-
-import Link from 'next/link';
-
 export default function OfflinePage() {
+  const handleReload = () => {
+    window.location.reload();
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -17,12 +18,12 @@ export default function OfflinePage() {
       textAlign: 'center'
     }}>
       <div style={{ fontSize: '80px', marginBottom: '20px' }}>📡</div>
-      <h1 style={{ fontSize: '28px', marginBottom: '10px' }}>Sin conexión</h1>
+      <h1 style={{ fontSize: '28px', marginBottom: '10px' }}>Sin conexion</h1>
       <p style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '30px', maxWidth: '300px' }}>
-        Parece que no tienes conexión a internet. Verifica tu conexión e intenta de nuevo.
+        Parece que no tienes conexion a internet. Verifica tu conexion e intenta de nuevo.
       </p>
       <button
-        onClick={() => window.location.reload()}
+        onClick={handleReload}
         style={{
           padding: '14px 28px',
           background: 'linear-gradient(135deg, #d1007d 0%, #ff006e 100%)',
@@ -37,11 +38,12 @@ export default function OfflinePage() {
         Reintentar
       </button>
       <p style={{ marginTop: '40px', color: 'rgba(255,255,255,0.5)', fontSize: '14px' }}>
-        💡 Mientras tanto, escríbenos por WhatsApp
+        Mientras tanto, escribenos por WhatsApp
       </p>
-      <Link 
-        href="https://wa.me/5215512345678"
+      <a 
+        href="https://wa.me/525522545216"
         target="_blank"
+        rel="noopener noreferrer"
         style={{
           marginTop: '10px',
           color: '#25D366',
@@ -49,8 +51,8 @@ export default function OfflinePage() {
           fontWeight: '600'
         }}
       >
-        Abrir WhatsApp →
-      </Link>
+        Abrir WhatsApp
+      </a>
     </div>
   );
 }
