@@ -1,13 +1,12 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import './floating-buttons.css';
 
-// Importar MapaUsuario dinámicamente para evitar SSR issues
 const MapaUsuario = dynamic(() => import('@/components/MapaUsuario'), { 
   ssr: false,
-  loading: () => <div className="mapa-loading">🗺️ Cargando mapa...</div>
+  loading: () => <div className="mapa-loading">Cargando mapa...</div>
 });
 
 interface FloatingButtonsProps {
@@ -16,18 +15,16 @@ interface FloatingButtonsProps {
 }
 
 export default function FloatingButtons({
-  whatsappNumber = '525522545216', // Número del bot Turicanje
-  whatsappMessage = 'Hola! ¿Qué me recomiendas para comer?',
+  whatsappNumber = '525522545216',
+  whatsappMessage = 'Hola! Quiero ver opciones para comer algo rico, Que me recomiendan?',
 }: FloatingButtonsProps) {
   const [showMap, setShowMap] = useState(false);
   const [negocios, setNegocios] = useState<any[]>([]);
   const [posicionUsuario, setPosicionUsuario] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
-  const mapRef = useRef<any>(null);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
-  // Cargar negocios activos cuando se abre el mapa
   const cargarNegocios = async () => {
     setLoading(true);
     try {
@@ -43,15 +40,12 @@ export default function FloatingButtons({
     }
   };
 
-  // Obtener ubicación del usuario
   const obtenerUbicacion = () => {
-    // Primero intentar desde localStorage
     const ubicacionGuardada = localStorage.getItem('ubicacion');
     if (ubicacionGuardada) {
       setPosicionUsuario(JSON.parse(ubicacionGuardada));
     }
 
-    // Luego actualizar con ubicación real
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -63,7 +57,7 @@ export default function FloatingButtons({
           localStorage.setItem('ubicacion', JSON.stringify(pos));
         },
         (error) => {
-          console.warn('No se pudo obtener ubicación:', error);
+          console.warn('No se pudo obtener ubicacion:', error);
         },
         { enableHighAccuracy: true, timeout: 10000 }
       );
@@ -85,7 +79,6 @@ export default function FloatingButtons({
     setShowMap(false);
   };
 
-  // Cerrar modal con ESC
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') setShowMap(false);
@@ -103,17 +96,14 @@ export default function FloatingButtons({
   return (
     <>
       <div className="floating-buttons">
-        {/* Botón Mapa - Glass effect */}
         <button 
           className="floating-btn map-btn"
           onClick={handleMapClick}
           aria-label="Ver mapa de restaurantes"
         >
-          <span className="btn-icon">🗺️</span>
           <span className="btn-label">Encuentra algo cerca de ti...</span>
         </button>
 
-        {/* Botón WhatsApp Bot - Grande y protagonista */}
         <button 
           className="floating-btn whatsapp-btn"
           onClick={handleWhatsAppClick}
@@ -126,22 +116,21 @@ export default function FloatingButtons({
               </svg>
             </span>
             <div className="whatsapp-text">
-              <span className="whatsapp-title">¿Qué se te antoja?</span>
-              <span className="whatsapp-subtitle">Pregúntame 🌮</span>
+              <span className="whatsapp-title">Que se te antoja?</span>
+              <span className="whatsapp-subtitle">Preguntame</span>
             </div>
           </div>
           <div className="pulse-ring"></div>
         </button>
       </div>
 
-      {/* Modal del Mapa */}
       {showMap && (
         <div className="map-modal-overlay" onClick={handleCloseMap}>
           <div className="map-modal" onClick={(e) => e.stopPropagation()}>
             <div className="map-modal-header">
               <h2>Explora restaurantes cerca de ti...</h2>
               <button className="map-modal-close" onClick={handleCloseMap}>
-                ✕
+                X
               </button>
             </div>
             <div className="map-modal-content">
@@ -152,7 +141,6 @@ export default function FloatingButtons({
                 </div>
               ) : (
                 <MapaUsuario
-                  ref={mapRef}
                   negocios={negocios}
                   posicionUsuario={posicionUsuario}
                   onUbicacionActualizada={setPosicionUsuario}
@@ -160,7 +148,7 @@ export default function FloatingButtons({
               )}
             </div>
             <div className="map-modal-footer">
-              <p>📍 {negocios.length} lugares disponibles</p>
+              <p>{negocios.length} lugares disponibles</p>
               <div className="footer-buttons">
                 <button className="btn-location" onClick={() => {
                   if (navigator.geolocation) {
@@ -172,25 +160,18 @@ export default function FloatingButtons({
                         };
                         setPosicionUsuario(pos);
                         localStorage.setItem('ubicacion', JSON.stringify(pos));
-                        // Centrar mapa en la ubicación
-                        if (mapRef.current?.centrarEnUbicacion) {
-                          mapRef.current.centrarEnUbicacion(pos);
-                        }
                       },
                       (error) => {
-                        console.warn('Error de ubicación:', error);
-                        alert('No pudimos obtener tu ubicación. Verifica que estés en HTTPS o localhost.');
+                        console.warn('Error de ubicacion:', error);
                       },
                       { enableHighAccuracy: true, timeout: 10000 }
                     );
-                  } else {
-                    alert('Tu navegador no soporta geolocalización.');
                   }
                 }}>
-                  📍 Mi ubicación
+                  Mi ubicacion
                 </button>
                 <button className="btn-whatsapp-alt" onClick={handleWhatsAppClick}>
-                  💬 ¿Necesitas ayuda?
+                  Necesitas ayuda?
                 </button>
               </div>
             </div>

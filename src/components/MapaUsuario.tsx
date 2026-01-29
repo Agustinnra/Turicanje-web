@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, forwardRef, useImperativeHandle } from 'react';
+import { useRef, useState } from 'react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 
 const LIBRARIES: ("places")[] = ['places'];
@@ -12,7 +12,7 @@ const getIconForBusiness = (negocio: any) => {
   const icons: Record<string, string> = {
     Actividades: '/icons/Actividades.png',
     Bar: '/icons/Bar.png',
-    Cafetería: '/icons/Cafeteria.png',
+    Cafeteria: '/icons/Cafeteria.png',
     'Comida Callejera': '/icons/Callejera.png',
     'Dark Kitchen': '/icons/Dark.png',
     Eventos: '/icons/Eventos.png',
@@ -38,8 +38,8 @@ const obtenerHorario = (negocio: any) => {
   
   if (negocio.hours && typeof negocio.hours === 'object' && Object.keys(negocio.hours).length > 0) {
     const daysMap: Record<string, string> = {
-      mon: 'LUN', tue: 'MAR', wed: 'MIÉ', 
-      thu: 'JUE', fri: 'VIE', sat: 'SÁB', sun: 'DOM'
+      mon: 'LUN', tue: 'MAR', wed: 'MIE', 
+      thu: 'JUE', fri: 'VIE', sat: 'SAB', sun: 'DOM'
     };
     
     const schedule: Record<string, string> = {};
@@ -102,293 +102,194 @@ interface MapaUsuarioProps {
   onUbicacionActualizada?: (pos: { lat: number; lng: number }) => void;
 }
 
-const MapaUsuario = forwardRef<any, MapaUsuarioProps>(
-  ({ negocios, posicionUsuario, onUbicacionActualizada }, ref) => {
-    const { isLoaded } = useJsApiLoader({
-      googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-      libraries: LIBRARIES,
-    });
+export default function MapaUsuario({ negocios, posicionUsuario, onUbicacionActualizada }: MapaUsuarioProps) {
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    libraries: LIBRARIES,
+  });
 
-    const mapRef = useRef<google.maps.Map | null>(null);
-    const [negocioSeleccionado, setNegocioSeleccionado] = useState<any>(null);
-    const watchId = useRef<number | null>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
+  const [negocioSeleccionado, setNegocioSeleccionado] = useState<any>(null);
 
-    useImperativeHandle(ref, () => ({
-      enfocarEnNegocio: (negocio: any) => {
-        if (mapRef.current && negocio.latitud && negocio.longitud) {
-          const posicion = {
-            lat: parseFloat(negocio.latitud),
-            lng: parseFloat(negocio.longitud),
-          };
-          mapRef.current.panTo(posicion);
-          setNegocioSeleccionado(negocio);
-        }
-      },
-    }));
+  const handleMapLoad = (map: google.maps.Map) => {
+    if (mapRef.current) return;
+    mapRef.current = map;
+  };
 
-    const iniciarSeguimientoUbicacion = () => {
-      if (watchId.current) navigator.geolocation.clearWatch(watchId.current);
+  if (!isLoaded) return <p>Cargando mapa...</p>;
 
-      if (!navigator.geolocation) return;
-
-      watchId.current = navigator.geolocation.watchPosition(
-        (position) => {
-          const nuevaPos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          };
-          if (onUbicacionActualizada) onUbicacionActualizada(nuevaPos);
-          localStorage.setItem('ubicacion', JSON.stringify(nuevaPos));
-        },
-        (error) => {
-          // Solo log en consola, sin alert
-          console.warn('⚠️ No se pudo seguir ubicación:', error.message);
-        },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-      );
-    };
-
-    const detenerSeguimientoUbicacion = () => {
-      if (watchId.current) {
-        navigator.geolocation.clearWatch(watchId.current);
-        watchId.current = null;
-      }
-    };
-
-    const handleMapLoad = (map: google.maps.Map) => {
-      // Solo ejecutar una vez
-      if (mapRef.current) return;
-      
-      mapRef.current = map;
-      iniciarSeguimientoUbicacion();
-
-      // Crear botón solo si no existe
-      const locationButton = document.createElement('button');
-      locationButton.textContent = '📍 Mi ubicación';
-      locationButton.classList.add('custom-map-control-button');
-      locationButton.style.backgroundColor = '#fff';
-      locationButton.style.border = 'none';
-      locationButton.style.borderRadius = '2px';
-      locationButton.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
-      locationButton.style.cursor = 'pointer';
-      locationButton.style.margin = '10px';
-      locationButton.style.padding = '10px';
-      
-      map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-
-      locationButton.addEventListener('click', () => {
-        if (!navigator.geolocation) {
-          console.warn('⚠️ Navegador no soporta geolocalización');
-          return;
-        }
-
-        // Pedir permiso explícitamente
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const nuevaPos = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-            map.setCenter(nuevaPos);
-            map.setZoom(16);
-            if (onUbicacionActualizada) onUbicacionActualizada(nuevaPos);
-            iniciarSeguimientoUbicacion();
-          },
-          (error) => {
-            // Solo log en consola, sin molestar al usuario
-            console.warn('⚠️ No se pudo obtener ubicación:', error.code);
-          },
-          { 
-            enableHighAccuracy: true, 
-            timeout: 10000, 
-            maximumAge: 0 
-          }
-        );
-      });
-    };
-
-    if (!isLoaded) return <p>🗺️ Cargando mapa...</p>;
-
-    return (
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={posicionUsuario || defaultCenter}
-        zoom={12}
-        onLoad={handleMapLoad}
-        onDragStart={() => detenerSeguimientoUbicacion()}
-        onZoomChanged={() => detenerSeguimientoUbicacion()}
-        onClick={() => detenerSeguimientoUbicacion()}
-        options={{
-          zoomControl: true,
-          mapTypeControl: false,
-          streetViewControl: false,
-          fullscreenControl: false,
-        }}
-      >
-        {negocios.map((negocio, i) =>
-          negocio.latitud && negocio.longitud ? (
-            <Marker
-              key={i}
-              position={{
-                lat: parseFloat(negocio.latitud),
-                lng: parseFloat(negocio.longitud),
-              }}
-              icon={{
-                url: getIconForBusiness(negocio),
-                scaledSize: new window.google.maps.Size(40, 40),
-              }}
-              onClick={() => setNegocioSeleccionado(negocio)}
-            />
-          ) : null
-        )}
-
-        {posicionUsuario && (
+  return (
+    <GoogleMap
+      mapContainerStyle={containerStyle}
+      center={posicionUsuario || defaultCenter}
+      zoom={12}
+      onLoad={handleMapLoad}
+      options={{
+        zoomControl: true,
+        mapTypeControl: false,
+        streetViewControl: false,
+        fullscreenControl: false,
+      }}
+    >
+      {negocios.map((negocio, i) =>
+        negocio.latitud && negocio.longitud ? (
           <Marker
-            position={posicionUsuario}
+            key={i}
+            position={{
+              lat: parseFloat(negocio.latitud),
+              lng: parseFloat(negocio.longitud),
+            }}
             icon={{
-              url: '/icons/Usuario.png',
+              url: getIconForBusiness(negocio),
               scaledSize: new window.google.maps.Size(40, 40),
             }}
+            onClick={() => setNegocioSeleccionado(negocio)}
           />
-        )}
+        ) : null
+      )}
 
-        {negocioSeleccionado && (
-          <InfoWindow
-            position={{
-              lat: parseFloat(negocioSeleccionado.latitud),
-              lng: parseFloat(negocioSeleccionado.longitud),
-            }}
-            onCloseClick={() => setNegocioSeleccionado(null)}
-          >
-            <div style={{ 
-              minWidth: '220px', 
-              maxWidth: '260px',
-              padding: '6px',
-              fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+      {posicionUsuario && (
+        <Marker
+          position={posicionUsuario}
+          icon={{
+            url: '/icons/Usuario.png',
+            scaledSize: new window.google.maps.Size(40, 40),
+          }}
+        />
+      )}
+
+      {negocioSeleccionado && (
+        <InfoWindow
+          position={{
+            lat: parseFloat(negocioSeleccionado.latitud),
+            lng: parseFloat(negocioSeleccionado.longitud),
+          }}
+          onCloseClick={() => setNegocioSeleccionado(null)}
+        >
+          <div style={{ 
+            minWidth: '220px', 
+            maxWidth: '260px',
+            padding: '6px',
+            fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+            textAlign: 'center'
+          }}>
+            {negocioSeleccionado.imagen_url && (
+              <img
+                src={negocioSeleccionado.imagen_url}
+                alt={negocioSeleccionado.nombre}
+                style={{
+                  width: '100%',
+                  height: '120px',
+                  objectFit: 'cover',
+                  borderRadius: '6px',
+                  marginBottom: '10px',
+                }}
+              />
+            )}
+            
+            <h3 style={{ 
+              margin: '0 0 6px 0', 
+              color: '#333',
+              fontSize: '16px',
+              fontWeight: '600',
               textAlign: 'center'
             }}>
-              {negocioSeleccionado.imagen_url && (
-                <img
-                  src={negocioSeleccionado.imagen_url}
-                  alt={negocioSeleccionado.nombre}
-                  style={{
-                    width: '100%',
-                    height: '120px',
-                    objectFit: 'cover',
-                    borderRadius: '6px',
-                    marginBottom: '10px',
-                  }}
-                />
-              )}
-              
-              <h3 style={{ 
-                margin: '0 0 6px 0', 
-                color: '#333',
-                fontSize: '16px',
-                fontWeight: '600',
-                textAlign: 'center'
-              }}>
-                {negocioSeleccionado.nombre}
-              </h3>
-              
+              {negocioSeleccionado.nombre}
+            </h3>
+            
+            <p style={{ 
+              margin: '4px 0', 
+              color: '#666',
+              fontSize: '13px',
+              textAlign: 'center'
+            }}>
+              {negocioSeleccionado.categorias || 'Sin categoria'}
+            </p>
+            
+            <p style={{ 
+              margin: '4px 0', 
+              color: '#666',
+              fontSize: '13px',
+              textAlign: 'center'
+            }}>
+              {obtenerHorario(negocioSeleccionado)}
+            </p>
+            
+            {negocioSeleccionado.productos && (
               <p style={{ 
                 margin: '4px 0', 
                 color: '#666',
                 fontSize: '13px',
                 textAlign: 'center'
               }}>
-                <strong>📂</strong> {negocioSeleccionado.categorias || 'Sin categoría'}
+                {negocioSeleccionado.productos}
               </p>
-              
-              <p style={{ 
-                margin: '4px 0', 
-                color: '#666',
-                fontSize: '13px',
-                textAlign: 'center'
-              }}>
-                <strong>🕒</strong> {obtenerHorario(negocioSeleccionado)}
-              </p>
-              
-              {negocioSeleccionado.productos && (
-                <p style={{ 
-                  margin: '4px 0', 
-                  color: '#666',
-                  fontSize: '13px',
-                  textAlign: 'center'
-                }}>
-                  <strong>📦</strong> {negocioSeleccionado.productos}
-                </p>
-              )}
+            )}
 
-              <div style={{ 
-                marginTop: '10px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '6px',
-                alignItems: 'center'
-              }}>
-                {negocioSeleccionado.url_extra && (
-                  <a
-                    href={validarUrl(negocioSeleccionado.url_extra)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ 
-                      color: '#4285F4', 
-                      textDecoration: 'none', 
-                      fontWeight: '600',
-                      fontSize: '13px'
-                    }}
-                  >
-                    🌐 Más información
-                  </a>
-                )}
-
-                {negocioSeleccionado.url_pedidos && (
-                  <a
-                    href={validarUrl(negocioSeleccionado.url_pedidos)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ 
-                      color: '#34A853', 
-                      textDecoration: 'none', 
-                      fontWeight: '600',
-                      fontSize: '13px'
-                    }}
-                  >
-                    🛵 Hacer pedido
-                  </a>
-                )}
-
-                <button
-                  onClick={() =>
-                    window.open(
-                      `https://www.google.com/maps/dir/?api=1&destination=${negocioSeleccionado.latitud},${negocioSeleccionado.longitud}`,
-                      '_blank'
-                    )
-                  }
-                  style={{
-                    marginTop: '2px',
-                    padding: '8px 12px',
-                    backgroundColor: '#4285F4',
-                    color: '#fff',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                    fontSize: '13px',
+            <div style={{ 
+              marginTop: '10px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              alignItems: 'center'
+            }}>
+              {negocioSeleccionado.url_extra && (
+                
+                  href={validarUrl(negocioSeleccionado.url_extra)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ 
+                    color: '#4285F4', 
+                    textDecoration: 'none', 
                     fontWeight: '600',
+                    fontSize: '13px'
                   }}
                 >
-                  📍 Ver en Google Maps
-                </button>
-              </div>
+                  Mas informacion
+                </a>
+              )}
+
+              {negocioSeleccionado.url_pedidos && (
+                
+                  href={validarUrl(negocioSeleccionado.url_pedidos)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ 
+                    color: '#34A853', 
+                    textDecoration: 'none', 
+                    fontWeight: '600',
+                    fontSize: '13px'
+                  }}
+                >
+                  Hacer pedido
+                </a>
+              )}
+
+              <button
+                onClick={() =>
+                  window.open(
+                    `https://www.google.com/maps/dir/?api=1&destination=${negocioSeleccionado.latitud},${negocioSeleccionado.longitud}`,
+                    '_blank'
+                  )
+                }
+                style={{
+                  marginTop: '2px',
+                  padding: '8px 12px',
+                  backgroundColor: '#4285F4',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                }}
+              >
+                Ver en Google Maps
+              </button>
             </div>
-          </InfoWindow>
-        )}
-      </GoogleMap>
-    );
-  }
-);
-
-MapaUsuario.displayName = 'MapaUsuario';
-
-export default MapaUsuario;
+          </div>
+        </InfoWindow>
+      )}
+    </GoogleMap>
+  );
+}
