@@ -1,0 +1,448 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Script from 'next/script';
+import './recargar.css';
+
+// Paquetes 1:1 - 100 puntos = $100 MXN
+const PAQUETES = [
+  { id: 'p200', puntos: 200, precio: 200 },
+  { id: 'p500', puntos: 500, precio: 500 },
+  { id: 'p1000', puntos: 1000, precio: 1000, popular: true },
+  { id: 'p1500', puntos: 1500, precio: 1500 },
+  { id: 'p2000', puntos: 2000, precio: 2000 },
+];
+
+// Comisiones por método de pago
+const COMISIONES = {
+  tarjeta: { porcentaje: 3.6, fijo: 3 },
+  oxxo: { porcentaje: 0, fijo: 15 },
+  spei: { porcentaje: 0, fijo: 10 },
+};
+
+const calcularComision = (precio: number, metodo: 'tarjeta' | 'oxxo' | 'spei') => {
+  const comision = COMISIONES[metodo];
+  return Math.ceil((precio * comision.porcentaje / 100) + comision.fijo);
+};
+
+const CONEKTA_PUBLIC_KEY = process.env.NEXT_PUBLIC_CONEKTA_PUBLIC_KEY || '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
+
+declare global {
+  interface Window { Conekta: any; }
+}
+
+export default function RecargarPuntosPage() {
+  const router = useRouter();
+  const [comercio, setComercio] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [paqueteSeleccionado, setPaqueteSeleccionado] = useState<string | null>(null);
+  const [procesando, setProcesando] = useState(false);
+  const [metodoPago, setMetodoPago] = useState<'tarjeta' | 'oxxo' | 'spei'>('tarjeta');
+  const [conektaReady, setConektaReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [exito, setExito] = useState<{ puntos: number; nuevoSaldo: number } | null>(null);
+  const [datosPago, setDatosPago] = useState<any>(null);
+  
+  const [cardData, setCardData] = useState({ numero: '', nombre: '', expiracion: '', cvv: '' });
+
+  // Cálculos dinámicos
+  const paqueteActual = PAQUETES.find(p => p.id === paqueteSeleccionado);
+  const comisionActual = paqueteActual ? calcularComision(paqueteActual.precio, metodoPago) : 0;
+  const totalActual = paqueteActual ? paqueteActual.precio + comisionActual : 0;
+
+  useEffect(() => {
+    cargarComercio();
+  }, []);
+
+  const cargarComercio = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) { router.push('/login-comercio'); return; }
+
+      const res = await fetch(`${API_URL}/api/comercios/mi-negocio`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setComercio(data.negocio || data);
+      } else {
+        router.push('/login-comercio');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConektaLoad = () => {
+    if (window.Conekta) {
+      window.Conekta.setPublicKey(CONEKTA_PUBLIC_KEY);
+      setConektaReady(true);
+    }
+  };
+
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\D/g, '').slice(0, 16);
+    const parts = [];
+    for (let i = 0; i < v.length; i += 4) parts.push(v.slice(i, i + 4));
+    return parts.join(' ');
+  };
+
+  const formatExpiration = (value: string) => {
+    const v = value.replace(/\D/g, '').slice(0, 4);
+    return v.length >= 2 ? v.slice(0, 2) + '/' + v.slice(2) : v;
+  };
+
+  const tokenizarTarjeta = (): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const [mes, año] = cardData.expiracion.split('/');
+      window.Conekta.Token.create({
+        card: {
+          number: cardData.numero.replace(/\s/g, ''),
+          name: cardData.nombre,
+          exp_year: '20' + año,
+          exp_month: mes,
+          cvc: cardData.cvv
+        }
+      }, 
+        (token: any) => resolve(token.id),
+        (err: any) => reject(new Error(err.message_to_purchaser || 'Error en tarjeta'))
+      );
+    });
+  };
+
+  const handleComprar = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    
+    if (!paqueteSeleccionado) { setError('Selecciona un paquete'); return; }
+
+    setProcesando(true);
+
+    try {
+      const token = localStorage.getItem('token');
+
+      if (metodoPago === 'tarjeta') {
+        const cardToken = await tokenizarTarjeta();
+        
+        const res = await fetch(`${API_URL}/api/pagos/recarga-comercio`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ 
+            paquete_id: paqueteSeleccionado, 
+            token_tarjeta: cardToken, 
+            metodo: 'tarjeta',
+            total_con_comision: totalActual
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setExito({ puntos: paqueteActual?.puntos || 0, nuevoSaldo: data.nuevo_saldo });
+        } else {
+          setError(data.error || 'Error al procesar pago');
+        }
+      } else if (metodoPago === 'oxxo') {
+        const res = await fetch(`${API_URL}/api/pagos/recarga-comercio`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ 
+            paquete_id: paqueteSeleccionado, 
+            metodo: 'oxxo',
+            total_con_comision: totalActual
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setDatosPago({ tipo: 'oxxo', referencia: data.referencia, monto: totalActual });
+        } else {
+          setError(data.error || 'Error al generar referencia');
+        }
+      } else if (metodoPago === 'spei') {
+        const res = await fetch(`${API_URL}/api/pagos/recarga-comercio`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ 
+            paquete_id: paqueteSeleccionado, 
+            metodo: 'spei',
+            total_con_comision: totalActual
+          })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setDatosPago({ tipo: 'spei', clabe: data.clabe, banco: data.banco, monto: totalActual });
+        } else {
+          setError(data.error || 'Error al generar CLABE');
+        }
+      }
+    } catch (err: any) {
+      setError(err.message || 'Error de conexión');
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  if (loading) return <div className="recargar-loading"><div className="spinner"></div><p>Cargando...</p></div>;
+
+  // Pantalla de datos de pago OXXO/SPEI
+  if (datosPago) {
+    return (
+      <div className="recargar-container">
+        <div className="recargar-exito pago-pendiente">
+          <div className="exito-icon">{datosPago.tipo === 'oxxo' ? '🏪' : '🏦'}</div>
+          <h1>¡Casi listo!</h1>
+          <p className="subtitulo">Realiza tu pago para acreditar los puntos</p>
+          
+          {datosPago.tipo === 'oxxo' ? (
+            <div className="datos-pago">
+              <div className="dato-destacado">
+                <span className="dato-label">Referencia OXXO</span>
+                <span className="dato-valor">{datosPago.referencia}</span>
+                <button className="btn-copiar" onClick={() => navigator.clipboard.writeText(datosPago.referencia)}>📋 Copiar</button>
+              </div>
+              <div className="dato-row"><span>Paquete:</span><strong>{paqueteActual?.puntos.toLocaleString()} puntos</strong></div>
+              <div className="dato-row"><span>Monto a pagar:</span><strong>${datosPago.monto.toLocaleString()} MXN</strong></div>
+              <div className="dato-row vencimiento"><span>⏰ Vence en:</span><strong>72 horas</strong></div>
+            </div>
+          ) : (
+            <div className="datos-pago">
+              <div className="dato-destacado">
+                <span className="dato-label">CLABE Interbancaria</span>
+                <span className="dato-valor clabe">{datosPago.clabe}</span>
+                <button className="btn-copiar" onClick={() => navigator.clipboard.writeText(datosPago.clabe)}>📋 Copiar</button>
+              </div>
+              <div className="dato-row"><span>Banco:</span><strong>{datosPago.banco || 'STP'}</strong></div>
+              <div className="dato-row"><span>Beneficiario:</span><strong>Turicanje</strong></div>
+              <div className="dato-row"><span>Paquete:</span><strong>{paqueteActual?.puntos.toLocaleString()} puntos</strong></div>
+              <div className="dato-row"><span>Monto exacto:</span><strong>${datosPago.monto.toLocaleString()} MXN</strong></div>
+            </div>
+          )}
+
+          <p className="nota-activacion">✅ Los puntos se acreditan automáticamente al confirmar el pago</p>
+          
+          <div className="conekta-notice">
+            <p>📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong> (nuestro procesador de pagos). Ambos correos son legítimos.</p>
+          </div>
+
+          <Link href="/comercios/dashboard" className="btn-volver">Volver al Dashboard</Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (exito) {
+    return (
+      <div className="recargar-container">
+        <div className="recargar-exito">
+          <div className="exito-icon">🎉</div>
+          <h1>¡Recarga exitosa!</h1>
+          <p className="exito-puntos">+{exito.puntos.toLocaleString()} puntos</p>
+          <div className="exito-saldo">
+            <span>Tu nuevo saldo:</span>
+            <strong>{exito.nuevoSaldo.toLocaleString()} puntos</strong>
+          </div>
+          <p className="exito-mensaje">Ya puedes dar cashback a tus clientes</p>
+          <Link href="/comercios/dashboard" className="btn-volver">Volver al Dashboard</Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="recargar-container">
+      <Script src="https://cdn.conekta.io/js/latest/conekta.js" onLoad={handleConektaLoad} />
+
+      <header className="recargar-header">
+        <Link href="/comercios/dashboard" className="back-btn">← Volver al Dashboard</Link>
+        <h1>💳 Recargar Puntos</h1>
+        <div className="saldo-actual">
+          <span className="saldo-label">Saldo actual:</span>
+          <span className="saldo-numero">{comercio?.saldo_puntos_comercio?.toLocaleString() || 0}</span>
+          <span className="saldo-unit">puntos</span>
+        </div>
+      </header>
+
+      <main className="recargar-main">
+        <section className="step-section">
+          <div className="step-header">
+            <span className="step-number">1</span>
+            <h2>Selecciona tu paquete</h2>
+          </div>
+
+          <div className="paquetes-grid">
+            {PAQUETES.map(paquete => (
+              <div 
+                key={paquete.id}
+                className={`paquete-card ${paquete.popular ? 'popular' : ''} ${paqueteSeleccionado === paquete.id ? 'selected' : ''}`}
+                onClick={() => setPaqueteSeleccionado(paquete.id)}
+              >
+                {paquete.popular && <span className="paquete-badge">Más popular</span>}
+                <div className="paquete-puntos">
+                  <span className="puntos-numero">{paquete.puntos.toLocaleString()}</span>
+                  <span className="puntos-label">puntos</span>
+                </div>
+                <div className="paquete-precio">
+                  <span className="precio">${paquete.precio.toLocaleString()}</span>
+                  <span className="precio-label">MXN</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="info-card">
+            <h4>💡 ¿Cómo funcionan los puntos?</h4>
+            <p>Los puntos son tu saldo para dar cashback a tus clientes. Por cada venta, restas puntos de tu bolsa y el cliente los acumula. <strong>100 puntos = $100 MXN</strong></p>
+          </div>
+        </section>
+
+        {paqueteSeleccionado && (
+          <section className="step-section">
+            <div className="step-header">
+              <span className="step-number">2</span>
+              <h2>Método de pago</h2>
+            </div>
+
+            {error && <div className="recargar-error">⚠️ {error}</div>}
+
+            <div className="metodos-pago">
+              <button type="button" className={`metodo-btn ${metodoPago === 'tarjeta' ? 'active' : ''}`} onClick={() => setMetodoPago('tarjeta')}>
+                <span className="metodo-icon">💳</span>
+                <div className="metodo-info">
+                  <span className="metodo-nombre">Tarjeta</span>
+                  <span className="metodo-desc">Inmediato</span>
+                </div>
+                <span className="metodo-comision">+${paqueteActual ? calcularComision(paqueteActual.precio, 'tarjeta') : 0}</span>
+              </button>
+              <button type="button" className={`metodo-btn ${metodoPago === 'oxxo' ? 'active' : ''}`} onClick={() => setMetodoPago('oxxo')}>
+                <span className="metodo-icon">🏪</span>
+                <div className="metodo-info">
+                  <span className="metodo-nombre">OXXO</span>
+                  <span className="metodo-desc">Efectivo</span>
+                </div>
+                <span className="metodo-comision">+$15</span>
+              </button>
+              <button type="button" className={`metodo-btn ${metodoPago === 'spei' ? 'active' : ''}`} onClick={() => setMetodoPago('spei')}>
+                <span className="metodo-icon">🏦</span>
+                <div className="metodo-info">
+                  <span className="metodo-nombre">SPEI</span>
+                  <span className="metodo-desc">Transferencia</span>
+                </div>
+                <span className="metodo-comision">+$10</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleComprar} className="payment-form">
+              {metodoPago === 'tarjeta' ? (
+                <>
+                  <div className="form-group">
+                    <label>Número de tarjeta</label>
+                    <input type="text" placeholder="1234 5678 9012 3456" value={cardData.numero} onChange={(e) => setCardData({...cardData, numero: formatCardNumber(e.target.value)})} maxLength={19} required />
+                  </div>
+                  <div className="form-group">
+                    <label>Nombre en la tarjeta</label>
+                    <input type="text" placeholder="NOMBRE APELLIDO" value={cardData.nombre} onChange={(e) => setCardData({...cardData, nombre: e.target.value.toUpperCase()})} required />
+                  </div>
+                  <div className="form-row">
+                    <div className="form-group">
+                      <label>Vencimiento</label>
+                      <input type="text" placeholder="MM/AA" value={cardData.expiracion} onChange={(e) => setCardData({...cardData, expiracion: formatExpiration(e.target.value)})} maxLength={5} required />
+                    </div>
+                    <div className="form-group">
+                      <label>CVV</label>
+                      <input type="text" placeholder="123" value={cardData.cvv} onChange={(e) => setCardData({...cardData, cvv: e.target.value.replace(/\D/g, '')})} maxLength={4} required />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="metodo-alterno-info">
+                  <div className="metodo-alterno-icon">{metodoPago === 'oxxo' ? '🏪' : '🏦'}</div>
+                  <h3>Pago con {metodoPago === 'oxxo' ? 'OXXO' : 'Transferencia SPEI'}</h3>
+                  <p>Al continuar, te generaremos {metodoPago === 'oxxo' ? 'una referencia para pagar en OXXO' : 'una CLABE para transferir'}.</p>
+                  <ul className="metodo-beneficios">
+                    {metodoPago === 'oxxo' ? (
+                      <>
+                        <li>✓ Paga en efectivo en cualquier OXXO</li>
+                        <li>✓ Tienes 72 horas para pagar</li>
+                      </>
+                    ) : (
+                      <>
+                        <li>✓ Transfiere desde cualquier banco</li>
+                        <li>✓ Se refleja en minutos</li>
+                      </>
+                    )}
+                    <li>✓ Los puntos se acreditan automáticamente</li>
+                  </ul>
+                </div>
+              )}
+
+              <div className="resumen-compra">
+                <div className="resumen-row">
+                  <span>Paquete:</span>
+                  <span>{paqueteActual?.puntos.toLocaleString()} puntos</span>
+                </div>
+                <div className="resumen-row">
+                  <span>Subtotal:</span>
+                  <span>${paqueteActual?.precio.toLocaleString()} MXN</span>
+                </div>
+                <div className="resumen-row comision">
+                  <span>Comisión por pago:</span>
+                  <span>+${comisionActual.toLocaleString()} MXN</span>
+                </div>
+                <div className="resumen-row total">
+                  <span>Total a pagar:</span>
+                  <span>${totalActual.toLocaleString()} MXN</span>
+                </div>
+              </div>
+
+              <button type="submit" className="btn-comprar" disabled={procesando || (metodoPago === 'tarjeta' && !conektaReady)}>
+                {procesando ? <><span className="spinner-small"></span>Procesando...</> : 
+                  metodoPago === 'tarjeta' ? `🔒 Pagar $${totalActual.toLocaleString()} MXN` : 
+                  metodoPago === 'oxxo' ? `🏪 Generar referencia por $${totalActual.toLocaleString()}` : 
+                  `🏦 Generar CLABE por $${totalActual.toLocaleString()}`}
+              </button>
+
+              {/* Sección de confianza Conekta */}
+              <div className="conekta-trust">
+                <div className="trust-header">
+                  <span className="trust-icon">🔒</span>
+                  <span>Pago seguro procesado por <strong>Conekta</strong></span>
+                </div>
+                <div className="trust-features">
+                  <div className="trust-item">
+                    <span className="trust-badge">3D Secure</span>
+                    <span>Autenticación bancaria</span>
+                  </div>
+                  <div className="trust-item">
+                    <span className="trust-badge">PCI DSS</span>
+                    <span>Datos encriptados</span>
+                  </div>
+                  <div className="trust-item">
+                    <span className="trust-badge">SSL</span>
+                    <span>Conexión segura</span>
+                  </div>
+                </div>
+                <p className="trust-note">
+                  📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong> (nuestro procesador de pagos certificado). Ambos correos son legítimos.
+                </p>
+              </div>
+            </form>
+          </section>
+        )}
+      </main>
+
+      <footer className="recargar-footer">
+        <p>¿Necesitas factura? <Link href="/contacto">Contáctanos</Link></p>
+      </footer>
+    </div>
+  );
+}

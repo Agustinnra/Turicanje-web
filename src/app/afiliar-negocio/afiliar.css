@@ -1,0 +1,472 @@
+/* afiliar.css - Página de afiliación de negocios */
+
+:root {
+    --turicanje-magenta: #d1007d;
+    --turicanje-purple: #6b3fa0;
+    --turicanje-black: #1a1a1a;
+    --turicanje-dark: #2d2d2d;
+    --turicanje-white: #ffffff;
+    --turicanje-gray: #f5f5f5;
+    --turicanje-gray-dark: #666;
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .afiliar-page {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+    font-family: var(--font-body), 'DM Sans', sans-serif;
+  }
+  
+  /* Header */
+  .afiliar-header {
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  
+  .logo-link {
+    display: inline-block;
+  }
+  
+  /* Main */
+  .afiliar-main {
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .afiliar-container {
+    max-width: 800px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  
+  /* Intro Section */
+  .afiliar-intro {
+    color: var(--turicanje-white);
+    padding-top: 2rem;
+  }
+  
+  .afiliar-intro h1 {
+    font-family: var(--font-display), 'Playfair Display', serif;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(90deg, var(--turicanje-magenta), var(--turicanje-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .afiliar-intro p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #ccc;
+    margin-bottom: 2rem;
+  }
+  
+  .afiliar-intro strong {
+    color: var(--turicanje-magenta);
+  }
+  
+  .beneficios-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .beneficio {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid var(--turicanje-magenta);
+  }
+  
+  .beneficio-icon {
+    font-size: 1.5rem;
+  }
+  
+  .beneficio span:last-child {
+    color: #ddd;
+    font-size: 0.95rem;
+  }
+  
+  /* Form */
+  .afiliar-form {
+    background: var(--turicanje-white);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .afiliar-form h2 {
+    font-family: var(--font-display), 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--turicanje-black);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--turicanje-gray);
+  }
+  
+  .afiliar-form h2:not(:first-child) {
+    margin-top: 2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+  
+  .form-group label {
+    display: block;
+    font-weight: 500;
+    color: var(--turicanje-dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #1a1a1a;  /* ← AGREGAR ESTA LÍNEA */
+    background-color: #ffffff;  /* ← AGREGAR ESTA LÍNEA */
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--turicanje-purple);
+    box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.1);
+  }
+  
+  .form-group small {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--turicanje-gray-dark);
+  }
+  
+  /* Checkbox */
+  .checkbox-group {
+    margin-top: 1.5rem;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--turicanje-dark);
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    cursor: pointer;
+    accent-color: var(--turicanje-purple);
+  }
+  
+  .checkbox-label a {
+    color: var(--turicanje-purple);
+    text-decoration: underline;
+  }
+  
+  /* Radio buttons */
+  .radio-group {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--turicanje-dark);
+    padding: 0.75rem 1rem;
+    background: var(--turicanje-gray);
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  
+  .radio-label:hover {
+    background: #eee;
+  }
+  
+  .radio-label input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--turicanje-purple);
+  }
+  
+  /* Textarea */
+  .form-group textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 80px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #1a1a1a;  /* ← AGREGAR ESTA LÍNEA */
+    background-color: #ffffff;  /* ← AGREGAR ESTA LÍNEA */
+  }
+  
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--turicanje-purple);
+    box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.1);
+  }
+  
+  /* Upload foto */
+  .btn-upload {
+    width: 100%;
+    padding: 1.5rem;
+    background: var(--turicanje-gray);
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  
+  .btn-upload:hover:not(:disabled) {
+    border-color: var(--turicanje-purple);
+    background: #f0f0f0;
+  }
+  
+  .btn-upload:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .foto-preview {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .foto-preview img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .btn-remove-foto {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 0.5rem 0.75rem;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-remove-foto:hover {
+    background: rgba(200, 0, 0, 0.8);
+  }
+  
+  /* Mensaje */
+  .mensaje {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .mensaje.exito {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .mensaje.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  /* Submit Button */
+  .btn-submit {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(90deg, var(--turicanje-magenta), var(--turicanje-purple));
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+  }
+  
+  .btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(209, 0, 125, 0.3);
+  }
+  
+  .btn-submit:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .nota-revision {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--turicanje-gray-dark);
+    text-align: center;
+  }
+  
+  /* Footer */
+  .afiliar-footer {
+    padding: 2rem;
+    text-align: center;
+    color: #888;
+    font-size: 0.9rem;
+  }
+  
+  .afiliar-footer a {
+    color: var(--turicanje-magenta);
+  }
+  
+  /* Success Page */
+  .success-container {
+    max-width: 500px;
+    width: 100%;
+    background: var(--turicanje-white);
+    padding: 3rem;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+  
+  .success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .success-container h1 {
+    font-family: var(--font-display), 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--turicanje-black);
+    margin-bottom: 1rem;
+  }
+  
+  .success-message {
+    color: var(--turicanje-gray-dark);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .success-message strong {
+    color: var(--turicanje-purple);
+  }
+  
+  .success-steps {
+    background: var(--turicanje-gray);
+    padding: 1.5rem;
+    border-radius: 8px;
+    text-align: left;
+    margin-bottom: 2rem;
+  }
+  
+  .success-steps h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    color: var(--turicanje-dark);
+  }
+  
+  .success-steps ol {
+    padding-left: 1.25rem;
+    color: var(--turicanje-gray-dark);
+  }
+  
+  .success-steps li {
+    margin-bottom: 0.5rem;
+  }
+  
+  .btn-volver {
+    display: inline-block;
+    padding: 0.875rem 2rem;
+    background: linear-gradient(90deg, var(--turicanje-magenta), var(--turicanje-purple));
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+  
+  .btn-volver:hover {
+    transform: translateY(-2px);
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .afiliar-container {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  
+    .afiliar-intro {
+      padding-top: 0;
+      text-align: center;
+    }
+  
+    .afiliar-intro h1 {
+      font-size: 2rem;
+    }
+  
+    .beneficios-lista {
+      text-align: left;
+    }
+  
+    .afiliar-form {
+      padding: 1.5rem;
+    }
+  
+    .success-container {
+      padding: 2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .afiliar-main {
+      padding: 1rem;
+    }
+  
+    .afiliar-intro h1 {
+      font-size: 1.75rem;
+    }
+  
+    .afiliar-form h2 {
+      font-size: 1.1rem;
+    }
+  }

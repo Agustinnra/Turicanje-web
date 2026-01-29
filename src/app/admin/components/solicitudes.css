@@ -1,0 +1,552 @@
+/* ============================================================
+   SOLICITUDES PENDIENTES - ESTILOS
+   ============================================================ */
+
+   .solicitudes-container {
+    padding: 20px;
+  }
+  
+  .solicitudes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+  }
+  
+  .solicitudes-header h2 {
+    margin: 0;
+    color: #1a1a2e;
+    font-size: 1.5rem;
+  }
+  
+  .btn-refresh {
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+  }
+  
+  .btn-refresh:hover {
+    background: #e0e0e0;
+  }
+  
+  /* Loading */
+  .solicitudes-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    gap: 16px;
+  }
+  
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Empty State */
+  .solicitudes-empty {
+    text-align: center;
+    padding: 60px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+  }
+  
+  .empty-icon {
+    font-size: 48px;
+    display: block;
+    margin-bottom: 16px;
+  }
+  
+  .solicitudes-empty p {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  .empty-sub {
+    display: block;
+    margin-top: 8px;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  /* Grid de Cards */
+  .solicitudes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  
+  .solicitud-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .solicitud-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  }
+  
+  .solicitud-imagen {
+    position: relative;
+    height: 160px;
+    background: #f0f0f0;
+  }
+  
+  .solicitud-no-imagen {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    opacity: 0.3;
+  }
+  
+  .solicitud-categoria {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .solicitud-info {
+    padding: 16px;
+  }
+  
+  .solicitud-nombre {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    color: #1a1a2e;
+  }
+  
+  .solicitud-direccion,
+  .solicitud-contacto,
+  .solicitud-fecha {
+    margin: 4px 0;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .solicitud-acciones {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .btn-ver, .btn-aprobar, .btn-rechazar {
+    flex: 1;
+    min-width: 80px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+  
+  .btn-ver {
+    background: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .btn-aprobar {
+    background: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .btn-rechazar {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .btn-ver:hover { background: #bbdefb; }
+  .btn-aprobar:hover { background: #c8e6c9; }
+  .btn-rechazar:hover { background: #ffcdd2; }
+  
+  .btn-ver:disabled, .btn-aprobar:disabled, .btn-rechazar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* ============================================================
+     MODAL DETALLE COMPLETO
+     ============================================================ */
+  .solicitud-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+  
+  .solicitud-modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+  }
+  
+  .solicitud-modal.detalle-completo {
+    max-width: 800px;
+  }
+  
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: #f0f0f0;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    z-index: 10;
+    transition: background 0.2s;
+  }
+  
+  .modal-close:hover {
+    background: #e0e0e0;
+  }
+  
+  /* Header del Modal Detalle */
+  .modal-header-detalle {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .modal-header-detalle h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #1a1a2e;
+  }
+  
+  .modal-fecha {
+    font-size: 13px;
+    color: #666;
+    background: #f5f5f5;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+  
+  /* Body del Modal Detalle */
+  .modal-body-detalle {
+    padding: 24px;
+  }
+  
+  .detalle-foto-container {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  
+  /* Secciones */
+  .detalle-seccion {
+    margin-bottom: 28px;
+  }
+  
+  .detalle-seccion:last-child {
+    margin-bottom: 0;
+  }
+  
+  .detalle-seccion h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.1rem;
+    color: #1a1a2e;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #667eea;
+  }
+  
+  .detalle-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  .detalle-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .detalle-item.full {
+    grid-column: span 2;
+  }
+  
+  .detalle-item label {
+    font-size: 12px;
+    color: #888;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .detalle-item span {
+    font-size: 15px;
+    color: #333;
+  }
+  
+  .detalle-item .codigo {
+    font-family: 'Courier New', monospace;
+    background: #f0f0f0;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #667eea;
+    display: inline-block;
+  }
+  
+  .horario-text {
+    white-space: pre-wrap;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px !important;
+    line-height: 1.6;
+  }
+  
+  .mapa-link {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .mapa-link:hover {
+    text-decoration: underline;
+  }
+  
+  .preferencia-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 14px !important;
+  }
+  
+  .preferencia-badge.whatsapp {
+    background: #dcf8c6;
+    color: #075e54;
+  }
+  
+  .preferencia-badge.email {
+    background: #e3f2fd;
+    color: #1565c0;
+  }
+  
+  /* Footer del Modal Detalle */
+  .modal-footer-detalle {
+    padding: 20px 24px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 12px;
+    background: #f8f9fa;
+    border-radius: 0 0 16px 16px;
+  }
+  
+  .btn-aprobar-grande,
+  .btn-rechazar-grande {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  
+  .btn-aprobar-grande {
+    background: linear-gradient(135deg, #4caf50 0%, #2e7d32 100%);
+    color: white;
+  }
+  
+  .btn-aprobar-grande:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+  }
+  
+  .btn-rechazar-grande {
+    background: #ffebee;
+    color: #c62828;
+  }
+  
+  .btn-rechazar-grande:hover {
+    background: #ffcdd2;
+  }
+  
+  .btn-aprobar-grande:disabled,
+  .btn-rechazar-grande:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  /* ============================================================
+     MODAL RECHAZO
+     ============================================================ */
+  .solicitud-modal.rechazo {
+    max-width: 500px;
+  }
+  
+  .modal-header.rechazo {
+    padding: 24px;
+    background: #ffebee;
+    border-bottom: none;
+  }
+  
+  .modal-header.rechazo h2 {
+    margin: 0 0 8px 0;
+    color: #c62828;
+  }
+  
+  .modal-header.rechazo p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .modal-body {
+    padding: 24px;
+  }
+  
+  .rechazo-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .rechazo-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    color: #333;
+    background: #fff;
+  }
+  
+  .rechazo-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+  }
+  
+  .btn-cancelar {
+    padding: 10px 20px;
+    background: #f0f0f0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-cancelar:hover {
+    background: #e0e0e0;
+  }
+  
+  .btn-rechazar-confirmar {
+    padding: 10px 20px;
+    background: #c62828;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .btn-rechazar-confirmar:hover {
+    background: #b71c1c;
+  }
+  
+  .btn-rechazar-confirmar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px) {
+    .solicitudes-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .solicitud-modal {
+      max-height: 100vh;
+      height: 100%;
+      border-radius: 0;
+    }
+    
+    .detalle-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .detalle-item.full {
+      grid-column: span 1;
+    }
+    
+    .modal-footer-detalle {
+      flex-direction: column;
+    }
+    
+    .solicitudes-header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start;
+    }
+  }

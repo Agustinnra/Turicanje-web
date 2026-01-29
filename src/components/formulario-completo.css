@@ -1,0 +1,537 @@
+/* ============================================================
+   FORMULARIO COMPLETO DE NEGOCIO - ESTILOS
+   Secciones colapsables (acordeón)
+   ============================================================ */
+
+   .formulario-completo {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Header del formulario */
+  .formulario-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+  
+  .negocio-id-badge {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    gap: 6px;
+  }
+  
+  .negocio-id-badge .id-label {
+    opacity: 0.8;
+  }
+  
+  .negocio-id-badge .id-value {
+    font-weight: 700;
+  }
+  
+  .negocio-nombre {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+  }
+  
+  /* Mensaje de éxito/error */
+  .mensaje-formulario {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  
+  .mensaje-formulario.exito {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .mensaje-formulario.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  /* ============================================================
+     SECCIONES COLAPSABLES (ACORDEÓN)
+     ============================================================ */
+  
+  .seccion-colapsable {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: box-shadow 0.2s;
+  }
+  
+  .seccion-colapsable:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .seccion-colapsable.expandida {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  
+  .seccion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .seccion-header:hover {
+    background: #f1f5f9;
+  }
+  
+  .seccion-colapsable.expandida .seccion-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  
+  .seccion-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+  
+  .seccion-colapsable.expandida .seccion-titulo {
+    color: white;
+  }
+  
+  .seccion-icono {
+    font-size: 20px;
+  }
+  
+  .seccion-arrow {
+    font-size: 12px;
+    color: #64748b;
+    transition: transform 0.2s;
+  }
+  
+  .seccion-colapsable.expandida .seccion-arrow {
+    color: white;
+  }
+  
+  .seccion-contenido {
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+    animation: slideDown 0.2s ease-out;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ============================================================
+     GRID DE CAMPOS
+     ============================================================ */
+  
+  .campo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  
+  @media (max-width: 600px) {
+    .campo-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .campo-full {
+    grid-column: 1 / -1;
+  }
+  
+  .campo label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+  }
+  
+  .campo input,
+  .campo select,
+  .campo textarea {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a2e;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .campo input:focus,
+  .campo select:focus,
+  .campo textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+  
+  .campo input::placeholder,
+  .campo textarea::placeholder {
+    color: #9ca3af;
+  }
+  
+  .campo textarea {
+    resize: vertical;
+    min-height: 60px;
+  }
+  
+  .campo select {
+    cursor: pointer;
+  }
+  
+  /* Preview de imagen */
+  .imagen-preview {
+    margin-top: 8px;
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  
+  /* ============================================================
+     CHECKBOXES
+     ============================================================ */
+  
+  .campo-checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    grid-column: 1 / -1;
+    padding: 12px 0;
+  }
+  
+  .amenidades-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  
+  @media (max-width: 600px) {
+    .amenidades-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s;
+  }
+  
+  .checkbox-label:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #667eea;
+  }
+  
+  .checkbox-label input[type="checkbox"]:checked + .checkbox-text {
+    color: #667eea;
+    font-weight: 600;
+  }
+  
+  .checkbox-text {
+    font-size: 14px;
+    color: #475569;
+  }
+  
+  /* ============================================================
+     HORARIOS GRID
+     ============================================================ */
+  
+  .horarios-grid {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+  }
+  
+  .dia-horario {
+    display: grid;
+    grid-template-columns: 100px 1fr auto 1fr;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  @media (max-width: 500px) {
+    .dia-horario {
+      grid-template-columns: 80px 1fr auto 1fr;
+      font-size: 13px;
+    }
+  }
+  
+  .dia-label {
+    font-weight: 600;
+    color: #475569;
+    font-size: 14px;
+  }
+  
+  .dia-horario input[type="time"] {
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #1a1a2e;
+  }
+  
+  .dia-horario input[type="time"]:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+  }
+  
+  .dia-horario span:not(.dia-label) {
+    color: #9ca3af;
+    text-align: center;
+  }
+  
+  /* ============================================================
+     BOTONES DE ACCIÓN
+     ============================================================ */
+  
+  .formulario-acciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 2px solid #e2e8f0;
+    gap: 16px;
+  }
+  
+  .btn-cancelar {
+    padding: 12px 24px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-cancelar:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+  
+  .btn-cancelar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .btn-guardar {
+    padding: 12px 32px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  }
+  
+  .btn-guardar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-guardar:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* ============================================================
+     INPUTS DE HORARIO FORMATO 24 HORAS (TEXTO)
+     ============================================================ */
+  
+  .time-input-24h {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 15px;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+    width: 80px;
+    text-align: center;
+    color: #1a1a2e;
+    background: white;
+    letter-spacing: 1px;
+  }
+  
+  .time-input-24h::placeholder {
+    color: #9ca3af;
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  
+  .time-input-24h:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.15);
+  }
+  
+  /* Instrucción de horarios */
+  .horarios-instruccion {
+    grid-column: 1 / -1;
+    font-size: 13px;
+    color: #475569;
+    margin-bottom: 8px;
+    padding: 10px 14px;
+    background: #e0f2fe;
+    border-radius: 6px;
+    border-left: 3px solid #667eea;
+  }
+  
+  /* ============================================================
+     CAMPO DE CARACTERÍSTICAS DESTACADAS
+     ============================================================ */
+  
+  /* Contador de características */
+  .contador-caracteristicas {
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+    margin-left: 8px;
+    padding: 2px 8px;
+    background: #f1f5f9;
+    border-radius: 10px;
+  }
+  
+  .contador-caracteristicas.limite {
+    color: #dc2626;
+    background: #fef2f2;
+    font-weight: 600;
+  }
+  
+  /* Input cuando alcanza el límite */
+  .input-limite {
+    border-color: #f59e0b !important;
+    background-color: #fffbeb !important;
+  }
+  
+  .input-limite:focus {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15) !important;
+  }
+  
+  /* Texto de ayuda para campos */
+  .campo-ayuda {
+    display: block;
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  
+  @media (max-width: 768px) {
+    .formulario-completo {
+      padding: 12px;
+    }
+    
+    .formulario-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .negocio-nombre {
+      font-size: 20px;
+    }
+    
+    .seccion-header {
+      padding: 14px 16px;
+    }
+    
+    .seccion-contenido {
+      padding: 16px;
+    }
+    
+    .formulario-acciones {
+      flex-direction: column-reverse;
+    }
+    
+    .btn-cancelar,
+    .btn-guardar {
+      width: 100%;
+      text-align: center;
+    }
+    
+    /* Responsive para inputs de tiempo */
+    .time-input-24h {
+      min-width: 85px;
+      padding: 6px 8px;
+      font-size: 13px;
+    }
+    
+    .amenidades-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .amenidades-grid {
+      grid-template-columns: 1fr;
+    }
+  }

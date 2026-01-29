@@ -1,0 +1,365 @@
+/* ESTILOS COMPLETOS - PÁGINA DE USUARIO */
+
+/* ========================
+   RESET Y BASE
+======================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  /* ========================
+     PANEL PRINCIPAL
+  ======================== */
+  .usuario-panel {
+    padding: 20px;
+    background-color: #f9f9f9;
+    min-height: 100vh;
+  }
+  
+  /* ========================
+     HEADER BIENVENIDA
+  ======================== */
+  .header-bienvenida {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: transparent;
+  }
+  
+  .header-bienvenida h1 {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  
+  .header-bienvenida p {
+    color: #666;
+    font-size: 1.1rem;
+    font-weight: 400;
+  }
+  
+  /* ========================
+     LOGO (oculto por ahora)
+  ======================== */
+  .usuario-panel > img {
+    display: none !important;
+  }
+  
+  /* ========================
+     MAPA
+  ======================== */
+  .mapa-usuario {
+    width: 100%;
+    height: 750px;
+    margin-top: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ========================
+     PANEL DE BÚSQUEDA
+  ======================== */
+  .busqueda-panel {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .busqueda-panel input {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    color: #000;
+    font-weight: 500;
+  }
+  
+  .busqueda-panel input:focus {
+    outline: none;
+    border-color: #d1007d;
+    box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.1);
+  }
+  
+  .busqueda-panel input::placeholder {
+    color: #666;
+    font-weight: 400;
+  }
+  
+  /* ========================
+     LISTA DE NEGOCIOS
+  ======================== */
+  .lista-negocios {
+    margin-top: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fff;
+    max-height: 600px;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .lista-negocios::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .lista-negocios::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  .lista-negocios::-webkit-scrollbar-thumb {
+    background: #d1007d;
+    border-radius: 10px;
+  }
+  
+  .lista-negocios::-webkit-scrollbar-thumb:hover {
+    background: #a00062;
+  }
+  
+  .lista-negocios h2 {
+    text-align: center;
+    color: #d1007d;
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  
+  .sin-resultados {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+  
+  .negocio-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    border-radius: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .negocio-item:last-child {
+    border-bottom: none;
+  }
+  
+  .negocio-item:hover {
+    background-color: #f5f5f5;
+    transform: translateX(5px);
+  }
+  
+  .negocio-item:active {
+    background-color: #efefef;
+  }
+  
+  .negocio-item strong {
+    font-size: 17px;
+    color: #333;
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  
+  .negocio-item .direccion,
+  .negocio-item .productos,
+  .negocio-item .horario {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 6px;
+    line-height: 1.5;
+  }
+  
+  /* ========================
+     IMAGEN EN LISTA
+  ======================== */
+  .imagen-lista {
+    width: 100%;
+    max-width: 250px;
+    margin: 12px auto 0;
+    border-radius: 10px;
+    display: block;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ========================
+     BOTÓN DE UBICACIÓN EN MAPA (custom)
+  ======================== */
+  .custom-map-control-button {
+    background-color: #fff !important;
+    border: none !important;
+    border-radius: 2px !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3) !important;
+    cursor: pointer !important;
+    margin: 10px !important;
+    padding: 10px 15px !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    color: #333 !important;
+    transition: background-color 0.2s ease !important;
+  }
+  
+  .custom-map-control-button:hover {
+    background-color: #f5f5f5 !important;
+  }
+  
+  .custom-map-control-button:active {
+    background-color: #e0e0e0 !important;
+  }
+  
+  /* ========================
+     RESPONSIVE - TABLET
+  ======================== */
+  @media (max-width: 768px) {
+    .usuario-panel {
+      padding: 10px;
+    }
+  
+    .header-bienvenida h1 {
+      font-size: 1.8rem;
+    }
+  
+    .header-bienvenida p {
+      font-size: 1rem;
+    }
+  
+    .busqueda-panel {
+      flex-direction: column;
+      align-items: stretch;
+    }
+  
+    .busqueda-panel input {
+      max-width: 100%;
+      margin-bottom: 10px;
+    }
+  
+    .mapa-usuario {
+      height: 70vh;
+      margin-left: -10px;
+      margin-right: -10px;
+    }
+  
+    .lista-negocios {
+      max-height: 400px;
+      padding: 15px;
+    }
+  
+    .lista-negocios h2 {
+      font-size: 1.6rem;
+    }
+  }
+  
+  /* ========================
+     RESPONSIVE - MOBILE
+  ======================== */
+  @media (max-width: 480px) {
+    .usuario-panel {
+      padding: 5px;
+    }
+  
+    .header-bienvenida {
+      padding: 15px;
+    }
+  
+    .header-bienvenida h1 {
+      font-size: 1.5rem;
+    }
+  
+    .header-bienvenida p {
+      font-size: 0.9rem;
+    }
+  
+    .mapa-usuario {
+      height: 400px;
+    }
+  
+    .lista-negocios {
+      padding: 10px;
+    }
+  
+    .lista-negocios h2 {
+      font-size: 1.4rem;
+    }
+  
+    .lista-negocios strong {
+      font-size: 15px;
+    }
+  
+    .lista-negocios > div > div {
+      font-size: 13px;
+    }
+  
+    .lista-negocios > div {
+      padding: 12px;
+    }
+  
+    .logo-splash {
+      width: 60vw !important;
+      height: auto !important;
+      max-width: 250px;
+    }
+  }
+  
+  /* ========================
+     SPLASH SCREEN
+  ======================== */
+  .splash-root {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.6s ease;
+  }
+  
+  .splash-root.fade-out {
+    opacity: 0;
+  }
+  
+  .logo-splash {
+    animation: zoomSplash 1.4s ease forwards;
+  }
+  
+  @keyframes zoomSplash {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    40% {
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.35);
+      opacity: 1;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .logo-splash {
+      width: 50vw !important;
+      height: auto !important;
+    }
+  }

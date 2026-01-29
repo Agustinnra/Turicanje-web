@@ -1,0 +1,369 @@
+/* ============================================================
+   REGISTRO DE USUARIOS - ESTILOS
+   ============================================================ */
+
+   .registro-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+  }
+  
+  .registro-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  .registro-card.success-card {
+    text-align: center;
+    padding: 60px 40px;
+  }
+  
+  .success-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+  
+  .success-card h1 {
+    color: #1a1a2e;
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  
+  .success-card p {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  
+  .success-sub {
+    color: #888 !important;
+    font-size: 0.9rem !important;
+    margin-bottom: 30px !important;
+  }
+  
+  .btn-iniciar-sesion {
+    display: inline-block;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    padding: 14px 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .btn-iniciar-sesion:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(209, 0, 125, 0.4);
+  }
+  
+  /* Header */
+  .registro-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .registro-logo {
+    display: inline-block;
+    margin-bottom: 20px;
+  }
+  
+  .registro-header h1 {
+    color: #1a1a2e;
+    font-size: 1.8rem;
+    margin: 0 0 8px 0;
+  }
+  
+  .registro-header p {
+    color: #666;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+  
+  /* Error */
+  .registro-error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Form */
+  .registro-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .form-group input {
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #333;
+    background: #fff;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #d1007d;
+    box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.1);
+  }
+  
+  .form-group input::placeholder {
+    color: #aaa;
+  }
+  
+  .form-hint {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+  }
+  
+  /* Checkboxes */
+  .form-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    line-height: 1.4;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    display: none;
+  }
+  
+  .checkmark {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  
+  .checkbox-label input:checked + .checkmark {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    border-color: #d1007d;
+  }
+  
+  .checkbox-label input:checked + .checkmark::after {
+    content: '✓';
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  
+  .checkbox-label a {
+    color: #d1007d;
+    text-decoration: none;
+  }
+  
+  .checkbox-label a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Button */
+  .btn-registrar {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .btn-registrar:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(209, 0, 125, 0.4);
+  }
+  
+  .btn-registrar:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Footer */
+  .registro-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+  }
+  
+  .registro-footer p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .registro-footer a {
+    color: #d1007d;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .registro-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Beneficios */
+  .registro-beneficios {
+    margin-top: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+    border-radius: 12px;
+  }
+  
+  .registro-beneficios h3 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    color: #d1007d;
+  }
+  
+  .registro-beneficios ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  
+  .registro-beneficios li {
+    font-size: 13px;
+    color: #666;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 600px) {
+    .registro-container {
+      padding: 20px 16px;
+      align-items: flex-start;
+    }
+  
+    .registro-card {
+      padding: 30px 24px;
+      border-radius: 16px;
+    }
+  
+    .registro-header h1 {
+      font-size: 1.5rem;
+    }
+  
+    .form-row {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  
+    .registro-beneficios ul {
+      grid-template-columns: 1fr;
+    }
+  
+    .form-group input {
+      padding: 12px 14px;
+      font-size: 16px; /* Previene zoom en iOS */
+    }
+  }
+  
+  /* ============================================================
+     PASSWORD TOGGLE
+     ============================================================ */
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-wrapper input {
+    flex: 1;
+    padding-right: 50px;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  
+  .toggle-password:hover {
+    opacity: 1;
+  }

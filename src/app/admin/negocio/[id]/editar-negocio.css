@@ -1,0 +1,498 @@
+/* ============================================================
+   PÁGINA DE EDICIÓN DE NEGOCIO - ADMIN
+   ============================================================ */
+
+   .editar-negocio-page {
+    min-height: 100vh;
+    background: #f5f7fa;
+    overflow-y: auto !important;
+    position: relative;
+  }
+
+  /* Fix para scroll cuando Cloudinary widget o modal está abierto */
+  html, body {
+    overflow-x: hidden;
+  }
+
+  html:has(.editar-negocio-page) {
+    overflow-y: auto !important;
+    height: auto !important;
+  }
+
+  /* Evitar que modals bloqueen el scroll del body */
+  body:has(.cloudinary-overlay),
+  body:has([class*="cloudinary"]) {
+    overflow: auto !important;
+  }
+  
+  /* Loading */
+  .editar-loading {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: #f5f7fa;
+  }
+  
+  .editar-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Error */
+  .editar-error {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: #f5f7fa;
+  }
+  
+  .error-icon {
+    font-size: 48px;
+  }
+  
+  .editar-error h2 {
+    color: #721c24;
+    margin: 0;
+  }
+  
+  .btn-volver {
+    margin-top: 16px;
+    padding: 12px 24px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .btn-volver:hover {
+    background: #5a67d8;
+  }
+  
+  /* Header */
+  .editar-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .editar-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .btn-back {
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-back:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  
+  .editar-header h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .negocio-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    display: flex;
+    gap: 6px;
+  }
+  
+  .badge-label {
+    opacity: 0.8;
+  }
+  
+  .badge-value {
+    font-weight: 700;
+    font-family: monospace;
+  }
+  
+  .editar-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .status-activo {
+    background: rgba(34, 197, 94, 0.2);
+    color: #86efac;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .status-inactivo {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  /* Content */
+  .editar-content {
+    padding: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .editar-header {
+      padding: 12px 16px;
+    }
+    
+    .editar-header h1 {
+      font-size: 16px;
+    }
+    
+    .editar-header-left {
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .btn-back {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+    
+    .editar-content {
+      padding: 12px;
+    }
+  }
+
+  /* ============================================================
+     SECCIÓN USUARIO ASIGNADO
+     ============================================================ */
+  .usuario-asignado-section {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .usuario-asignado-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .usuario-asignado-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #1a1a2e;
+  }
+
+  .btn-cambiar-usuario {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-cambiar-usuario:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  .usuario-asignado-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 10px;
+  }
+
+  .usuario-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .usuario-datos {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .usuario-datos strong {
+    font-size: 15px;
+    color: #1a1a2e;
+  }
+
+  .usuario-datos span {
+    font-size: 13px;
+    color: #64748b;
+  }
+
+  .role-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .role-badge.role-comercio {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .role-badge.role-admin {
+    background: #cce5ff;
+    color: #004085;
+  }
+
+  .role-badge.role-super_admin {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  .usuario-asignado-empty {
+    padding: 20px;
+    background: #fff8e1;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .usuario-asignado-empty span {
+    font-size: 16px;
+    font-weight: 600;
+    color: #f57c00;
+  }
+
+  .usuario-asignado-empty p {
+    margin: 8px 0 0;
+    font-size: 13px;
+    color: #666;
+  }
+
+  /* ============================================================
+     MODAL CAMBIAR USUARIO
+     ============================================================ */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+  }
+
+  .modal-usuario {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .modal-usuario-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .modal-usuario-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #1a1a2e;
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+  }
+
+  .modal-close:hover {
+    color: #1a1a2e;
+  }
+
+  .modal-usuario-body {
+    padding: 20px;
+  }
+
+  .mensaje-usuario {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .mensaje-usuario.exito {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  .mensaje-usuario.error {
+    background: #f8d7da;
+    color: #721c24;
+  }
+
+  .usuario-select-group {
+    margin-bottom: 16px;
+  }
+
+  .usuario-select-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+
+  .usuario-select-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a2e;
+    background: white;
+    cursor: pointer;
+  }
+
+  .usuario-select-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+
+  .advertencia-desvincular {
+    background: #fff3e0;
+    border: 1px solid #ffcc80;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #e65100;
+  }
+
+  .modal-usuario-footer {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .modal-usuario-footer .btn-cancelar {
+    flex: 1;
+    padding: 12px;
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .modal-usuario-footer .btn-cancelar:hover {
+    background: #e2e8f0;
+  }
+
+  .modal-usuario-footer .btn-confirmar {
+    flex: 1;
+    padding: 12px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .modal-usuario-footer .btn-confirmar:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+
+  .modal-usuario-footer .btn-confirmar:disabled,
+  .modal-usuario-footer .btn-cancelar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }

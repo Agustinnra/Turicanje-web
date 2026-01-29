@@ -1,0 +1,356 @@
+/* mis-favoritos.css */
+
+.mis-favoritos-page {
+    min-height: 100vh;
+    background: #fafafa;
+  }
+  
+  /* Loading */
+  .loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #eee;
+    border-top-color: #d1007d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Header */
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  
+  .page-header .logo img {
+    height: 40px;
+  }
+  
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #666;
+  }
+  
+  .btn-logout {
+    background: none;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+  }
+  
+  .btn-logout:hover {
+    background: #fee;
+    border-color: #fcc;
+    color: #d00;
+  }
+  
+  /* Tabs */
+  .tabs-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: white;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .tab {
+    padding: 12px 24px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #666;
+  }
+  
+  .tab:hover {
+    background: #eee;
+  }
+  
+  .tab.active {
+    background: linear-gradient(135deg, #6b3fa0, #d1007d);
+    color: white;
+  }
+  
+  /* Content */
+  .content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  
+  .empty-state .emoji {
+    font-size: 4rem;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-state h3 {
+    color: #333;
+    margin-bottom: 0.5rem;
+  }
+  
+  .empty-state p {
+    color: #666;
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-explorar {
+    display: inline-block;
+    background: linear-gradient(135deg, #6b3fa0, #d1007d);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+  
+  .btn-explorar:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Grid de favoritos */
+  .favoritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .lugar-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+  }
+  
+  .lugar-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  .lugar-imagen {
+    height: 180px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .lugar-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .imagen-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #f5f5f5, #eee);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+  
+  .favorito-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: white;
+    padding: 6px;
+    border-radius: 50%;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  
+  .lugar-info {
+    padding: 1rem;
+  }
+  
+  .lugar-info h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0 0 0.5rem;
+  }
+  
+  .lugar-info .categoria {
+    display: inline-block;
+    background: #f0e6ff;
+    color: #6b3fa0;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+  }
+  
+  .lugar-info .ubicacion {
+    color: #888;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 0.5rem;
+  }
+  
+  .lugar-info .rating {
+    color: #333;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .lugar-info .reviews-count {
+    color: #888;
+    font-size: 0.8rem;
+    margin-left: 4px;
+  }
+  
+  /* Grid de creadores */
+  .creadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .creador-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    text-decoration: none;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    transition: all 0.3s;
+    position: relative;
+  }
+  
+  .creador-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+  }
+  
+  .creador-avatar {
+    flex-shrink: 0;
+  }
+  
+  .creador-avatar img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #d1007d;
+  }
+  
+  .creador-avatar .avatar-placeholder {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6b3fa0, #d1007d);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: 700;
+  }
+  
+  .creador-info {
+    flex: 1;
+  }
+  
+  .creador-info h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0 0 0.25rem;
+  }
+  
+  .creador-info .username {
+    color: #6b3fa0;
+    font-size: 0.9rem;
+    display: block;
+  }
+  
+  .creador-info .titulo {
+    color: #666;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  .creador-info .seguidores {
+    color: #888;
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 0.25rem;
+  }
+  
+  .siguiendo-badge {
+    background: #22c55e;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  
+  /* Footer */
+  .page-footer {
+    text-align: center;
+    padding: 2rem;
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 3rem;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .page-header {
+      padding: 1rem;
+    }
+  
+    .tabs-container {
+      padding: 1rem;
+    }
+  
+    .tab {
+      padding: 10px 16px;
+      font-size: 0.9rem;
+    }
+  
+    .content {
+      padding: 1rem;
+    }
+  
+    .favoritos-grid,
+    .creadores-grid {
+      grid-template-columns: 1fr;
+    }
+  }

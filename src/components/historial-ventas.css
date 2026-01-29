@@ -1,0 +1,328 @@
+/* ============================================================
+   HISTORIAL VENTAS - ESTILOS
+   ============================================================ */
+
+   .historial-ventas-container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  .historial-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  
+  .historial-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    color: #1a1a2e;
+  }
+  
+  .historial-header p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  /* ========== LOADING ========== */
+  .historial-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    color: #666;
+  }
+  
+  .spinner-grande {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f0f0f0;
+    border-top-color: #d1007d;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 16px;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* ========== ESTADÍSTICAS ========== */
+  .estadisticas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    transition: all 0.2s;
+  }
+  
+  .stat-card:hover {
+    border-color: #d1007d;
+    box-shadow: 0 4px 12px rgba(209, 0, 125, 0.1);
+  }
+  
+  .stat-icon {
+    font-size: 32px;
+  }
+  
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .stat-valor {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  
+  .stat-label {
+    font-size: 13px;
+    color: #666;
+  }
+  
+  /* ========== ERROR ========== */
+  .historial-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: 10px;
+    margin-bottom: 24px;
+  }
+  
+  .historial-error button {
+    padding: 8px 16px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  /* ========== VACÍO ========== */
+  .historial-vacio {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+  }
+  
+  .vacio-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+  
+  .historial-vacio h3 {
+    margin: 0 0 8px 0;
+    color: #333;
+    font-size: 18px;
+  }
+  
+  .historial-vacio p {
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  /* ========== TABLA DE VENTAS ========== */
+  .ventas-lista {
+    margin-bottom: 24px;
+  }
+  
+  .ventas-tabla {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .tabla-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    padding: 14px 20px;
+    background: #f8f9fa;
+    font-size: 12px;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .venta-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    align-items: center;
+    transition: background 0.15s;
+  }
+  
+  .venta-row:last-child {
+    border-bottom: none;
+  }
+  
+  .venta-row:hover {
+    background: #fafafa;
+  }
+  
+  .venta-cliente {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .cliente-nombre {
+    font-weight: 600;
+    color: #1a1a2e;
+    font-size: 14px;
+  }
+  
+  .cliente-tel {
+    font-size: 12px;
+    color: #888;
+  }
+  
+  .venta-monto {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .venta-puntos {
+    display: flex;
+    align-items: center;
+  }
+  
+  .puntos-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .venta-fecha {
+    font-size: 13px;
+    color: #666;
+  }
+  
+  /* ========== PAGINACIÓN ========== */
+  .paginacion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .paginacion button {
+    padding: 10px 20px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .paginacion button:hover:not(:disabled) {
+    background: #e8e8e8;
+    border-color: #ccc;
+  }
+  
+  .paginacion button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  
+  .paginacion span {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  /* ========== BOTÓN REFRESCAR ========== */
+  .btn-refrescar {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #f5f5f5;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-refrescar:hover {
+    background: #e8e8e8;
+    border-color: #ccc;
+  }
+  
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 768px) {
+    .historial-ventas-container {
+      padding: 20px;
+      border-radius: 0;
+    }
+  
+    .estadisticas-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .tabla-header {
+      display: none;
+    }
+  
+    .venta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 16px;
+    }
+  
+    .venta-cliente {
+      flex: 1;
+      min-width: 150px;
+    }
+  
+    .venta-monto,
+    .venta-puntos,
+    .venta-fecha {
+      flex: none;
+    }
+  
+    .venta-fecha {
+      width: 100%;
+      font-size: 12px;
+      color: #999;
+      padding-top: 8px;
+      border-top: 1px dashed #eee;
+    }
+  }

@@ -1,0 +1,478 @@
+/* ============================================
+   FLOATING BUTTONS - MAPA Y WHATSAPP
+   ============================================ */
+
+   .floating-buttons {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9998;
+  }
+  
+  /* Base button styles */
+  .floating-btn {
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .floating-btn:hover {
+    transform: translateY(-3px);
+  }
+  
+  .floating-btn:active {
+    transform: translateY(-1px);
+  }
+  
+  /* ============================================
+     BOTÓN MAPA - Glass/Translúcido
+     ============================================ */
+  .map-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50px;
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .map-btn .btn-icon {
+    font-size: 1.3rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+  }
+  
+  .map-btn .btn-label {
+    display: block;
+  }
+  
+  .map-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      0 12px 40px rgba(0, 0, 0, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+  
+  /* ============================================
+     BOTÓN WHATSAPP - Grande y protagonista
+     ============================================ */
+  .whatsapp-btn {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    border-radius: 60px;
+    color: white;
+    overflow: visible;
+    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  }
+  
+  .whatsapp-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .whatsapp-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+  }
+  
+  .whatsapp-text {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+  }
+  
+  .whatsapp-title {
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  
+  .whatsapp-subtitle {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    font-weight: 500;
+  }
+  
+  /* Pulse animation ring */
+  .pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    border-radius: 60px;
+    background: transparent;
+    border: 3px solid #25D366;
+    animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    z-index: 1;
+    pointer-events: none;
+  }
+  
+  @keyframes pulse-ring {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.15);
+      opacity: 0;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0;
+    }
+  }
+  
+  .whatsapp-btn:hover .pulse-ring {
+    animation-play-state: paused;
+    opacity: 0;
+  }
+  
+  .whatsapp-btn:hover {
+    background: linear-gradient(135deg, #2EE370 0%, #1A9E6E 100%);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5);
+  }
+  
+  /* ============================================
+     MODAL DEL MAPA
+     ============================================ */
+  .map-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 20px;
+    animation: fadeIn 0.2s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .map-modal {
+    width: 100%;
+    max-width: 1000px;
+    height: 85vh;
+    max-height: 700px;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.3s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .map-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+  }
+  
+  .map-modal-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .map-modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+  }
+  
+  .map-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+  
+  .map-modal-content {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+  }
+  
+  .map-modal-content > div {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* Asegurar que el botón de ubicación del mapa sea visible */
+  .map-modal-content .custom-map-control-button {
+    margin-top: 60px !important;
+  }
+  
+  .map-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: #f8f9fa;
+    border-top: 1px solid #e5e7eb;
+  }
+  
+  .map-modal-footer p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  
+  .footer-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .btn-location {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-location:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+  }
+  
+  .btn-whatsapp-alt {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-whatsapp-alt:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+  }
+  
+  /* Loading state */
+  .mapa-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 16px;
+    color: #6b7280;
+  }
+  
+  .mapa-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #d1007d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* ============================================
+     RESPONSIVE
+     ============================================ */
+  @media (max-width: 768px) {
+    .floating-buttons {
+      bottom: 16px;
+      right: 16px;
+      gap: 10px;
+    }
+  
+    /* Mapa más compacto en móvil */
+    .map-btn {
+      padding: 10px 14px;
+      font-size: 0.85rem;
+    }
+  
+    .map-btn .btn-icon {
+      font-size: 1.2rem;
+    }
+  
+    /* WhatsApp más compacto */
+    .whatsapp-btn {
+      padding: 12px 16px;
+    }
+  
+    .whatsapp-icon {
+      width: 38px;
+      height: 38px;
+    }
+  
+    .whatsapp-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+  
+    .whatsapp-title {
+      font-size: 0.9rem;
+    }
+  
+    .whatsapp-subtitle {
+      font-size: 0.75rem;
+    }
+  
+    /* Modal full screen en móvil */
+    .map-modal-overlay {
+      padding: 0;
+    }
+  
+    .map-modal {
+      max-width: 100%;
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+  
+    .map-modal-header {
+      padding: 14px 16px;
+    }
+  
+    .map-modal-header h2 {
+      font-size: 1rem;
+    }
+  
+    .map-modal-footer {
+      flex-direction: column;
+      gap: 12px;
+      padding: 16px;
+    }
+  
+    .footer-buttons {
+      width: 100%;
+      flex-direction: column;
+      gap: 8px;
+    }
+  
+    .btn-location,
+    .btn-whatsapp-alt {
+      width: 100%;
+    }
+  }
+  
+  /* Muy pequeño - solo iconos */
+  @media (max-width: 380px) {
+    .map-btn .btn-label {
+      display: none;
+    }
+  
+    .map-btn {
+      padding: 12px;
+      border-radius: 50%;
+    }
+  
+    .whatsapp-text {
+      display: none;
+    }
+  
+    .whatsapp-btn {
+      padding: 14px;
+      border-radius: 50%;
+    }
+  
+    .whatsapp-icon {
+      width: 44px;
+      height: 44px;
+      background: transparent;
+    }
+  
+    .pulse-ring {
+      border-radius: 50%;
+    }
+  }
+  
+  /* ============================================
+     ACCESIBILIDAD
+     ============================================ */
+  .floating-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.5);
+  }
+  
+  .map-btn:focus {
+    box-shadow: 
+      0 0 0 3px rgba(255, 255, 255, 0.5),
+      0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Reduce motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .pulse-ring {
+      animation: none;
+    }
+    
+    .floating-btn,
+    .map-modal,
+    .map-modal-overlay {
+      transition: none;
+      animation: none;
+    }
+  }

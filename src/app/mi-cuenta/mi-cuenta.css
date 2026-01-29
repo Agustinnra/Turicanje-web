@@ -1,0 +1,1550 @@
+/* ============================================================
+   MI CUENTA (DASHBOARD USUARIO) - ESTILOS MEJORADOS
+   Header oscuro/transparente + diseño premium
+   ============================================================ */
+
+   .mi-cuenta-container {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f8f9fa 0%, #eef1f5 100%);
+  }
+  
+  /* ============================================================
+     LOADING
+     ============================================================ */
+  .mi-cuenta-container .mi-cuenta-loading {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+  }
+  
+  .mi-cuenta-container .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #d1007d;
+    border-radius: 50%;
+    animation: micuenta-spin 1s linear infinite;
+  }
+  
+  @keyframes micuenta-spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* ============================================================
+     HEADER OSCURO/TRANSPARENTE - IGUAL AL LANDING
+     ============================================================ */
+  .mi-cuenta-container .mi-cuenta-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+    padding: 0.75rem 2rem;
+  }
+  
+  .mi-cuenta-container .header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+  
+  .mi-cuenta-container .mi-cuenta-logo img {
+    height: 50px;
+    width: auto;
+  }
+  
+  .mi-cuenta-container .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  
+  .mi-cuenta-container .nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    padding: 0.75rem 1.5rem;
+    background-color: rgba(107, 63, 160, 0.3);
+    border: 1px solid rgba(107, 63, 160, 0.5);
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .nav-link:hover {
+    background-color: rgba(107, 63, 160, 0.6);
+  }
+  
+  .mi-cuenta-container .nav-link.active {
+    background-color: rgba(107, 63, 160, 0.6);
+    border-color: rgba(107, 63, 160, 0.8);
+  }
+  
+  /* User menu - estilo translúcido */
+  .mi-cuenta-container .header-user-menu {
+    position: relative;
+  }
+  
+  .mi-cuenta-container .user-menu-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px 6px 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .user-menu-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  
+  .mi-cuenta-container .user-avatar-header {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #d1007d 0%, #6b3fa0 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  
+  .mi-cuenta-container .user-name-header {
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+  }
+  
+  .mi-cuenta-container .menu-arrow {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: transform 0.2s;
+  }
+  
+  .mi-cuenta-container .menu-arrow.open {
+    transform: rotate(180deg);
+  }
+  
+  /* Dropdown del usuario */
+  .mi-cuenta-container .user-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    background: white !important;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    min-width: 260px;
+    overflow: hidden;
+    z-index: 1000;
+    animation: micuenta-dropdownFade 0.2s ease;
+  }
+  
+  @keyframes micuenta-dropdownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .mi-cuenta-container .dropdown-header {
+    padding: 20px;
+    background: linear-gradient(135deg, #f9f9f9 0%, #f0f0f0 100%) !important;
+  }
+  
+  .mi-cuenta-container .dropdown-name {
+    display: block;
+    font-weight: 600;
+    color: #333 !important;
+    font-size: 15px;
+  }
+  
+  .mi-cuenta-container .dropdown-email {
+    display: block;
+    font-size: 13px;
+    color: #666 !important;
+    margin-top: 4px;
+  }
+  
+  .mi-cuenta-container .dropdown-divider {
+    height: 1px;
+    background: #eee;
+  }
+  
+  .mi-cuenta-container .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    color: #333 !important;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    border: none;
+    background: white !important;
+    width: 100%;
+    cursor: pointer;
+    text-align: left;
+  }
+  
+  .mi-cuenta-container .dropdown-item:hover {
+    background: #f5f5f5 !important;
+    padding-left: 24px;
+  }
+  
+  .mi-cuenta-container .dropdown-item.logout {
+    color: #c62828 !important;
+  }
+  
+  .mi-cuenta-container .dropdown-item.logout:hover {
+    background: #ffebee !important;
+  }
+  
+  .mi-cuenta-container .dropdown-item span {
+    font-size: 18px;
+  }
+  
+  .mi-cuenta-container .btn-cerrar-sesion {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .btn-cerrar-sesion:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* ============================================================
+     HERO SECTION - Solo fondo decorativo para el header
+     ============================================================ */
+  .mi-cuenta-container .mi-cuenta-hero {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #2d1b4e 100%);
+    height: 280px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mi-cuenta-container .mi-cuenta-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  
+  /* Main */
+  .mi-cuenta-container .mi-cuenta-main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    position: relative;
+    z-index: 1;
+    margin-top: -160px;
+  }
+  
+  /* ============================================================
+     PUNTOS CARD - ESTILO PREMIUM
+     ============================================================ */
+  .mi-cuenta-container .puntos-card {
+    background: linear-gradient(135deg, rgba(30, 30, 60, 0.95) 0%, rgba(45, 27, 78, 0.95) 100%);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 36px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    margin-bottom: 24px;
+  }
+  
+  .mi-cuenta-container .puntos-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(209, 0, 125, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .mi-cuenta-container .puntos-card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  
+  .mi-cuenta-container .puntos-info {
+    flex: 1;
+  }
+  
+  .mi-cuenta-container .puntos-saludo {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin: 0 0 8px 0;
+  }
+  
+  .mi-cuenta-container .puntos-total {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .mi-cuenta-container .puntos-numero {
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .mi-cuenta-container .puntos-label {
+    font-size: 1.1rem;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+  
+  .mi-cuenta-container .puntos-equivalente {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.6;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mi-cuenta-container .puntos-equivalente::before {
+    content: '≈';
+    font-size: 1.2rem;
+  }
+  
+  .mi-cuenta-container .suscripcion-warning {
+    margin: 16px 0 0 0;
+    padding: 12px 18px;
+    background: rgba(255, 193, 7, 0.15);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #ffc107;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mi-cuenta-container .suscripcion-warning:hover {
+    background: rgba(255, 193, 7, 0.25);
+    border-color: rgba(255, 193, 7, 0.5);
+  }
+
+  .mi-cuenta-container .suscripcion-warning .btn-activar {
+    background: #ffc107;
+    color: #1a1a2e;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  .mi-cuenta-container .puntos-qr {
+    background: white;
+    padding: 16px;
+    border-radius: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .mi-cuenta-container .puntos-qr img {
+    width: 120px;
+    height: 120px;
+    display: block;
+  }
+  
+  .mi-cuenta-container .qr-codigo-mini {
+    display: block;
+    margin-top: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    color: #d1007d;
+    letter-spacing: 2px;
+    text-align: center;
+  }
+  
+  .mi-cuenta-container .puntos-card-decoration {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.1;
+  }
+  
+  .mi-cuenta-container .decoration-icon {
+    font-size: 140px;
+  }
+  
+  /* ============================================================
+     TABS - ESTILO MODERNO
+     ============================================================ */
+  .mi-cuenta-container .mi-cuenta-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 32px 0 24px;
+    background: white;
+    padding: 8px;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    overflow-x: auto;
+  }
+  
+  .mi-cuenta-container .mi-cuenta-tabs::-webkit-scrollbar {
+    height: 0;
+  }
+  
+  .mi-cuenta-container .tab-btn {
+    flex: 1;
+    padding: 14px 20px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.3s;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+  }
+  
+  .mi-cuenta-container .tab-btn:hover {
+    background: #f5f5f5;
+    color: #333;
+  }
+  
+  .mi-cuenta-container .tab-btn.active {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(209, 0, 125, 0.3);
+  }
+  
+  .mi-cuenta-container .tab-badge {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  
+  .mi-cuenta-container .tab-btn:not(.active) .tab-badge {
+    background: #eee;
+    color: #666;
+  }
+  
+  /* ============================================================
+     TAB CONTENT
+     ============================================================ */
+  .mi-cuenta-container .tab-content {
+    background: white;
+    border-radius: 20px;
+    padding: 28px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* ============================================================
+     RESUMEN - STATS CARDS
+     ============================================================ */
+  .mi-cuenta-container .resumen-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .mi-cuenta-container .stat-card {
+    background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s;
+    border: 1px solid transparent;
+  }
+  
+  .mi-cuenta-container .stat-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(209, 0, 125, 0.2);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  }
+  
+  .mi-cuenta-container .stat-icon {
+    font-size: 32px;
+    margin-bottom: 4px;
+  }
+  
+  .mi-cuenta-container .stat-value {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    line-height: 1;
+  }
+  
+  .mi-cuenta-container .stat-label {
+    font-size: 13px;
+    color: #888;
+    font-weight: 500;
+  }
+  
+  /* Empty state */
+  .mi-cuenta-container .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  
+  .mi-cuenta-container .empty-icon {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+  
+  .mi-cuenta-container .empty-state h3 {
+    color: #333;
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+  }
+  
+  .mi-cuenta-container .empty-state p {
+    color: #666;
+    margin: 0;
+  }
+  
+  .mi-cuenta-container .empty-sub {
+    font-size: 14px;
+    color: #999 !important;
+    margin-top: 8px !important;
+  }
+  
+  .mi-cuenta-container .btn-explorar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 24px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(209, 0, 125, 0.3);
+  }
+  
+  .mi-cuenta-container .btn-explorar:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(209, 0, 125, 0.4);
+  }
+  
+  /* ============================================================
+     FAVORITOS
+     ============================================================ */
+  .mi-cuenta-container .tab-favoritos h3,
+  .mi-cuenta-container .tab-siguiendo h3 {
+    font-size: 1.15rem;
+    color: #333;
+    margin: 0 0 24px 0;
+    font-weight: 700;
+  }
+  
+  .mi-cuenta-container .favoritos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .mi-cuenta-container .favorito-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s;
+    border: 1px solid #eee;
+  }
+  
+  .mi-cuenta-container .favorito-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    border-color: transparent;
+  }
+  
+  .mi-cuenta-container .favorito-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  
+  .mi-cuenta-container .favorito-imagen {
+    position: relative;
+    height: 160px;
+    background: #f0f0f0;
+  }
+  
+  .mi-cuenta-container .favorito-imagen img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .mi-cuenta-container .favorito-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 56px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #eee 100%);
+  }
+  
+  .mi-cuenta-container .favorito-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: white;
+    padding: 8px;
+    border-radius: 50%;
+    font-size: 18px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .mi-cuenta-container .favorito-info {
+    padding: 18px;
+  }
+  
+  .mi-cuenta-container .favorito-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 1.05rem;
+    color: #1a1a2e;
+    font-weight: 600;
+  }
+  
+  .mi-cuenta-container .favorito-category {
+    margin: 0 0 6px 0;
+    font-size: 13px;
+    color: #d1007d;
+    font-weight: 600;
+  }
+  
+  .mi-cuenta-container .favorito-location {
+    margin: 0;
+    font-size: 13px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .mi-cuenta-container .btn-quitar-favorito {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    opacity: 0;
+    transition: all 0.3s;
+    backdrop-filter: blur(4px);
+  }
+  
+  .mi-cuenta-container .favorito-card:hover .btn-quitar-favorito {
+    opacity: 1;
+  }
+  
+  .mi-cuenta-container .btn-quitar-favorito:hover {
+    background: #ef4444;
+    transform: scale(1.1);
+  }
+  
+  /* ============================================================
+     SIGUIENDO (Creadores)
+     ============================================================ */
+  .mi-cuenta-container .creadores-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .mi-cuenta-container .creador-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    transition: all 0.3s;
+    border: 1px solid #eee;
+  }
+  
+  .mi-cuenta-container .creador-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    border-color: transparent;
+  }
+  
+  .mi-cuenta-container .creador-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  
+  .mi-cuenta-container .creador-avatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mi-cuenta-container .creador-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .mi-cuenta-container .avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #d1007d 0%, #6b3fa0 100%);
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  .mi-cuenta-container .creador-info {
+    flex: 1;
+  }
+  
+  .mi-cuenta-container .creador-info h4 {
+    margin: 0 0 4px 0;
+    font-size: 1.05rem;
+    color: #1a1a2e;
+    font-weight: 600;
+  }
+  
+  .mi-cuenta-container .creador-username {
+    margin: 0 0 6px 0;
+    font-size: 13px;
+    color: #888;
+  }
+  
+  .mi-cuenta-container .creador-titulo {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .mi-cuenta-container .creador-seguidores {
+    font-size: 12px;
+    color: #d1007d;
+    font-weight: 600;
+  }
+  
+  .mi-cuenta-container .btn-dejar-seguir {
+    padding: 10px 20px;
+    border: 2px solid #d1007d;
+    background: white;
+    color: #d1007d;
+    border-radius: 25px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    align-self: flex-start;
+  }
+  
+  .mi-cuenta-container .btn-dejar-seguir:hover {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+  
+  /* ============================================================
+     TRANSACCIONES
+     ============================================================ */
+  .mi-cuenta-container .ultimas-transacciones h3,
+  .mi-cuenta-container .tab-historial h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0 0 20px 0;
+    font-weight: 700;
+  }
+  
+  .mi-cuenta-container .transacciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .mi-cuenta-container .transaccion-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+    border-radius: 14px;
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .transaccion-item:hover {
+    background: linear-gradient(135deg, #f5f5f5 0%, #f0f0f0 100%);
+  }
+  
+  .mi-cuenta-container .trans-icon {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .mi-cuenta-container .trans-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .mi-cuenta-container .trans-negocio {
+    font-weight: 600;
+    color: #333;
+    font-size: 15px;
+  }
+  
+  .mi-cuenta-container .trans-fecha {
+    font-size: 13px;
+    color: #888;
+  }
+  
+  .mi-cuenta-container .trans-puntos {
+    font-weight: 700;
+    font-size: 15px;
+  }
+  
+  .mi-cuenta-container .trans-puntos.earn {
+    color: #10b981;
+  }
+  
+  .mi-cuenta-container .trans-puntos.redeem {
+    color: #ef4444;
+  }
+  
+  /* Como ganar */
+  .mi-cuenta-container .como-ganar {
+    margin-top: 32px;
+    padding: 24px;
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+    border-radius: 16px;
+    border: 1px solid rgba(209, 0, 125, 0.1);
+  }
+  
+  .mi-cuenta-container .como-ganar h3 {
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    color: #d1007d;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mi-cuenta-container .como-ganar ul {
+    margin: 0;
+    padding-left: 24px;
+  }
+  
+  .mi-cuenta-container .como-ganar li {
+    color: #666;
+    font-size: 14px;
+    line-height: 2;
+  }
+  
+  /* Historial completo */
+  .mi-cuenta-container .transacciones-completo {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .mi-cuenta-container .transaccion-item-full {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+    border-radius: 16px;
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .transaccion-item-full:hover {
+    background: linear-gradient(135deg, #f5f5f5 0%, #f0f0f0 100%);
+  }
+  
+  .mi-cuenta-container .trans-icon-full {
+    width: 56px;
+    height: 56px;
+    background: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+  
+  .mi-cuenta-container .trans-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .mi-cuenta-container .trans-desc {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .mi-cuenta-container .trans-amounts {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .mi-cuenta-container .trans-monto {
+    font-size: 13px;
+    color: #888;
+  }
+  
+  .mi-cuenta-container .trans-puntos-full {
+    font-weight: 700;
+    font-size: 18px;
+  }
+  
+  .mi-cuenta-container .trans-puntos-full.earn {
+    color: #10b981;
+  }
+  
+  .mi-cuenta-container .trans-puntos-full.redeem {
+    color: #ef4444;
+  }
+  
+  /* ============================================================
+     PERFIL
+     ============================================================ */
+  .mi-cuenta-container .tab-perfil h3 {
+    font-size: 1.1rem;
+    color: #333;
+    margin: 0 0 24px 0;
+    font-weight: 700;
+  }
+  
+  .mi-cuenta-container .perfil-info {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  
+  .mi-cuenta-container .perfil-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 20px;
+    background: linear-gradient(135deg, #f9f9f9 0%, #f5f5f5 100%);
+    border-radius: 14px;
+  }
+  
+  .mi-cuenta-container .perfil-label {
+    color: #888;
+    font-size: 14px;
+  }
+  
+  .mi-cuenta-container .perfil-value {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+  }
+  
+  .mi-cuenta-container .perfil-value.activa {
+    color: #10b981;
+  }
+  
+  .mi-cuenta-container .perfil-value.vencida {
+    color: #ef4444;
+  }
+  
+  /* WhatsApp */
+  .mi-cuenta-container .perfil-whatsapp {
+    padding: 24px;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    border-radius: 16px;
+  }
+  
+  .mi-cuenta-container .perfil-whatsapp h4 {
+    margin: 0 0 10px 0;
+    color: #2e7d32;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mi-cuenta-container .perfil-whatsapp p {
+    margin: 0 0 18px 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  .mi-cuenta-container .btn-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #25d366;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+  }
+  
+  .mi-cuenta-container .btn-whatsapp:hover {
+    background: #1eb954;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+  }
+  
+  /* Mi QR Section */
+  .mi-cuenta-container .mi-qr-section {
+    background: linear-gradient(135deg, #1a1a2e 0%, #2d1b4e 100%);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 32px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .mi-cuenta-container .mi-qr-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(209, 0, 125, 0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  
+  .mi-cuenta-container .mi-qr-section h3 {
+    color: white;
+    margin: 0 0 10px 0;
+    font-size: 1.2rem;
+    position: relative;
+  }
+  
+  .mi-cuenta-container .qr-instrucciones {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    margin: 0 0 24px 0;
+    position: relative;
+  }
+  
+  .mi-cuenta-container .qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    position: relative;
+  }
+  
+  .mi-cuenta-container .qr-code-box {
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    display: inline-block;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .mi-cuenta-container .qr-image {
+    width: 180px;
+    height: 180px;
+    display: block;
+  }
+  
+  .mi-cuenta-container .qr-codigo {
+    font-family: 'Courier New', monospace;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #ff006e;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 10px;
+    letter-spacing: 3px;
+  }
+  
+  /* ============================================================
+     PERFIL EDITABLE Y MODALES
+     ============================================================ */
+  
+  /* Perfil editable */
+  .mi-cuenta-container .perfil-info-editable {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  
+  .mi-cuenta-container .perfil-item-editable {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 22px;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .perfil-item-editable:hover {
+    border-color: #e0e0e0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+  
+  .mi-cuenta-container .perfil-item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .mi-cuenta-container .perfil-item-editable .perfil-label {
+    font-size: 12px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  
+  .mi-cuenta-container .perfil-item-editable .perfil-value {
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+  }
+  
+  .mi-cuenta-container .perfil-item-editable .perfil-value.activa {
+    color: #10b981;
+  }
+  
+  .mi-cuenta-container .perfil-item-editable .perfil-value.vencida {
+    color: #ef4444;
+  }
+  
+  .mi-cuenta-container .btn-editar {
+    padding: 10px 18px;
+    border: none;
+    background: linear-gradient(135deg, #f5f5f5 0%, #eeeeee 100%);
+    color: #555;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  
+  .mi-cuenta-container .btn-editar:hover {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    transform: translateY(-1px);
+  }
+  
+  /* ============================================================
+     MODALES
+     ============================================================ */
+  
+  .mi-cuenta-container .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 2000;
+    animation: micuenta-fadeIn 0.2s ease;
+  }
+  
+  @keyframes micuenta-fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .mi-cuenta-container .modal-content {
+    background: white;
+    border-radius: 24px;
+    padding: 36px;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+    animation: micuenta-slideUp 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  @keyframes micuenta-slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .mi-cuenta-container .modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    color: #666;
+  }
+  
+  .mi-cuenta-container .modal-close:hover {
+    background: #eee;
+    color: #333;
+    transform: rotate(90deg);
+  }
+  
+  .mi-cuenta-container .modal-content h2 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    color: #1a1a2e;
+    font-weight: 700;
+  }
+  
+  .mi-cuenta-container .modal-subtitle {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 28px 0;
+  }
+  
+  .mi-cuenta-container .modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  
+  .mi-cuenta-container .modal-form label {
+    font-size: 13px;
+    color: #555;
+    font-weight: 600;
+    margin-bottom: -12px;
+  }
+  
+  .mi-cuenta-container .modal-form input {
+    padding: 16px 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 15px;
+    transition: all 0.2s;
+    color: #333;
+  }
+  
+  .mi-cuenta-container .modal-form input:focus {
+    outline: none;
+    border-color: #d1007d;
+    box-shadow: 0 0 0 4px rgba(209, 0, 125, 0.1);
+  }
+  
+  .mi-cuenta-container .modal-form input.input-disabled {
+    background: #f9f9f9;
+    color: #999;
+    cursor: not-allowed;
+  }
+  
+  .mi-cuenta-container .modal-form input.input-codigo {
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 10px;
+    font-weight: 700;
+    padding: 20px;
+  }
+  
+  .mi-cuenta-container .modal-error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mi-cuenta-container .modal-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 14px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .mi-cuenta-container .btn-modal-primary {
+    padding: 18px;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 8px;
+    box-shadow: 0 4px 15px rgba(209, 0, 125, 0.3);
+  }
+  
+  .mi-cuenta-container .btn-modal-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(209, 0, 125, 0.4);
+  }
+  
+  .mi-cuenta-container .btn-modal-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .mi-cuenta-container .btn-reenviar {
+    padding: 14px;
+    background: transparent;
+    color: #666;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .mi-cuenta-container .btn-reenviar:hover:not(:disabled) {
+    color: #d1007d;
+  }
+  
+  .mi-cuenta-container .btn-reenviar:disabled {
+    color: #bbb;
+    cursor: not-allowed;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 768px) {
+    .mi-cuenta-container .mi-cuenta-header {
+      padding: 0.5rem 1rem;
+    }
+  
+    .mi-cuenta-container .header-container {
+      height: 60px;
+    }
+  
+    .mi-cuenta-container .mi-cuenta-logo img {
+      height: 36px;
+    }
+  
+    .mi-cuenta-container .header-nav {
+      display: none;
+    }
+  
+    .mi-cuenta-container .user-name-header {
+      display: none;
+    }
+  
+    .mi-cuenta-container .user-menu-btn {
+      padding: 4px;
+    }
+  
+    .mi-cuenta-container .menu-arrow {
+      display: none;
+    }
+  
+    .mi-cuenta-container .mi-cuenta-hero {
+      height: 200px;
+    }
+  
+    .mi-cuenta-container .mi-cuenta-main {
+      padding: 0 12px 40px;
+      margin-top: -100px;
+    }
+  
+    .mi-cuenta-container .puntos-card {
+      padding: 24px 20px;
+    }
+  
+    .mi-cuenta-container .puntos-card-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .mi-cuenta-container .puntos-numero {
+      font-size: 3rem;
+    }
+  
+    .mi-cuenta-container .puntos-qr {
+      margin-top: 16px;
+    }
+  
+    .mi-cuenta-container .decoration-icon {
+      font-size: 80px;
+    }
+  
+    .mi-cuenta-container .resumen-stats {
+      grid-template-columns: 1fr;
+    }
+  
+    .mi-cuenta-container .mi-cuenta-tabs {
+      gap: 4px;
+      padding: 6px;
+      margin: 24px 0 20px;
+    }
+  
+    .mi-cuenta-container .tab-btn {
+      padding: 12px 14px;
+      font-size: 13px;
+      flex: 0 0 auto;
+    }
+  
+    .mi-cuenta-container .tab-content {
+      padding: 20px;
+      border-radius: 16px;
+    }
+  
+    .mi-cuenta-container .favoritos-grid,
+    .mi-cuenta-container .creadores-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .mi-cuenta-container .transaccion-item-full {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .mi-cuenta-container .trans-amounts {
+      text-align: left;
+      flex-direction: row;
+      gap: 12px;
+      align-items: center;
+    }
+  
+    .mi-cuenta-container .perfil-item {
+      flex-direction: column;
+      gap: 4px;
+    }
+  
+    .mi-cuenta-container .creador-link {
+      flex-direction: column;
+      text-align: center;
+    }
+  
+    .mi-cuenta-container .user-dropdown {
+      right: -10px;
+    }
+  
+    .mi-cuenta-container .modal-content {
+      padding: 28px;
+      border-radius: 20px;
+    }
+  
+    .mi-cuenta-container .modal-content h2 {
+      font-size: 1.3rem;
+    }
+  
+    .mi-cuenta-container .perfil-item-editable {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+  
+    .mi-cuenta-container .btn-editar {
+      width: 100%;
+      text-align: center;
+    }
+  }

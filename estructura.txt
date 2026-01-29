@@ -1,0 +1,109 @@
+src/
+├── app
+│   ├── admin
+│   │   ├── admin.css
+│   │   ├── components
+│   │   ├── negocio
+│   │   └── page.tsx
+│   ├── afiliar-negocio
+│   │   ├── afiliar.css
+│   │   └── page.tsx
+│   ├── blog
+│   │   ├── [slug]
+│   │   ├── blog.css
+│   │   └── page.tsx
+│   ├── checkout
+│   │   ├── checkout.css
+│   │   └── page.tsx
+│   ├── comercios
+│   │   └── dashboard
+│   ├── contacto
+│   │   ├── contacto.css
+│   │   └── page.tsx
+│   ├── creadores
+│   │   ├── creadores.css
+│   │   └── page.tsx
+│   ├── faq
+│   │   ├── faq.css
+│   │   └── page.tsx
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── landing.css
+│   ├── layout.tsx
+│   ├── login
+│   │   ├── login.css
+│   │   └── page.tsx
+│   ├── login-usuario
+│   │   ├── login-usuario.css
+│   │   └── page.tsx
+│   ├── mi-cuenta
+│   │   ├── mi-cuenta.css
+│   │   └── page.tsx
+│   ├── mis-favoritos
+│   │   ├── mis-favoritos.css
+│   │   └── page.tsx
+│   ├── nosotros
+│   │   ├── nosotros.css
+│   │   └── page.tsx
+│   ├── page.tsx
+│   ├── profile
+│   │   └── [username]
+│   ├── recuperar-password
+│   │   ├── page.tsx
+│   │   └── recuperar-password.css
+│   ├── recuperar-password-usuario
+│   │   ├── page.tsx
+│   │   └── recuperar-password.css
+│   ├── registrarse
+│   │   ├── page.tsx
+│   │   └── registro-usuario.css
+│   ├── registro
+│   │   ├── page.tsx
+│   │   └── registro.css
+│   ├── registro-usuario
+│   │   ├── page.tsx
+│   │   └── registro-usuario.css
+│   ├── reset-password
+│   │   ├── page.tsx
+│   │   └── reset-password.css
+│   ├── suscripcion
+│   │   ├── page.tsx
+│   │   └── suscripcion.css
+│   ├── terminos-comercio
+│   │   └── page.tsx
+│   ├── terminos-usuarios
+│   │   ├── page.tsx
+│   │   └── terminos.css
+│   └── usuario
+│       ├── page.tsx
+│       └── usuario.css
+├── components
+│   ├── CloudinaryUploadWidget.tsx
+│   ├── CreadorSelector.css
+│   ├── CreadorSelector.tsx
+│   ├── formulario-completo.css
+│   ├── FormularioCompletoNegocio.tsx
+│   ├── FormularioNegocio.css
+│   ├── FormularioNegocio.tsx
+│   ├── GooglePlacesAutocomplete.tsx
+│   ├── HeaderPublico.css
+│   ├── HeaderPublico.tsx
+│   ├── historial-ventas.css
+│   ├── HistorialVentas.tsx
+│   ├── ImageUploadManager.css
+│   ├── ImageUploadManager.tsx
+│   ├── MapaNegocio.tsx
+│   ├── MapaUsuario.tsx
+│   ├── registrar-venta.css
+│   ├── RegistrarVenta.tsx
+│   ├── restaurant
+│   ├── SoftBlocking.tsx
+│   ├── SplashScreen.tsx
+│   ├── vista-preview-comercio.css
+│   └── VistaPreviewComercio.tsx
+├── lib
+│   └── api.ts
+└── types
+    └── restaurant.ts
+
+35 directories, 72 files

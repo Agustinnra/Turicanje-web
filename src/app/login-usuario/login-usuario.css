@@ -1,0 +1,282 @@
+/* ============================================================
+   LOGIN USUARIO - ESTILOS
+   ============================================================ */
+
+   .login-usuario-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+  }
+  
+  .login-usuario-card {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Header */
+  .login-usuario-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .login-usuario-logo {
+    display: inline-block;
+    margin-bottom: 24px;
+  }
+  
+  .login-usuario-header h1 {
+    color: #1a1a2e;
+    font-size: 1.6rem;
+    margin: 0 0 8px 0;
+  }
+  
+  .login-usuario-header p {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+  
+  /* Redirect notice */
+  .login-redirect-notice {
+    background: #e3f2fd;
+    color: #1565c0;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Error */
+  .login-usuario-error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Form */
+  .login-usuario-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .form-group input {
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #333;
+    background: #fff;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #d1007d;
+    box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.1);
+  }
+  
+  .form-group input::placeholder {
+    color: #aaa;
+  }
+  
+  /* Password toggle */
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .password-input-wrapper input {
+    flex: 1;
+    padding-right: 50px;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  
+  .toggle-password:hover {
+    opacity: 1;
+  }
+  
+  /* Forgot password */
+  .forgot-password-link {
+    text-align: right;
+    font-size: 13px;
+    color: #d1007d;
+    text-decoration: none;
+    margin-top: -10px;
+  }
+  
+  .forgot-password-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Button */
+  .btn-login-usuario {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .btn-login-usuario:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(209, 0, 125, 0.4);
+  }
+  
+  .btn-login-usuario:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Footer */
+  .login-usuario-footer {
+    text-align: center;
+    margin-top: 24px;
+  }
+  
+  .login-usuario-footer p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .login-usuario-footer a {
+    color: #d1007d;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .login-usuario-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Divider */
+  .login-usuario-divider {
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+  }
+  
+  .login-usuario-divider::before,
+  .login-usuario-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e0e0e0;
+  }
+  
+  .login-usuario-divider span {
+    padding: 0 16px;
+    color: #999;
+    font-size: 13px;
+  }
+  
+  /* Botón comercio */
+  .btn-login-comercio {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border: 2px solid #1a1a2e;
+    border-radius: 10px;
+    color: #1a1a2e;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  
+  .btn-login-comercio:hover {
+    background: #1a1a2e;
+    color: white;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 480px) {
+    .login-usuario-container {
+      padding: 20px 16px;
+      align-items: flex-start;
+      padding-top: 60px;
+    }
+  
+    .login-usuario-card {
+      padding: 30px 24px;
+      border-radius: 16px;
+    }
+  
+    .login-usuario-header h1 {
+      font-size: 1.4rem;
+    }
+  
+    .form-group input {
+      padding: 12px 14px;
+      font-size: 16px;
+    }
+  }

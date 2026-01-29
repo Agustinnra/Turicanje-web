@@ -1,0 +1,673 @@
+/* ============================================================
+   CONTACTO - ESTILOS TURICANJE
+   Header unificado + diseño mejorado
+   ============================================================ */
+
+/* Variables */
+:root {
+  --turicanje-black: #0a0a0a;
+  --turicanje-dark: #1a1a2e;
+  --turicanje-magenta: #d1007d;
+  --turicanje-magenta-light: #ff006e;
+  --turicanje-purple: #6b3fa0;
+  --turicanje-white: #ffffff;
+}
+
+.contacto-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--turicanje-black);
+  color: var(--turicanje-white);
+}
+
+/* ============================================================
+   HEADER - IGUAL AL LANDING
+   ============================================================ */
+.contacto-container .contacto-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5), transparent);
+  padding: 0.75rem 2rem;
+}
+
+.contacto-container .header-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+.contacto-container .header-logo img {
+  height: 50px;
+  width: auto;
+}
+
+.contacto-container .header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.contacto-container .nav-link {
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(107, 63, 160, 0.3);
+  border: 1px solid rgba(107, 63, 160, 0.5);
+  transition: all 0.2s;
+}
+
+.contacto-container .nav-link:first-child {
+  border-radius: 8px 0 0 8px;
+}
+
+.contacto-container .nav-link:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.contacto-container .nav-link:hover {
+  background-color: rgba(107, 63, 160, 0.6);
+}
+
+.contacto-container .nav-link.active {
+  background-color: rgba(107, 63, 160, 0.6);
+  border-color: rgba(107, 63, 160, 0.8);
+}
+
+/* User menu / Login button */
+.contacto-container .header-user-menu {
+  position: relative;
+}
+
+.contacto-container .btn-login {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  transition: opacity 0.2s;
+}
+
+.contacto-container .btn-login:hover {
+  opacity: 0.8;
+}
+
+.contacto-container .user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.contacto-container .user-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.contacto-container .user-avatar-header {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d1007d 0%, #6b3fa0 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.contacto-container .user-name-header {
+  font-size: 14px;
+  font-weight: 500;
+  color: white;
+}
+
+.contacto-container .menu-arrow {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s;
+}
+
+.contacto-container .menu-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* Dropdown */
+.contacto-container .user-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white !important;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  overflow: hidden;
+  z-index: 1000;
+  animation: contacto-dropdownFade 0.2s ease;
+}
+
+@keyframes contacto-dropdownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contacto-container .dropdown-header {
+  padding: 16px;
+  background: #f9f9f9 !important;
+}
+
+.contacto-container .dropdown-name {
+  display: block;
+  font-weight: 600;
+  color: #333 !important;
+  font-size: 14px;
+}
+
+.contacto-container .dropdown-email {
+  display: block;
+  font-size: 12px;
+  color: #666 !important;
+  margin-top: 2px;
+}
+
+.contacto-container .dropdown-divider {
+  height: 1px;
+  background: #eee;
+}
+
+.contacto-container .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: #333 !important;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.2s;
+  border: none;
+  background: white !important;
+  width: 100%;
+  cursor: pointer;
+  text-align: left;
+}
+
+.contacto-container .dropdown-item:hover {
+  background: #f5f5f5 !important;
+}
+
+.contacto-container .dropdown-item.logout {
+  color: #c62828 !important;
+}
+
+.contacto-container .dropdown-item.logout:hover {
+  background: #ffebee !important;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.contacto-hero {
+  padding: 160px 5% 80px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--turicanje-magenta) 0%, var(--turicanje-purple) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.contacto-hero::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.contacto-hero .hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.contacto-title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--turicanje-white);
+}
+
+.contacto-subtitle {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   MAIN CONTENT
+   ============================================================ */
+.contacto-main {
+  padding: 5rem 5%;
+  background: var(--turicanje-dark);
+}
+
+.contacto-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   INFO SECTION
+   ============================================================ */
+.contacto-info {
+  padding: 2rem;
+}
+
+.contacto-info h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--turicanje-white);
+}
+
+.info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+  min-width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(209, 0, 125, 0.2) 0%, rgba(107, 63, 160, 0.2) 100%);
+  border: 1px solid rgba(209, 0, 125, 0.3);
+  border-radius: 12px;
+}
+
+.info-item h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--turicanje-white);
+  margin-bottom: 0.25rem;
+}
+
+.info-item p,
+.info-item a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.info-item a:hover {
+  color: var(--turicanje-magenta-light);
+}
+
+/* ============================================================
+   SOCIAL LINKS - BOLITAS CIRCULARES
+   ============================================================ */
+.social-links {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.social-links h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1.25rem;
+  color: var(--turicanje-white);
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+}
+
+.social-icons a {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--turicanje-white);
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  transform: translateY(-4px) scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Instagram */
+.social-icons a.instagram:hover {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  border-color: transparent;
+}
+
+/* TikTok */
+.social-icons a.tiktok:hover {
+  background: #000000;
+  border-color: #00f2ea;
+  box-shadow: 0 8px 20px rgba(0, 242, 234, 0.3);
+}
+
+/* WhatsApp */
+.social-icons a.whatsapp:hover {
+  background: #25d366;
+  border-color: transparent;
+}
+
+/* Facebook */
+.social-icons a.facebook:hover {
+  background: #1877f2;
+  border-color: transparent;
+}
+
+/* Twitter/X */
+.social-icons a.twitter:hover {
+  background: #000000;
+  border-color: #fff;
+}
+
+/* SVG icons inside social buttons */
+.social-icons a svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+/* ============================================================
+   FORM CONTAINER
+   ============================================================ */
+.contacto-form-container {
+  background: var(--turicanje-black);
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contacto-form-container h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--turicanje-white);
+}
+
+.contacto-form .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.contacto-form label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--turicanje-white);
+  margin-bottom: 0.5rem;
+}
+
+.contacto-form input,
+.contacto-form select,
+.contacto-form textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  font-size: 1rem;
+  background: var(--turicanje-dark);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: var(--turicanje-white);
+  transition: all 0.2s;
+}
+
+.contacto-form input:focus,
+.contacto-form select:focus,
+.contacto-form textarea:focus {
+  outline: none;
+  border-color: var(--turicanje-magenta);
+  box-shadow: 0 0 0 4px rgba(209, 0, 125, 0.15);
+}
+
+.contacto-form input::placeholder,
+.contacto-form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.contacto-form select option {
+  background: var(--turicanje-dark);
+  color: var(--turicanje-white);
+}
+
+.contacto-form textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.contacto-form .submit-btn {
+  width: 100%;
+  padding: 1.1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--turicanje-white);
+  background: linear-gradient(135deg, var(--turicanje-magenta), var(--turicanje-purple));
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 1rem;
+  box-shadow: 0 4px 15px rgba(209, 0, 125, 0.3);
+}
+
+.contacto-form .submit-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(209, 0, 125, 0.4);
+}
+
+.contacto-form .submit-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   MESSAGES
+   ============================================================ */
+.error-message {
+  background: rgba(185, 28, 28, 0.2);
+  border: 1px solid rgba(185, 28, 28, 0.4);
+  color: #fca5a5;
+  padding: 1rem 1.25rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.success-message {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-radius: 50%;
+  font-size: 1.75rem;
+  color: white;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.success-message h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--turicanje-white);
+}
+
+.success-message p {
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2rem;
+}
+
+.new-message-btn {
+  padding: 0.875rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--turicanje-magenta);
+  background: transparent;
+  border: 2px solid var(--turicanje-magenta);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.new-message-btn:hover {
+  background: var(--turicanje-magenta);
+  color: var(--turicanje-white);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.contacto-footer {
+  background: var(--turicanje-black);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2rem 5%;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footer-logo img {
+  height: 35px;
+  width: auto;
+}
+
+.contacto-footer p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 1024px) {
+  .contacto-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .contacto-info {
+    order: 2;
+  }
+  
+  .contacto-form-container {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .contacto-container .contacto-header {
+    padding: 0.5rem 1rem;
+  }
+
+  .contacto-container .header-container {
+    height: 60px;
+  }
+
+  .contacto-container .header-logo img {
+    height: 36px;
+  }
+
+  .contacto-container .header-nav {
+    display: none;
+  }
+
+  .contacto-container .user-name-header {
+    display: none;
+  }
+
+  .contacto-container .user-menu-btn {
+    padding: 4px;
+  }
+
+  .contacto-container .menu-arrow {
+    display: none;
+  }
+
+  .contacto-hero {
+    padding: 120px 5% 60px;
+  }
+
+  .contacto-title {
+    font-size: 2.25rem;
+  }
+
+  .contacto-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .contacto-main {
+    padding: 3rem 5%;
+  }
+
+  .contacto-form-container {
+    padding: 1.5rem;
+  }
+
+  .social-icons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .social-icons a {
+    width: 44px;
+    height: 44px;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+}

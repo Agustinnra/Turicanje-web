@@ -1,0 +1,404 @@
+/* ESTILOS FORMULARIO NEGOCIO */
+
+.formulario-negocio {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mensaje-error, .mensaje-success {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 600;
+  }
+  
+  .mensaje-error {
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    color: #cc0000;
+  }
+  
+  .mensaje-success {
+    background: #e8f5e9;
+    border: 1px solid #81c784;
+    color: #2e7d32;
+  }
+  
+  /* SECCIONES */
+  .seccion-form {
+    border: 2px solid #ffeef8;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .seccion-header {
+    background: linear-gradient(135deg, #ffeef8 0%, #fff 100%);
+    padding: 15px 20px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s ease;
+  }
+  
+  .seccion-header:hover {
+    background: linear-gradient(135deg, #ffd9f0 0%, #ffeef8 100%);
+  }
+  
+  .seccion-header h3 {
+    margin: 0;
+    color: #d1007d;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .obligatorio-badge {
+    background: #d1007d;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  
+  .toggle-icon {
+    color: #d1007d;
+    font-weight: bold;
+    transition: transform 0.2s ease;
+  }
+  
+  .seccion-content {
+    padding: 20px;
+    animation: slideDown 0.3s ease;
+  }
+  
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .seccion-info {
+    color: #666;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+  }
+  
+  /* FORM FIELDS */
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.95rem;
+  }
+  
+  .required {
+    color: #d1007d;
+  }
+  
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    color: #000;
+    font-weight: 500;
+    font-family: inherit;
+  }
+  
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: #d1007d;
+    box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.1);
+  }
+  
+  .form-group small {
+    display: block;
+    color: #999;
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+  
+  /* HORARIOS GRID */
+  .horarios-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .horario-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .dia-label {
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .horario-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .horario-inputs input {
+    flex: 1;
+  }
+  
+  .horario-inputs span {
+    color: #666;
+    font-weight: 500;
+  }
+  
+  /* CHECKBOXES */
+  .checkboxes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+  }
+  
+  .checkbox-label:hover {
+    border-color: #d1007d;
+    background: #ffeef8;
+  }
+  
+  .checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #d1007d;
+  }
+  
+  /* BOTÓN GUARDAR */
+  .form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #ffeef8;
+  }
+  
+  .btn-guardar {
+    width: 100%;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    padding: 16px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-guardar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(209, 0, 125, 0.3);
+  }
+  
+  .btn-guardar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .formulario-negocio {
+      padding: 20px;
+    }
+  
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+  
+    .horario-row {
+      grid-template-columns: 1fr;
+    }
+  
+    .horario-inputs {
+      flex-direction: column;
+    }
+  
+    .checkboxes-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .seccion-header h3 {
+      font-size: 1rem;
+    }
+  }
+
+
+
+
+/* BOTÓN CLOUDINARY UPLOAD */
+.btn-upload-cloudinary {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  
+  .btn-upload-cloudinary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(209, 0, 125, 0.3);
+  }
+  
+  /* PREVIEW DE IMÁGENES */
+  .image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .image-preview-item {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid #e0e0e0;
+  }
+  
+  .image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .image-preview-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    background: rgba(255, 0, 0, 0.8);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .image-preview-remove:hover {
+    background: rgba(255, 0, 0, 1);
+  }
+  
+  /* CAMPO TEXTO HORARIO */
+  .texto-horario-ejemplo {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  
+  /* TOAST NOTIFICATIONS CLOUDINARY */
+  .cloudinary-toast {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease;
+    z-index: 10000;
+  }
+  
+  .cloudinary-toast.success {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+  }
+  
+  .cloudinary-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* CONTADOR DE IMÁGENES */
+  .image-count-badge {
+    display: inline-block;
+    background: #d1007d;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-left: 10px;
+  }
+  
+  /* CORRECCIONES DE COLOR - INPUTS Y CHECKBOXES MÁS VISIBLES */
+  .form-group input[type="time"] {
+    color: #000 !important;
+    font-weight: 500 !important;
+  }
+  
+  .checkbox-label {
+    color: #000 !important;
+  }
+  
+  .checkbox-label span {
+    color: #000 !important;
+    font-weight: 500 !important;
+  }
+  
+  .dia-label {
+    color: #333 !important;
+    font-weight: 600 !important;
+  }

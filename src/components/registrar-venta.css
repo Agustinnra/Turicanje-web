@@ -1,0 +1,807 @@
+/* ============================================================
+   REGISTRAR VENTA - ESTILOS COMPLETOS
+   Con Scanner QR, Saldo de Puntos, Alertas y CANJE DE PUNTOS
+   ============================================================ */
+
+   .registrar-venta-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+  }
+  
+  /* ============================================================
+     SALDO DEL COMERCIO
+     ============================================================ */
+  .saldo-comercio-card {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    color: white;
+  }
+  
+  .saldo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .saldo-label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .saldo-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .saldo-badge.normal { background: rgba(40, 167, 69, 0.2); color: #4ade80; }
+  .saldo-badge.info { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+  .saldo-badge.advertencia { background: rgba(234, 179, 8, 0.2); color: #fde047; }
+  .saldo-badge.urgente { background: rgba(249, 115, 22, 0.2); color: #fdba74; }
+  .saldo-badge.critico { background: rgba(239, 68, 68, 0.2); color: #fca5a5; }
+  .saldo-badge.bloqueado { background: rgba(239, 68, 68, 0.3); color: #fecaca; }
+  
+  .saldo-amount {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .saldo-numero {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .saldo-unit {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+  
+  .saldo-mensaje {
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  
+  .saldo-mensaje.normal { display: none; }
+  .saldo-mensaje.info { background: rgba(59, 130, 246, 0.15); color: #93c5fd; }
+  .saldo-mensaje.advertencia { background: rgba(234, 179, 8, 0.15); color: #fde047; }
+  .saldo-mensaje.urgente { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+  .saldo-mensaje.critico { background: rgba(239, 68, 68, 0.15); color: #fca5a5; }
+  .saldo-mensaje.bloqueado { background: rgba(239, 68, 68, 0.2); color: #fecaca; }
+  
+  .btn-recargar {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-recargar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(209, 0, 125, 0.3);
+  }
+
+  /* ============================================================
+     TOGGLE DAR / CANJEAR PUNTOS
+     ============================================================ */
+  .modo-toggle {
+    display: flex;
+    gap: 8px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 8px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+  }
+
+  .modo-btn {
+    flex: 1;
+    padding: 16px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .modo-btn.active {
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(209, 0, 125, 0.4);
+  }
+
+  .modo-btn.canjear.active {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+  }
+
+  .modo-btn:hover:not(.active) {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  /* ============================================================
+     ALERTA POST-OPERACIÓN
+     ============================================================ */
+  .alerta-comercio {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+  
+  .alerta-comercio.info { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+  .alerta-comercio.advertencia { background: #fefce8; color: #a16207; border: 1px solid #fde047; }
+  .alerta-comercio.urgente { background: #fff7ed; color: #c2410c; border: 1px solid #fdba74; }
+  .alerta-comercio.critico { background: #fef2f2; color: #dc2626; border: 1px solid #fca5a5; }
+  .alerta-comercio.bloqueado { background: #fef2f2; color: #b91c1c; border: 1px solid #f87171; }
+  
+  .alerta-icono {
+    font-size: 24px;
+  }
+  
+  .alerta-texto {
+    flex: 1;
+    font-weight: 500;
+  }
+  
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .registrar-venta-header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding: 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .registrar-venta-header h2 {
+    margin: 0 0 8px 0;
+    font-size: 24px;
+    color: #1a1a2e;
+  }
+  
+  .registrar-venta-header p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+  }
+  
+  /* ============================================================
+     RESULTADO EXITOSO
+     ============================================================ */
+  .resultado-exito {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 1px solid #28a745;
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+
+  .resultado-exito.resultado-canje {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-color: #10b981;
+  }
+  
+  .resultado-icon {
+    font-size: 56px;
+    margin-bottom: 16px;
+  }
+  
+  .resultado-info h3 {
+    margin: 0 0 12px 0;
+    color: #155724;
+    font-size: 22px;
+  }
+  
+  .resultado-info p {
+    margin: 6px 0;
+    color: #155724;
+    font-size: 15px;
+  }
+  
+  .resultado-info strong {
+    font-size: 20px;
+  }
+  
+  .btn-nueva-venta {
+    margin-top: 24px;
+    padding: 14px 28px;
+    background: #28a745;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-nueva-venta:hover {
+    background: #218838;
+    transform: translateY(-2px);
+  }
+  
+  /* ============================================================
+     FORMULARIO
+     ============================================================ */
+  .registrar-venta-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Tipo de búsqueda */
+  .tipo-busqueda {
+    display: flex;
+    gap: 8px;
+    background: #f5f5f5;
+    padding: 6px;
+    border-radius: 12px;
+  }
+  
+  .tipo-btn {
+    flex: 1;
+    padding: 14px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .tipo-btn.active {
+    background: white;
+    color: #d1007d;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .tipo-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+  }
+  
+  /* ============================================================
+     SCANNER QR
+     ============================================================ */
+  .scanner-section {
+    margin-bottom: 8px;
+  }
+  
+  .scanner-placeholder {
+    text-align: center;
+    padding: 24px;
+    background: #f9fafb;
+    border: 2px dashed #d1d5db;
+    border-radius: 12px;
+  }
+  
+  .btn-activar-camara {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  
+  .btn-activar-camara:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 26, 46, 0.3);
+  }
+  
+  .scanner-hint {
+    color: #666;
+    font-size: 13px;
+    margin: 0;
+  }
+  
+  .scanner-error {
+    margin-top: 12px;
+    padding: 12px;
+    background: #fee2e2;
+    color: #dc2626;
+    border-radius: 8px;
+    font-size: 13px;
+  }
+  
+  /* Scanner activo */
+  .scanner-activo {
+    text-align: center;
+  }
+  
+  .scanner-video-container {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto 16px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 1;
+  }
+  
+  .scanner-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  
+  .scanner-frame {
+    width: 200px;
+    height: 200px;
+    border: 3px solid #d1007d;
+    border-radius: 16px;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+    animation: pulse-frame 2s infinite;
+  }
+  
+  @keyframes pulse-frame {
+    0%, 100% { 
+      border-color: #d1007d;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 20px rgba(209, 0, 125, 0.5);
+    }
+    50% { 
+      border-color: #ff006e;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 0, 110, 0.7);
+    }
+  }
+  
+  .scanner-scanning {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 12px 0;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  
+  .btn-detener-camara {
+    padding: 10px 20px;
+    background: #f5f5f5;
+    color: #666;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-detener-camara:hover {
+    background: #e5e5e5;
+    color: #333;
+  }
+  
+  /* ============================================================
+     FORM GROUPS
+     ============================================================ */
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .form-group input {
+    padding: 14px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #d1007d;
+    box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.1);
+  }
+  
+  .form-group input:disabled {
+    background: #f9fafb;
+    color: #9ca3af;
+  }
+  
+  .form-group input.input-success {
+    border-color: #28a745;
+    background: #f0fff4;
+  }
+  
+  /* Input con status */
+  .input-with-status {
+    position: relative;
+  }
+  
+  .input-with-status input {
+    width: 100%;
+    padding-right: 50px;
+  }
+  
+  .input-status {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+  }
+  
+  .input-status.buscando {
+    animation: pulse 1s infinite;
+  }
+  
+  .input-status.encontrado {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  /* Input monto */
+  .input-monto {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .monto-prefix {
+    position: absolute;
+    left: 16px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #666;
+  }
+  
+  .input-monto input {
+    width: 100%;
+    padding-left: 40px;
+    font-size: 22px;
+    font-weight: 600;
+  }
+
+  /* Input puntos (canje) */
+  .input-puntos .monto-prefix {
+    font-size: 24px;
+  }
+  
+  /* ============================================================
+     USUARIO ENCONTRADO
+     ============================================================ */
+  .usuario-encontrado {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 2px solid #0ea5e9;
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .usuario-encontrado.modo-canje {
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border-color: #10b981;
+  }
+  
+  .usuario-avatar {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .modo-canje .usuario-avatar {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  }
+  
+  .usuario-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .usuario-nombre {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1a1a2e;
+  }
+  
+  .usuario-puntos {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .usuario-badge {
+    background: #28a745;
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ============================================================
+     CANJE RÁPIDO (botones de cantidad)
+     ============================================================ */
+  .canje-rapido {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .canje-rapido > span {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+  }
+
+  .canje-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .canje-btns button {
+    padding: 10px 16px;
+    background: #f3f4f6;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .canje-btns button:hover {
+    background: #e5e7eb;
+    border-color: #d1d5db;
+  }
+
+  .canje-btns button.active {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+    border-color: #059669;
+    color: white;
+  }
+  
+  /* ============================================================
+     MENSAJES
+     ============================================================ */
+  .mensaje {
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .mensaje.error {
+    background: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+  }
+  
+  .mensaje.success {
+    background: #d1fae5;
+    color: #059669;
+    border: 1px solid #6ee7b7;
+  }
+  
+  .mensaje.warning {
+    background: #fef3c7;
+    color: #d97706;
+    border: 1px solid #fcd34d;
+  }
+  
+  /* ============================================================
+     BOTÓN REGISTRAR / CANJEAR
+     ============================================================ */
+  .btn-registrar {
+    padding: 18px 24px;
+    background: linear-gradient(135deg, #d1007d 0%, #ff006e 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .btn-registrar.btn-canjear {
+    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  }
+  
+  .btn-registrar:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(209, 0, 125, 0.3);
+  }
+
+  .btn-registrar.btn-canjear:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.3);
+  }
+  
+  .btn-registrar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    background: #9ca3af;
+  }
+  
+  .spinner {
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* ============================================================
+     INSTRUCCIONES
+     ============================================================ */
+  .instrucciones {
+    margin-top: 24px;
+    padding: 24px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .instrucciones h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    color: #1a1a2e;
+  }
+  
+  .instrucciones ol {
+    margin: 0;
+    padding-left: 24px;
+    color: #666;
+    font-size: 14px;
+    line-height: 2;
+  }
+  
+  .instrucciones li {
+    margin-bottom: 4px;
+  }
+  
+  .instrucciones strong {
+    color: #1a1a2e;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 600px) {
+    .registrar-venta-container {
+      padding: 0 16px;
+    }
+  
+    .saldo-numero {
+      font-size: 36px;
+    }
+
+    .modo-toggle {
+      padding: 6px;
+    }
+
+    .modo-btn {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+  
+    .registrar-venta-header,
+    .registrar-venta-form,
+    .instrucciones {
+      padding: 20px;
+    }
+  
+    .registrar-venta-header h2 {
+      font-size: 20px;
+    }
+  
+    .usuario-encontrado {
+      flex-wrap: wrap;
+    }
+  
+    .usuario-badge {
+      width: 100%;
+      text-align: center;
+      margin-top: 8px;
+    }
+  
+    .scanner-video-container {
+      max-width: 100%;
+    }
+  
+    .scanner-frame {
+      width: 160px;
+      height: 160px;
+    }
+  
+    .btn-activar-camara {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 15px;
+    }
+
+    .canje-btns {
+      justify-content: center;
+    }
+
+    .canje-btns button {
+      flex: 1;
+      min-width: 70px;
+    }
+  }

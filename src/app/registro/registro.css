@@ -1,0 +1,426 @@
+/* ============================================================
+   PÁGINA DE REGISTRO CON CÓDIGO - ESTILOS
+   ============================================================ */
+
+   .registro-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+  }
+  
+  .registro-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 450px;
+    padding: 32px;
+    animation: slideUp 0.4s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* ============================================================
+     HEADER
+     ============================================================ */
+  .registro-header {
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  
+  .registro-header h1 {
+    font-size: 28px;
+    color: #1a1a2e;
+    margin: 0 0 8px;
+  }
+  
+  .registro-header p {
+    color: #64748b;
+    font-size: 15px;
+    margin: 0;
+  }
+  
+  /* ============================================================
+     MENSAJES
+     ============================================================ */
+  .mensaje {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .mensaje span {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  
+  .mensaje p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  
+  .mensaje.exito {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .mensaje.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  /* ============================================================
+     SECCIÓN DE CÓDIGO
+     ============================================================ */
+  .codigo-section {
+    text-align: center;
+  }
+  
+  .codigo-section h2 {
+    font-size: 20px;
+    color: #1a1a2e;
+    margin: 0 0 8px;
+  }
+  
+  .codigo-instruccion {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+  
+  .codigo-input-wrapper {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .codigo-input {
+    flex: 1;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #667eea;
+    transition: border-color 0.2s;
+  }
+  
+  .codigo-input:focus {
+    outline: none;
+    border-color: #667eea;
+  }
+  
+  .codigo-input::placeholder {
+    color: #cbd5e1;
+    font-weight: 400;
+  }
+  
+  .btn-verificar {
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  
+  .btn-verificar:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-verificar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .codigo-ayuda {
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .codigo-ayuda p {
+    color: #94a3b8;
+    font-size: 13px;
+    margin: 0 0 4px;
+  }
+  
+  .codigo-ayuda a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .codigo-ayuda a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ============================================================
+     PREVIEW DEL NEGOCIO
+     ============================================================ */
+  .negocio-preview {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .negocio-preview-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #166534;
+  }
+  
+  .check-icon {
+    font-size: 18px;
+  }
+  
+  .negocio-preview-content {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  
+  .negocio-imagen {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+  
+  .negocio-datos {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .negocio-datos h3 {
+    margin: 0 0 4px;
+    font-size: 16px;
+    color: #1a1a2e;
+    font-weight: 700;
+  }
+  
+  .negocio-categoria {
+    margin: 0 0 4px;
+    font-size: 13px;
+    color: #667eea;
+    font-weight: 600;
+  }
+  
+  .negocio-direccion {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  /* ============================================================
+     FORMULARIO
+     ============================================================ */
+  .registro-form h2 {
+    font-size: 18px;
+    color: #1a1a2e;
+    margin: 0 0 16px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 6px;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1a1a2e;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+  }
+  
+  .form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+  }
+  
+  .form-group input::placeholder {
+    color: #9ca3af;
+  }
+
+  /* Password toggle */
+  .password-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .password-input-wrapper input {
+    flex: 1;
+    padding-right: 50px;
+  }
+
+  .btn-toggle-password {
+    position: absolute;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 8px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+
+  .btn-toggle-password:hover {
+    opacity: 1;
+  }
+  
+  /* ============================================================
+     BOTONES
+     ============================================================ */
+  .btn-registrar {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+  
+  .btn-registrar:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-registrar:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .btn-cambiar-codigo {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: #64748b;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 12px;
+  }
+  
+  .btn-cambiar-codigo:hover {
+    color: #667eea;
+    text-decoration: underline;
+  }
+  
+  /* ============================================================
+     FOOTER
+     ============================================================ */
+  .registro-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
+  }
+  
+  .registro-footer p {
+    color: #64748b;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .registro-footer a {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  
+  .registro-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ============================================================
+     RESPONSIVE
+     ============================================================ */
+  @media (max-width: 480px) {
+    .registro-container {
+      padding: 16px;
+    }
+    
+    .registro-card {
+      padding: 24px;
+    }
+    
+    .registro-header h1 {
+      font-size: 24px;
+    }
+    
+    .codigo-input-wrapper {
+      flex-direction: column;
+    }
+    
+    .codigo-input {
+      font-size: 16px;
+    }
+    
+    .btn-verificar {
+      width: 100%;
+    }
+    
+    .negocio-preview-content {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .negocio-direccion {
+      white-space: normal;
+    }
+  }
