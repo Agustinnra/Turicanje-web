@@ -1,6 +1,6 @@
 import { Restaurant } from '@/types/restaurant';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
 export async function getRestaurants(): Promise<Restaurant[]> {
   const response = await fetch(`${API_URL}/api/restaurants`, {
