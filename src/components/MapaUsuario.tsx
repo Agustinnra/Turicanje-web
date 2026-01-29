@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { GoogleMap, Marker, InfoWindow, useJsApiLoader } from '@react-google-maps/api';
 
 const LIBRARIES: ("places")[] = ['places'];
@@ -100,9 +100,10 @@ interface MapaUsuarioProps {
   negocios: any[];
   posicionUsuario: { lat: number; lng: number } | null;
   onUbicacionActualizada?: (pos: { lat: number; lng: number }) => void;
+  centerTrigger?: number;
 }
 
-export default function MapaUsuario({ negocios, posicionUsuario, onUbicacionActualizada }: MapaUsuarioProps) {
+export default function MapaUsuario({ negocios, posicionUsuario, onUbicacionActualizada, centerTrigger }: MapaUsuarioProps) {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
     libraries: LIBRARIES,
@@ -110,6 +111,14 @@ export default function MapaUsuario({ negocios, posicionUsuario, onUbicacionActu
 
   const mapRef = useRef<google.maps.Map | null>(null);
   const [negocioSeleccionado, setNegocioSeleccionado] = useState<any>(null);
+
+  // Centrar mapa cuando se hace click en "Mi ubicacion"
+  useEffect(() => {
+    if (mapRef.current && posicionUsuario && centerTrigger) {
+      mapRef.current.panTo(posicionUsuario);
+      mapRef.current.setZoom(15);
+    }
+  }, [centerTrigger, posicionUsuario]);
 
   const handleMapLoad = (map: google.maps.Map) => {
     if (mapRef.current) return;

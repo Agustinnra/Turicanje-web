@@ -22,6 +22,7 @@ export default function FloatingButtons({
   const [negocios, setNegocios] = useState<any[]>([]);
   const [posicionUsuario, setPosicionUsuario] = useState<{ lat: number; lng: number } | null>(null);
   const [loading, setLoading] = useState(false);
+  const [centerTrigger, setCenterTrigger] = useState(0);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
@@ -96,14 +97,14 @@ export default function FloatingButtons({
   return (
     <>
       <div className="floating-buttons">
-      <button 
-        className="floating-btn map-btn"
-        onClick={handleMapClick}
-        aria-label="Ver mapa de restaurantes"
-      >
-        <img src="/icons/Turity.png" alt="" style={{ width: '24px', height: '24px', marginRight: '8px' }} />
-        <span className="btn-label">Encuentra algo cerca de ti...</span>
-      </button>
+        <button 
+          className="floating-btn map-btn"
+          onClick={handleMapClick}
+          aria-label="Ver mapa de restaurantes"
+        >
+          <img src="/icons/Turity.png" alt="" style={{ width: '32px', height: '32px', marginRight: '8px' }} />
+          <span className="btn-label">Encuentra algo cerca de ti...</span>
+        </button>
 
         <button 
           className="floating-btn whatsapp-btn"
@@ -145,6 +146,7 @@ export default function FloatingButtons({
                   negocios={negocios}
                   posicionUsuario={posicionUsuario}
                   onUbicacionActualizada={setPosicionUsuario}
+                  centerTrigger={centerTrigger}
                 />
               )}
             </div>
@@ -161,6 +163,7 @@ export default function FloatingButtons({
                         };
                         setPosicionUsuario(pos);
                         localStorage.setItem('ubicacion', JSON.stringify(pos));
+                        setCenterTrigger(prev => prev + 1);
                       },
                       (error) => {
                         console.warn('Error de ubicacion:', error);
