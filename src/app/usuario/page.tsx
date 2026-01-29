@@ -199,7 +199,7 @@ export default function UsuarioPage() {
 
       <div className="mapa-usuario" ref={mapaAreaRef}>
         <MapaUsuario
-          ref={mapaRef}
+          
           negocios={negociosFiltrados}
           posicionUsuario={posicionUsuario}
           onUbicacionActualizada={setPosicionUsuario}
