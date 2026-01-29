@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import './reset-password.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
-export default function ResetPasswordPage() {
+function ResetPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
@@ -21,11 +21,10 @@ export default function ResetPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [mostrarPassword, setMostrarPassword] = useState(false);
 
-  // Validar token al cargar
   useEffect(() => {
     const validarToken = async () => {
       if (!token) {
-        setError('No se proporcionó un token de recuperación');
+        setError('No se proporciono un token de recuperacion');
         setValidando(false);
         return;
       }
@@ -40,12 +39,12 @@ export default function ResetPasswordPage() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.error || 'Token no válido');
+          throw new Error(data.error || 'Token no valido');
         }
 
         setTokenValido(true);
       } catch (err: any) {
-        setError(err.message || 'El link de recuperación no es válido o ha expirado');
+        setError(err.message || 'El link de recuperacion no es valido o ha expirado');
       } finally {
         setValidando(false);
       }
@@ -58,19 +57,18 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setError('');
 
-    // Validaciones
     if (!nuevaPassword || !confirmarPassword) {
       setError('Por favor completa todos los campos');
       return;
     }
 
     if (nuevaPassword.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+      setError('La contrasena debe tener al menos 6 caracteres');
       return;
     }
 
     if (nuevaPassword !== confirmarPassword) {
-      setError('Las contraseñas no coinciden');
+      setError('Las contrasenas no coinciden');
       return;
     }
 
@@ -86,30 +84,27 @@ export default function ResetPasswordPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Error al cambiar contraseña');
+        throw new Error(data.error || 'Error al cambiar contrasena');
       }
 
       setSuccess(true);
-
-      // Redirigir al login después de 3 segundos
       setTimeout(() => {
         router.push('/login');
       }, 3000);
 
     } catch (err: any) {
-      setError(err.message || 'Error al cambiar contraseña');
+      setError(err.message || 'Error al cambiar contrasena');
     } finally {
       setLoading(false);
     }
   };
 
-  // Pantalla de carga mientras valida token
   if (validando) {
     return (
       <div className="reset-container">
         <div className="reset-card">
           <div className="reset-header">
-            <div className="icono-loading">⏳</div>
+            <div className="icono-loading">Cargando...</div>
             <h1>Verificando link...</h1>
             <p>Espera un momento mientras validamos tu solicitud</p>
           </div>
@@ -118,26 +113,24 @@ export default function ResetPasswordPage() {
     );
   }
 
-  // Token inválido o expirado
   if (!tokenValido && !validando) {
     return (
       <div className="reset-container">
         <div className="reset-card">
           <div className="reset-header">
-            <div className="icono-error">❌</div>
-            <h1>Link no válido</h1>
-            <p>{error || 'El link de recuperación no es válido o ha expirado'}</p>
+            <div className="icono-error">X</div>
+            <h1>Link no valido</h1>
+            <p>{error || 'El link de recuperacion no es valido o ha expirado'}</p>
           </div>
-
           <div className="error-actions">
             <p className="error-hint">
-              Los links de recuperación expiran después de 1 hora por seguridad.
+              Los links de recuperacion expiran despues de 1 hora por seguridad.
             </p>
             <Link href="/recuperar-password" className="btn-solicitar-nuevo">
               Solicitar nuevo link
             </Link>
             <Link href="/login" className="link-volver">
-              ← Volver al login
+              Volver al login
             </Link>
           </div>
         </div>
@@ -145,20 +138,18 @@ export default function ResetPasswordPage() {
     );
   }
 
-  // Éxito al cambiar contraseña
   if (success) {
     return (
       <div className="reset-container">
         <div className="reset-card">
           <div className="reset-header">
-            <div className="icono-success">✓</div>
-            <h1>¡Contraseña actualizada!</h1>
-            <p>Tu contraseña ha sido cambiada exitosamente</p>
+            <div className="icono-success">OK</div>
+            <h1>Contrasena actualizada!</h1>
+            <p>Tu contrasena ha sido cambiada exitosamente</p>
           </div>
-
           <div className="success-actions">
             <p className="redirect-text">
-              Serás redirigido al login en unos segundos...
+              Seras redirigido al login en unos segundos...
             </p>
             <Link href="/login" className="btn-ir-login">
               Ir al login ahora
@@ -169,26 +160,25 @@ export default function ResetPasswordPage() {
     );
   }
 
-  // Formulario para nueva contraseña
   return (
     <div className="reset-container">
       <div className="reset-card">
         <div className="reset-header">
-          <div className="icono-password">🔐</div>
-          <h1>Crea tu nueva contraseña</h1>
-          <p>Ingresa y confirma tu nueva contraseña</p>
+          <div className="icono-password">Clave</div>
+          <h1>Crea tu nueva contrasena</h1>
+          <p>Ingresa y confirma tu nueva contrasena</p>
         </div>
 
         <form onSubmit={handleSubmit} className="reset-form">
           <div className="form-group">
-            <label htmlFor="nuevaPassword">Nueva contraseña</label>
+            <label htmlFor="nuevaPassword">Nueva contrasena</label>
             <div className="password-input-wrapper">
               <input
                 type={mostrarPassword ? "text" : "password"}
                 id="nuevaPassword"
                 value={nuevaPassword}
                 onChange={(e) => setNuevaPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
+                placeholder="Minimo 6 caracteres"
                 autoComplete="new-password"
                 required
               />
@@ -197,19 +187,19 @@ export default function ResetPasswordPage() {
                 className="toggle-password-btn"
                 onClick={() => setMostrarPassword(!mostrarPassword)}
               >
-                {mostrarPassword ? '🙈' : '👁️'}
+                {mostrarPassword ? 'Ocultar' : 'Ver'}
               </button>
             </div>
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmarPassword">Confirmar contraseña</label>
+            <label htmlFor="confirmarPassword">Confirmar contrasena</label>
             <input
               type={mostrarPassword ? "text" : "password"}
               id="confirmarPassword"
               value={confirmarPassword}
               onChange={(e) => setConfirmarPassword(e.target.value)}
-              placeholder="Repite tu contraseña"
+              placeholder="Repite tu contrasena"
               autoComplete="new-password"
               required
             />
@@ -217,16 +207,16 @@ export default function ResetPasswordPage() {
 
           {error && (
             <div className="error-message">
-              ⚠️ {error}
+              {error}
             </div>
           )}
 
           <div className="password-requirements">
             <p className={nuevaPassword.length >= 6 ? 'valid' : ''}>
-              {nuevaPassword.length >= 6 ? '✓' : '○'} Mínimo 6 caracteres
+              {nuevaPassword.length >= 6 ? 'OK' : 'o'} Minimo 6 caracteres
             </p>
             <p className={nuevaPassword && nuevaPassword === confirmarPassword ? 'valid' : ''}>
-              {nuevaPassword && nuevaPassword === confirmarPassword ? '✓' : '○'} Las contraseñas coinciden
+              {nuevaPassword && nuevaPassword === confirmarPassword ? 'OK' : 'o'} Las contrasenas coinciden
             </p>
           </div>
 
@@ -235,16 +225,24 @@ export default function ResetPasswordPage() {
             className="btn-reset"
             disabled={loading || nuevaPassword.length < 6 || nuevaPassword !== confirmarPassword}
           >
-            {loading ? 'Guardando...' : 'Guardar nueva contraseña'}
+            {loading ? 'Guardando...' : 'Guardar nueva contrasena'}
           </button>
         </form>
 
         <div className="reset-footer">
           <Link href="/login" className="link-volver">
-            ← Volver al login
+            Volver al login
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
