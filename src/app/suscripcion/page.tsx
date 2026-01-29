@@ -207,8 +207,8 @@ export default function SuscripcionPage() {
               <li>✓ Todo lo gratuito</li>
               <li>✓ Acumula puntos en cada compra</li>
               <li>✓ Canjea por descuentos reales</li>
-              <li>✓ 5% cashback en restaurantes</li>
-              <li>✓ $200 de regalo en tu cumpleaños</li>
+              <li>✓ 10% cashback en restaurantes</li>
+              <li>✓ $100 de regalo en tu cumpleaños</li>
               <li>✓ Cancela cuando quieras</li>
               <li className="disabled">✗ Promociones exclusivas</li>
             </ul>
