@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import './registro.css';
@@ -15,11 +15,10 @@ interface NegocioInfo {
   imagen: string;
 }
 
-export default function RegistroPage() {
+function RegistroContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // Estados
   const [codigo, setCodigo] = useState('');
   const [codigoVerificado, setCodigoVerificado] = useState(false);
   const [negocioInfo, setNegocioInfo] = useState<NegocioInfo | null>(null);
@@ -28,7 +27,6 @@ export default function RegistroPage() {
   const [error, setError] = useState('');
   const [exito, setExito] = useState('');
   
-  // Datos del formulario
   const [form, setForm] = useState({
     nombre: '',
     email: '',
@@ -37,11 +35,9 @@ export default function RegistroPage() {
     confirmarPassword: ''
   });
   
-  // Estados para mostrar/ocultar contraseñas
   const [mostrarPassword, setMostrarPassword] = useState(false);
   const [mostrarConfirmarPassword, setMostrarConfirmarPassword] = useState(false);
 
-  // Verificar si hay código en la URL
   useEffect(() => {
     const codigoUrl = searchParams.get('codigo');
     if (codigoUrl) {
@@ -50,10 +46,9 @@ export default function RegistroPage() {
     }
   }, [searchParams]);
 
-  // Función para verificar código
   const verificarCodigo = async (codigoAVerificar: string) => {
     if (!codigoAVerificar || codigoAVerificar.length < 6) {
-      setError('Ingresa un código válido');
+      setError('Ingresa un codigo valido');
       return;
     }
 
@@ -65,7 +60,7 @@ export default function RegistroPage() {
       const data = await res.json();
 
       if (!res.ok || !data.valido) {
-        setError(data.error || 'Código no válido');
+        setError(data.error || 'Codigo no valido');
         setCodigoVerificado(false);
         setNegocioInfo(null);
         return;
@@ -74,7 +69,6 @@ export default function RegistroPage() {
       setCodigoVerificado(true);
       setNegocioInfo(data.invitacion.negocio);
       
-      // Pre-llenar nombre si viene en la invitación
       if (data.invitacion.nombre_invitado) {
         setForm(prev => ({ ...prev, nombre: data.invitacion.nombre_invitado }));
       }
@@ -83,39 +77,36 @@ export default function RegistroPage() {
       }
 
     } catch (err) {
-      console.error('Error verificando código:', err);
-      setError('Error al verificar el código. Intenta de nuevo.');
+      console.error('Error verificando codigo:', err);
+      setError('Error al verificar el codigo. Intenta de nuevo.');
     } finally {
       setVerificando(false);
     }
   };
 
-  // Manejar cambios en el formulario
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm(prev => ({ ...prev, [name]: value }));
     setError('');
   };
 
-  // Manejar envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setExito('');
 
-    // Validaciones
     if (!form.nombre || !form.email || !form.password) {
       setError('Todos los campos marcados con * son obligatorios');
       return;
     }
 
     if (form.password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+      setError('La contrasena debe tener al menos 6 caracteres');
       return;
     }
 
     if (form.password !== form.confirmarPassword) {
-      setError('Las contraseñas no coinciden');
+      setError('Las contrasenas no coinciden');
       return;
     }
 
@@ -140,9 +131,8 @@ export default function RegistroPage() {
         throw new Error(data.error || data.message || 'Error al registrar');
       }
 
-      setExito(`¡Cuenta creada exitosamente! Tu negocio "${data.negocio?.nombre}" está listo.`);
+      setExito(`Cuenta creada exitosamente! Tu negocio "${data.negocio?.nombre}" esta listo.`);
       
-      // Redirigir al login después de 2 segundos
       setTimeout(() => {
         router.push('/login?mensaje=registro_exitoso');
       }, 2500);
@@ -157,34 +147,30 @@ export default function RegistroPage() {
   return (
     <div className="registro-container">
       <div className="registro-card">
-        {/* Logo/Header */}
         <div className="registro-header">
-          <h1>🏪 Turicanje</h1>
+          <h1>Turicanje</h1>
           <p>Activa tu cuenta de comercio</p>
         </div>
 
-        {/* Mensaje de éxito */}
         {exito && (
           <div className="mensaje exito">
-            <span>✅</span>
+            <span>OK</span>
             <p>{exito}</p>
           </div>
         )}
 
-        {/* Mensaje de error */}
         {error && (
           <div className="mensaje error">
-            <span>❌</span>
+            <span>X</span>
             <p>{error}</p>
           </div>
         )}
 
-        {/* PASO 1: Verificar código */}
         {!codigoVerificado && !exito && (
           <div className="codigo-section">
-            <h2>Código de invitación</h2>
+            <h2>Codigo de invitacion</h2>
             <p className="codigo-instruccion">
-              Para registrarte necesitas un código de invitación proporcionado por Turicanje.
+              Para registrarte necesitas un codigo de invitacion proporcionado por Turicanje.
             </p>
             
             <div className="codigo-input-wrapper">
@@ -202,26 +188,24 @@ export default function RegistroPage() {
                 disabled={verificando || codigo.length < 6}
                 className="btn-verificar"
               >
-                {verificando ? '⏳ Verificando...' : '🔍 Verificar'}
+                {verificando ? 'Verificando...' : 'Verificar'}
               </button>
             </div>
 
             <div className="codigo-ayuda">
-              <p>¿No tienes código?</p>
+              <p>No tienes codigo?</p>
               <a href="mailto:contacto@turicanje.app">Contacta a contacto@turicanje.app</a>
             </div>
           </div>
         )}
 
-        {/* PASO 2: Mostrar info del negocio y formulario */}
         {codigoVerificado && !exito && (
           <>
-            {/* Info del negocio */}
             {negocioInfo && (
               <div className="negocio-preview">
                 <div className="negocio-preview-header">
-                  <span className="check-icon">✅</span>
-                  <span>Código válido</span>
+                  <span className="check-icon">OK</span>
+                  <span>Codigo valido</span>
                 </div>
                 <div className="negocio-preview-content">
                   {negocioInfo.imagen && (
@@ -231,14 +215,13 @@ export default function RegistroPage() {
                     <h3>{negocioInfo.nombre}</h3>
                     <p className="negocio-categoria">{negocioInfo.categoria}</p>
                     {negocioInfo.direccion && (
-                      <p className="negocio-direccion">📍 {negocioInfo.direccion}</p>
+                      <p className="negocio-direccion">{negocioInfo.direccion}</p>
                     )}
                   </div>
                 </div>
               </div>
             )}
 
-            {/* Formulario de registro */}
             <form onSubmit={handleSubmit} className="registro-form">
               <h2>Crea tu cuenta</h2>
               
@@ -267,7 +250,7 @@ export default function RegistroPage() {
               </div>
 
               <div className="form-group">
-                <label>Teléfono (opcional)</label>
+                <label>Telefono (opcional)</label>
                 <input
                   type="tel"
                   name="telefono"
@@ -278,14 +261,14 @@ export default function RegistroPage() {
               </div>
 
               <div className="form-group">
-                <label>Contraseña *</label>
+                <label>Contrasena *</label>
                 <div className="password-input-wrapper">
                   <input
                     type={mostrarPassword ? "text" : "password"}
                     name="password"
                     value={form.password}
                     onChange={handleChange}
-                    placeholder="Mínimo 6 caracteres"
+                    placeholder="Minimo 6 caracteres"
                     minLength={6}
                     required
                   />
@@ -294,20 +277,20 @@ export default function RegistroPage() {
                     className="btn-toggle-password"
                     onClick={() => setMostrarPassword(!mostrarPassword)}
                   >
-                    {mostrarPassword ? '🙈' : '👁️'}
+                    {mostrarPassword ? 'Ocultar' : 'Ver'}
                   </button>
                 </div>
               </div>
 
               <div className="form-group">
-                <label>Confirmar contraseña *</label>
+                <label>Confirmar contrasena *</label>
                 <div className="password-input-wrapper">
                   <input
                     type={mostrarConfirmarPassword ? "text" : "password"}
                     name="confirmarPassword"
                     value={form.confirmarPassword}
                     onChange={handleChange}
-                    placeholder="Repite tu contraseña"
+                    placeholder="Repite tu contrasena"
                     required
                   />
                   <button 
@@ -315,7 +298,7 @@ export default function RegistroPage() {
                     className="btn-toggle-password"
                     onClick={() => setMostrarConfirmarPassword(!mostrarConfirmarPassword)}
                   >
-                    {mostrarConfirmarPassword ? '🙈' : '👁️'}
+                    {mostrarConfirmarPassword ? 'Ocultar' : 'Ver'}
                   </button>
                 </div>
               </div>
@@ -325,7 +308,7 @@ export default function RegistroPage() {
                 className="btn-registrar"
                 disabled={registrando}
               >
-                {registrando ? '⏳ Creando cuenta...' : '🚀 Activar mi cuenta'}
+                {registrando ? 'Creando cuenta...' : 'Activar mi cuenta'}
               </button>
 
               <button 
@@ -337,17 +320,24 @@ export default function RegistroPage() {
                   setCodigo('');
                 }}
               >
-                ← Usar otro código
+                Usar otro codigo
               </button>
             </form>
           </>
         )}
 
-        {/* Link a login */}
         <div className="registro-footer">
-          <p>¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link></p>
+          <p>Ya tienes cuenta? <Link href="/login">Inicia sesion</Link></p>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegistroPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <RegistroContent />
+    </Suspense>
   );
 }
