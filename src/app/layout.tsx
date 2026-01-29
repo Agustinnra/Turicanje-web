@@ -4,6 +4,7 @@ import { AnalyticsProvider } from '@/lib/analytics';
 import "./globals.css";
 import FloatingButtons from '@/components/FloatingButtons';
 import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
+import InstallPWABanner from '@/components/InstallPWABanner';
 
 const playfair = Playfair_Display({
   variable: "--font-display",
@@ -80,6 +81,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable}`}>
+      <InstallPWABanner />
       <body>
         {children}
         
