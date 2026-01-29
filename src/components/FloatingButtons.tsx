@@ -139,7 +139,7 @@ export default function FloatingButtons({
         <div className="map-modal-overlay" onClick={handleCloseMap}>
           <div className="map-modal" onClick={(e) => e.stopPropagation()}>
             <div className="map-modal-header">
-              <h2>🌎 Explora restaurantes cerca de ti...</h2>
+              <h2>Explora restaurantes cerca de ti...</h2>
               <button className="map-modal-close" onClick={handleCloseMap}>
                 ✕
               </button>
