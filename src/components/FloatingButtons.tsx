@@ -96,13 +96,14 @@ export default function FloatingButtons({
   return (
     <>
       <div className="floating-buttons">
-        <button 
-          className="floating-btn map-btn"
-          onClick={handleMapClick}
-          aria-label="Ver mapa de restaurantes"
-        >
-          <span className="btn-label">Encuentra algo cerca de ti...</span>
-        </button>
+      <button 
+        className="floating-btn map-btn"
+        onClick={handleMapClick}
+        aria-label="Ver mapa de restaurantes"
+      >
+        <img src="/icons/Turity.png" alt="" style={{ width: '24px', height: '24px', marginRight: '8px' }} />
+        <span className="btn-label">Encuentra algo cerca de ti...</span>
+      </button>
 
         <button 
           className="floating-btn whatsapp-btn"

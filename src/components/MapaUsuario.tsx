@@ -234,7 +234,7 @@ export default function MapaUsuario({ negocios, posicionUsuario, onUbicacionActu
               alignItems: 'center'
             }}>
               {negocioSeleccionado.url_extra && (
-                
+                <a
                   href={validarUrl(negocioSeleccionado.url_extra)}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -250,7 +250,7 @@ export default function MapaUsuario({ negocios, posicionUsuario, onUbicacionActu
               )}
 
               {negocioSeleccionado.url_pedidos && (
-                
+                <a
                   href={validarUrl(negocioSeleccionado.url_pedidos)}
                   target="_blank"
                   rel="noopener noreferrer"
