@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams} from 'next/navigation';
 import './admin.css';
 import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
 import SolicitudesPendientes from './components/SolicitudesPendientes';
 import TabClientes from './components/TabClientes';
 import TabAnalyticsWeb from './components/TabAnalyticsWeb';
+
+
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
@@ -165,6 +167,7 @@ export default function AdminPage() {
   const [convStats, setConvStats] = useState<ConversacionStats | null>(null);
   const [statsReales, setStatsReales] = useState<EstadisticasReales | null>(null);
   const [solicitudesCount, setSolicitudesCount] = useState(0);
+  const searchParams = useSearchParams();
   const [stats, setStats] = useState<Stats>({
     total: 0,
     activos: 0,
@@ -447,6 +450,15 @@ export default function AdminPage() {
       if (token) cargarDatos(token, usuario.role);
     }
   }, [mostrarPruebas, usuario, cargarDatos]);
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'negocios') {
+      setActiveTab('negocios');
+    }
+  }, [searchParams]);
+
+
 
   // ============================================================
   // FUNCIONES DE NEGOCIO

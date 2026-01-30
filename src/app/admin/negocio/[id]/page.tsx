@@ -137,7 +137,7 @@ export default function EditarNegocioPage({ params }: PageProps) {
   };
 
   const handleCancelar = () => {
-    router.push('/admin');
+    router.push('/admin?tab=negocios');
   };
 
   // Funciones para gestión de usuario
@@ -232,9 +232,9 @@ export default function EditarNegocioPage({ params }: PageProps) {
       {/* Header */}
       <header className="editar-header">
         <div className="editar-header-left">
-          <button onClick={() => router.push('/admin')} className="btn-back">
-            ← Admin
-          </button>
+        <button onClick={() => router.push('/admin?tab=negocios')} className="btn-back">
+          ← Negocios
+        </button>
           <h1>Editar Negocio</h1>
           <span className="negocio-badge">
             <span className="badge-label">ID:</span>

@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback } from 'react';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete';
 import ImageUploadManager from './ImageUploadManager';
 import CreadorSelector from './CreadorSelector';
+import EditorMenu from './EditorMenu';
 import './formulario-completo.css';
 import './CreadorSelector.css';
-import EditorMenu from './EditorMenu';
+
 
 
 interface Props {
@@ -1130,7 +1131,7 @@ export default function FormularioCompletoNegocio({ negocio, onGuardar, onCancel
           </div>
         </SeccionColapsable>
       )}
-      
+
       {/* ============================================================ */}
       {/* SECCIÓN 7: AMENIDADES */}
       {/* ============================================================ */}

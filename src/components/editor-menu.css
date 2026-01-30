@@ -519,3 +519,13 @@
       flex: 1 1 100%;
     }
   }
+  /* Fix inputs edición - texto visible */
+.edit-grid input {
+  background: #fff !important;
+  color: #333 !important;
+}
+
+.producto-edicion input {
+  background: #fff !important;
+  color: #333 !important;
+}
