@@ -6,6 +6,8 @@ import ImageUploadManager from './ImageUploadManager';
 import CreadorSelector from './CreadorSelector';
 import './formulario-completo.css';
 import './CreadorSelector.css';
+import EditorMenu from './EditorMenu';
+
 
 interface Props {
   negocio: any;
@@ -1114,7 +1116,21 @@ export default function FormularioCompletoNegocio({ negocio, onGuardar, onCancel
           </div>
         </div>
       </SeccionColapsable>
-
+      {/* ============================================================ */}
+      {/* SECCIÓN 6.5: MENÚ DEL NEGOCIO */}
+      {/* ============================================================ */}
+      {negocio?.id && (
+        <SeccionColapsable titulo="Menú del Negocio" icono="🍽️">
+          <div className="menu-section">
+            <p className="campo-hint" style={{ marginBottom: '16px' }}>
+              Los productos se extraen automáticamente cuando subes fotos de tu menú arriba. 
+              Aquí puedes revisar, editar o agregar productos manualmente.
+            </p>
+            <EditorMenu placeId={negocio.id} modoAdmin={modoAdmin} />
+          </div>
+        </SeccionColapsable>
+      )}
+      
       {/* ============================================================ */}
       {/* SECCIÓN 7: AMENIDADES */}
       {/* ============================================================ */}
