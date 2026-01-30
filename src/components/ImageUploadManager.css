@@ -315,3 +315,102 @@ body:has([class*="cloudinary"]) {
 .image-modal-overlay * {
   pointer-events: auto;
 }
+/* ========================================
+   DRAG AND DROP STYLES
+   ======================================== */
+
+/* Indicador de drag */
+.image-item {
+  position: relative;
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.image-item:active {
+  cursor: grabbing;
+}
+
+.drag-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+  letter-spacing: -3px;
+}
+
+.image-item:hover .drag-indicator {
+  opacity: 0.7;
+}
+
+/* Imagen siendo arrastrada */
+.image-item.dragging {
+  opacity: 0.5;
+  transform: scale(0.95);
+  box-shadow: 0 0 0 2px #e91e63;
+}
+
+/* Zona donde se soltará */
+.image-item.drag-over {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px #4caf50, 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+/* Badge de posición */
+.position-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  background: rgba(0,0,0,0.7);
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* Badge de principal */
+.principal-badge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: #4caf50;
+  color: white;
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Hint de arrastrar */
+.drag-hint {
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+.reorder-hint {
+  font-weight: normal;
+  color: #888;
+  font-size: 12px;
+}
+
+/* Ajustes para mejor UX en drag */
+.image-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.image-item img {
+  user-select: none;
+  -webkit-user-drag: none;
+}

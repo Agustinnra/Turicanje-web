@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import CloudinaryUploadWidget from './CloudinaryUploadWidget';
 import './ImageUploadManager.css';
 
@@ -21,6 +21,11 @@ export default function ImageUploadManager({
 }: ImageUploadManagerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [pendingImages, setPendingImages] = useState<string[]>([]);
+  
+  // Drag and drop states
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [dragSource, setDragSource] = useState<'current' | 'pending' | null>(null);
 
   const totalImages = currentImages.length + pendingImages.length;
   const canAddMore = multiple ? totalImages < maxImages : totalImages < 1;
@@ -47,6 +52,59 @@ export default function ImageUploadManager({
       document.body.style.width = '';
     };
   }, [isOpen]);
+
+  /* ======================
+     DRAG AND DROP
+     ====================== */
+  const handleDragStart = (index: number, source: 'current' | 'pending') => {
+    setDraggedIndex(index);
+    setDragSource(source);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number, dropSource: 'current' | 'pending') => {
+    e.preventDefault();
+    
+    if (draggedIndex === null || dragSource === null) return;
+    
+    // Solo permitir reordenar dentro del mismo grupo
+    if (dragSource !== dropSource) {
+      setDraggedIndex(null);
+      setDragOverIndex(null);
+      setDragSource(null);
+      return;
+    }
+    
+    if (dragSource === 'current') {
+      const newImages = [...currentImages];
+      const [removed] = newImages.splice(draggedIndex, 1);
+      newImages.splice(dropIndex, 0, removed);
+      onImagesChange(newImages);
+    } else {
+      const newImages = [...pendingImages];
+      const [removed] = newImages.splice(draggedIndex, 1);
+      newImages.splice(dropIndex, 0, removed);
+      setPendingImages(newImages);
+    }
+    
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setDragSource(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+    setDragSource(null);
+  };
 
   /* ======================
      SUBIDA DE IMAGENES
@@ -90,7 +148,8 @@ export default function ImageUploadManager({
      CONFIRMAR / CANCELAR
      ====================== */
   const handleConfirm = () => {
-    if (pendingImages.length === 0) {
+    if (pendingImages.length === 0 && currentImages.length > 0) {
+      // Permitir cerrar si solo reordenó
       setIsOpen(false);
       return;
     }
@@ -124,8 +183,18 @@ export default function ImageUploadManager({
         <div className="current-images">
           <div className="image-grid">
             {currentImages.map((url, idx) => (
-              <div key={idx} className="image-item">
+              <div 
+                key={idx} 
+                className={`image-item ${draggedIndex === idx && dragSource === 'current' ? 'dragging' : ''}`}
+                draggable
+                onDragStart={() => handleDragStart(idx, 'current')}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDragLeave={handleDragLeave}
+                onDrop={(e) => handleDrop(e, idx, 'current')}
+                onDragEnd={handleDragEnd}
+              >
                 <img src={url} alt={`Imagen ${idx + 1}`} />
+                <span className="drag-indicator">⋮⋮</span>
                 <button
                   type="button"
                   className="btn-remove"
@@ -133,9 +202,13 @@ export default function ImageUploadManager({
                 >
                   X
                 </button>
+                {idx === 0 && <span className="principal-badge">Principal</span>}
               </div>
             ))}
           </div>
+          {multiple && currentImages.length > 1 && (
+            <p className="drag-hint">↔ Arrastra para reordenar. La primera imagen será la principal.</p>
+          )}
         </div>
       )}
 
@@ -163,11 +236,27 @@ export default function ImageUploadManager({
                 <div className="modal-section">
                   <p className="section-title">
                     Imagenes guardadas ({currentImages.length})
+                    {multiple && currentImages.length > 1 && (
+                      <span className="reorder-hint"> - Arrastra para reordenar</span>
+                    )}
                   </p>
                   <div className="image-grid">
                     {currentImages.map((url, idx) => (
-                      <div key={`current-${idx}`} className="image-item">
-                        <img src={url} alt={`Guardada ${idx + 1}`} />
+                      <div 
+                        key={`current-${idx}`} 
+                        className={`image-item 
+                          ${draggedIndex === idx && dragSource === 'current' ? 'dragging' : ''} 
+                          ${dragOverIndex === idx && dragSource === 'current' ? 'drag-over' : ''}`
+                        }
+                        draggable
+                        onDragStart={() => handleDragStart(idx, 'current')}
+                        onDragOver={(e) => handleDragOver(e, idx)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, idx, 'current')}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <img src={url} alt={`Guardada ${idx + 1}`} draggable={false} />
+                        <span className="drag-indicator">⋮⋮</span>
                         <button
                           type="button"
                           className="btn-remove"
@@ -175,6 +264,8 @@ export default function ImageUploadManager({
                         >
                           X
                         </button>
+                        {idx === 0 && <span className="principal-badge">Principal</span>}
+                        <span className="position-badge">{idx + 1}</span>
                       </div>
                     ))}
                   </div>
@@ -189,8 +280,21 @@ export default function ImageUploadManager({
                   </p>
                   <div className="image-grid">
                     {pendingImages.map((url, idx) => (
-                      <div key={`pending-${idx}`} className="image-item pending">
-                        <img src={url} alt={`Nueva ${idx + 1}`} />
+                      <div 
+                        key={`pending-${idx}`} 
+                        className={`image-item pending
+                          ${draggedIndex === idx && dragSource === 'pending' ? 'dragging' : ''} 
+                          ${dragOverIndex === idx && dragSource === 'pending' ? 'drag-over' : ''}`
+                        }
+                        draggable
+                        onDragStart={() => handleDragStart(idx, 'pending')}
+                        onDragOver={(e) => handleDragOver(e, idx)}
+                        onDragLeave={handleDragLeave}
+                        onDrop={(e) => handleDrop(e, idx, 'pending')}
+                        onDragEnd={handleDragEnd}
+                      >
+                        <img src={url} alt={`Nueva ${idx + 1}`} draggable={false} />
+                        <span className="drag-indicator">⋮⋮</span>
                         <button
                           type="button"
                           className="btn-remove"
@@ -234,9 +338,8 @@ export default function ImageUploadManager({
                 type="button"
                 className="btn-confirm"
                 onClick={handleConfirm}
-                disabled={pendingImages.length === 0}
               >
-                Confirmar {pendingImages.length > 0 && `(${pendingImages.length})`}
+                {pendingImages.length > 0 ? `Confirmar (${pendingImages.length})` : 'Listo'}
               </button>
             </div>
           </div>
