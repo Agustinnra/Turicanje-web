@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter, useSearchParams} from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import './admin.css';
 import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
 import SolicitudesPendientes from './components/SolicitudesPendientes';
@@ -167,7 +167,7 @@ export default function AdminPage() {
   const [convStats, setConvStats] = useState<ConversacionStats | null>(null);
   const [statsReales, setStatsReales] = useState<EstadisticasReales | null>(null);
   const [solicitudesCount, setSolicitudesCount] = useState(0);
-  const searchParams = useSearchParams();
+
   const [stats, setStats] = useState<Stats>({
     total: 0,
     activos: 0,
@@ -442,6 +442,17 @@ export default function AdminPage() {
     };
     verificarAcceso();
   }, [router, cargarDatos]);
+    // Al final del useEffect de verificarAcceso, después de setLoading(false):
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab === 'negocios') {
+        setActiveTab('negocios');
+      }
+    }
+  
+
+
 
   // Recargar al cambiar filtro de pruebas
   useEffect(() => {
@@ -451,12 +462,6 @@ export default function AdminPage() {
     }
   }, [mostrarPruebas, usuario, cargarDatos]);
 
-  useEffect(() => {
-    const tab = searchParams.get('tab');
-    if (tab === 'negocios') {
-      setActiveTab('negocios');
-    }
-  }, [searchParams]);
 
 
 
