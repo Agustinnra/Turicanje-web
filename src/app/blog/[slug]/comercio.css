@@ -1546,3 +1546,346 @@
      background: transparent !important;
      background-color: transparent !important;
    }
+   /* ============================================
+   MENÚ CARRUSEL + LIGHTBOX - Estilo Turicanje
+   ============================================ */
+
+/* Sección del menú */
+.menu-section .section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.menu-count {
+  margin-left: auto;
+  background: #f5f5f5;
+  color: #666;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Carrusel horizontal */
+.menu-carousel {
+  position: relative;
+  margin: 16px -20px 0 -20px;
+  padding: 0 20px;
+}
+
+.menu-carousel-track {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0 16px 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.menu-carousel-track::-webkit-scrollbar {
+  display: none;
+}
+
+.menu-carousel-item {
+  flex: 0 0 auto;
+  width: 200px;
+  height: 280px;
+  scroll-snap-align: start;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #f5f5f5;
+}
+
+.menu-carousel-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.menu-carousel-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.menu-carousel-item:hover img {
+  transform: scale(1.05);
+}
+
+.menu-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.menu-carousel-item:hover .menu-item-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.zoom-icon {
+  font-size: 32px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.3s ease;
+}
+
+.menu-carousel-item:hover .zoom-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.menu-hint {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-top: 8px;
+  margin-bottom: 0;
+}
+
+/* ============================================
+   LIGHTBOX
+   ============================================ */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.lightbox-prev {
+  left: 20px;
+}
+
+.lightbox-next {
+  right: 20px;
+}
+
+.lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.lightbox-content {
+  max-width: 90vw;
+  max-height: 75vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-image {
+  max-width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from { 
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to { 
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lightbox-counter {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 6px 16px;
+  border-radius: 20px;
+}
+
+/* Miniaturas */
+.lightbox-thumbnails {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  max-width: 90vw;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.lightbox-thumbnails::-webkit-scrollbar {
+  display: none;
+}
+
+.lightbox-thumb {
+  flex: 0 0 auto;
+  width: 60px;
+  height: 60px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  transition: all 0.2s ease;
+  opacity: 0.6;
+}
+
+.lightbox-thumb:hover {
+  opacity: 0.9;
+}
+
+.lightbox-thumb.active {
+  border-color: #e91e63;
+  opacity: 1;
+}
+
+.lightbox-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .menu-carousel-item {
+    width: 160px;
+    height: 220px;
+  }
+  
+  .lightbox-nav {
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+  }
+  
+  .lightbox-prev {
+    left: 10px;
+  }
+  
+  .lightbox-next {
+    right: 10px;
+  }
+  
+  .lightbox-content {
+    max-height: 65vh;
+  }
+  
+  .lightbox-image {
+    max-height: 65vh;
+  }
+  
+  .lightbox-thumbnails {
+    bottom: 10px;
+    padding: 6px;
+    gap: 6px;
+  }
+  
+  .lightbox-thumb {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .lightbox-counter {
+    top: 16px;
+    font-size: 12px;
+  }
+  
+  .lightbox-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-carousel-item {
+    width: 140px;
+    height: 200px;
+  }
+  
+  .menu-carousel {
+    margin: 16px -16px 0 -16px;
+    padding: 0 16px;
+  }
+  
+  .menu-hint {
+    font-size: 12px;
+  }
+}

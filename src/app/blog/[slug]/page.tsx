@@ -113,6 +113,10 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
+  // Estados para lightbox del menú
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
   useEffect(() => {
     // Verificar si hay usuario logueado
     const token = localStorage.getItem('usuario_token');
@@ -277,6 +281,41 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
     setLinkCopiado(true);
     setTimeout(() => setLinkCopiado(false), 2000);
   };
+
+  // Funciones del lightbox
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeLightbox = () => {
+    setLightboxOpen(false);
+    document.body.style.overflow = '';
+  };
+
+  const nextImage = () => {
+    const galeriaMenu = comercio?.galeria_menu || [];
+    setLightboxIndex((prev) => (prev + 1) % galeriaMenu.length);
+  };
+
+  const prevImage = () => {
+    const galeriaMenu = comercio?.galeria_menu || [];
+    setLightboxIndex((prev) => (prev - 1 + galeriaMenu.length) % galeriaMenu.length);
+  };
+
+  // Manejar teclas en lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!lightboxOpen) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') nextImage();
+      if (e.key === 'ArrowLeft') prevImage();
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxOpen, comercio?.galeria_menu?.length]);
 
   // Cargar info de favoritos
   const cargarFavoritos = async (placeId: string) => {
@@ -813,20 +852,34 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
           </section>
         )}
 
-        {/* Menú */}
+        {/* ==================== MENÚ CON CARRUSEL ==================== */}
         {galeriaMenu.length > 0 && (
-          <section className="info-section">
+          <section className="info-section menu-section">
             <div className="section-header">
               <span className="section-icon">📋</span>
               <h2 className="section-title">MENÚ</h2>
+              <span className="menu-count">{galeriaMenu.length} foto{galeriaMenu.length !== 1 ? 's' : ''}</span>
             </div>
-            <div className="menu-grid">
-              {galeriaMenu.map((img, idx) => (
-                <div key={idx} className="menu-img">
-                  <img src={img} alt={`Menú ${idx + 1}`} />
-                </div>
-              ))}
+            
+            {/* Carrusel horizontal */}
+            <div className="menu-carousel">
+              <div className="menu-carousel-track">
+                {galeriaMenu.map((img, idx) => (
+                  <div 
+                    key={idx} 
+                    className="menu-carousel-item"
+                    onClick={() => openLightbox(idx)}
+                  >
+                    <img src={img} alt={`Menú ${idx + 1}`} />
+                    <div className="menu-item-overlay">
+                      <span className="zoom-icon">🔍</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
+            
+            <p className="menu-hint">👆 Desliza para ver más · Click para ampliar</p>
           </section>
         )}
 
@@ -1066,6 +1119,59 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
           </div>
         )}
       </section>
+
+      {/* ==================== LIGHTBOX DEL MENÚ ==================== */}
+      {lightboxOpen && galeriaMenu.length > 0 && (
+        <div className="lightbox-overlay" onClick={closeLightbox}>
+          <button className="lightbox-close" onClick={closeLightbox}>✕</button>
+          
+          {galeriaMenu.length > 1 && (
+            <>
+              <button 
+                className="lightbox-nav lightbox-prev" 
+                onClick={(e) => { e.stopPropagation(); prevImage(); }}
+              >
+                ‹
+              </button>
+              <button 
+                className="lightbox-nav lightbox-next" 
+                onClick={(e) => { e.stopPropagation(); nextImage(); }}
+              >
+                ›
+              </button>
+            </>
+          )}
+          
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={galeriaMenu[lightboxIndex]} 
+              alt={`Menú ${lightboxIndex + 1}`}
+              className="lightbox-image"
+            />
+          </div>
+          
+          {galeriaMenu.length > 1 && (
+            <div className="lightbox-counter">
+              {lightboxIndex + 1} / {galeriaMenu.length}
+            </div>
+          )}
+          
+          {/* Miniaturas */}
+          {galeriaMenu.length > 1 && (
+            <div className="lightbox-thumbnails">
+              {galeriaMenu.map((img, idx) => (
+                <button
+                  key={idx}
+                  className={`lightbox-thumb ${idx === lightboxIndex ? 'active' : ''}`}
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex(idx); }}
+                >
+                  <img src={img} alt={`Miniatura ${idx + 1}`} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* ==================== FOOTER ==================== */}
       <footer className="landing-footer">
