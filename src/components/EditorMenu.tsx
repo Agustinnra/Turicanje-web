@@ -382,7 +382,7 @@ export default function EditorMenu({ placeId, modoAdmin = false }: Props) {
                         <div className="producto-desc">{item.descripcion}</div>
                       )}
                     </div>
-                    <div className="producto-precio">${item.precio.toFixed(2)}</div>
+                    <div className="producto-precio">${Number(item.precio || 0).toFixed(2)}</div>
                     <div className="producto-acciones">
                       <button 
                         className={`btn-toggle ${item.disponible ? 'activo' : ''}`}
