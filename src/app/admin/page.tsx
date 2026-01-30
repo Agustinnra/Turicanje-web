@@ -442,7 +442,8 @@ export default function AdminPage() {
     };
     verificarAcceso();
   }, [router, cargarDatos]);
-    // Al final del useEffect de verificarAcceso, después de setLoading(false):
+
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       const tab = params.get('tab');
@@ -450,7 +451,7 @@ export default function AdminPage() {
         setActiveTab('negocios');
       }
     }
-  
+  }, []);
 
 
 
