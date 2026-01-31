@@ -627,7 +627,7 @@ export default function MiCuenta() {
                 <span className="puntos-numero">{usuario?.puntos?.toLocaleString() || 0}</span>
                 <span className="puntos-label">puntos</span>
               </div>
-              <p className="puntos-equivalente">{formatearMonto((usuario?.puntos || 0) * 0.10)} en recompensas</p>
+            
               
               {!usuario?.suscripcion_activa && (
                 <Link href="/suscripcion" className="suscripcion-warning">
@@ -684,7 +684,7 @@ export default function MiCuenta() {
                 </div>
                 <div className="stat-card">
                   <span className="stat-icon">💰</span>
-                  <span className="stat-value">{transacciones.filter(t => t.transaction_type === 'earn').reduce((sum, t) => sum + t.points, 0)}</span>
+                  <span className="stat-value">{transacciones.filter(t => t.transaction_type === 'earn').reduce((sum, t) => sum + parseFloat(String(t.points)), 0)}</span>
                   <span className="stat-label">Pts ganados</span>
                 </div>
               </div>
@@ -699,7 +699,7 @@ export default function MiCuenta() {
                 <div className="transacciones-list">
                   {transacciones.slice(0, 5).map(trans => (
                     <div key={trans.id} className="transaccion-item">
-                      <div className="trans-icon">{trans.transaction_type === 'earn' ? '💰' : '🎁'}</div>
+                      <div className="trans-icon">{trans.transaction_type === 'earn' ? '+' : '-'}{Math.round(parseFloat(String(trans.points)))}</div>
                       <div className="trans-info">
                         <span className="trans-negocio">{trans.negocio_nombre || 'Turicanje'}</span>
                         <span className="trans-fecha">{formatearFecha(trans.created_at)}</span>
