@@ -1166,3 +1166,78 @@
     right: -10px;
   }
 }
+/* ============================================================
+   REDES SOCIALES EN FOOTER
+   ============================================================ */
+
+/* Columna de redes sociales */
+.footer-social {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-social h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--turicanje-white);
+  margin-bottom: 0.5rem;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: var(--turicanje-white);
+  text-decoration: none;
+  font-size: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  transform: translateY(-3px);
+}
+
+.social-link.instagram:hover {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.social-link.facebook:hover {
+  background: #1877f2;
+}
+
+.social-link.youtube:hover {
+  background: #ff0000;
+}
+
+.social-link.tiktok:hover {
+  background: #000000;
+  box-shadow: 0 0 10px rgba(0, 244, 240, 0.5), 0 0 10px rgba(255, 0, 80, 0.5);
+}
+
+/* Responsive para redes sociales */
+@media (max-width: 768px) {
+  .social-links {
+    justify-content: center;
+  }
+  
+  .footer-social {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .footer-links {
+    gap: 2rem;
+  }
+}
