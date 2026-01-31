@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import './registrar-venta.css';
+import jsQR from 'jsqr';
 
 // Endpoint de canje: POST /api/comercios/puntos/canjear
 
@@ -226,10 +227,9 @@ export default function RegistrarVenta() {
 
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    const tieneBarcodeDetector = 'BarcodeDetector' in window;
     
     const checkQR = async () => {
-      if (!videoRef.current || !streamRef.current || !scannerActivo) return;
+      if (!videoRef.current || !streamRef.current) return;
       
       if (videoRef.current.videoWidth === 0 || videoRef.current.videoHeight === 0) {
         scannerIntervalRef.current = requestAnimationFrame(checkQR);
@@ -242,31 +242,23 @@ export default function RegistrarVenta() {
       if (context) {
         context.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
         
-        if (tieneBarcodeDetector) {
-          try {
-            // @ts-ignore
-            const barcodeDetector = new BarcodeDetector({ formats: ['qr_code'] });
-            const barcodes = await barcodeDetector.detect(canvas);
-            
-            if (barcodes.length > 0) {
-              const codigo = barcodes[0].rawValue;
-              console.log('QR detectado:', codigo);
-              setBusqueda(codigo);
-              buscarPorQR(codigo);
-              return;
-            }
-          } catch (err) {
-            // Continuar
-          }
+        // Usar jsQR (funciona en TODOS los navegadores)
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        
+        if (code) {
+          console.log('QR detectado:', code.data);
+          setBusqueda(code.data);
+          buscarPorQR(code.data);
+          detenerScanner();
+          return;
         }
       }
       
-      if (streamRef.current) {
-        scannerIntervalRef.current = requestAnimationFrame(checkQR);
-      }
+      scannerIntervalRef.current = requestAnimationFrame(checkQR);
     };
     
-    scannerIntervalRef.current = requestAnimationFrame(checkQR);
+    checkQR();
   };
 
   // ============================================================
