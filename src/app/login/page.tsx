@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import './login.css';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
@@ -19,37 +20,50 @@ export default function LoginPage() {
   // ✅ Verificar si ya está logueado al cargar
   useEffect(() => {
     const verificarSesion = async () => {
-      const token = localStorage.getItem('token');
+      // Verificar token de comercio
+      const tokenComercio = localStorage.getItem('token');
+      // Verificar token de usuario loyalty
+      const tokenUsuario = localStorage.getItem('usuario_token');
       
-      if (!token) {
+      if (!tokenComercio && !tokenUsuario) {
         setVerificando(false);
         return;
       }
 
-      try {
-        const response = await fetch(`${API_URL}/api/auth/me`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+      // Si hay token de comercio, verificar
+      if (tokenComercio) {
+        try {
+          const response = await fetch(`${API_URL}/api/auth/me`, {
+            headers: { 'Authorization': `Bearer ${tokenComercio}` }
+          });
 
-        if (response.ok) {
-          const data = await response.json();
-          // Ya está logueado, redirigir según rol
-          redirigirSegunRol(data.usuario.role);
-        } else {
-          // Token inválido, limpiar
+          if (response.ok) {
+            const data = await response.json();
+            redirigirSegunRol(data.usuario.role);
+            return;
+          } else {
+            localStorage.removeItem('token');
+            localStorage.removeItem('usuario');
+          }
+        } catch (err) {
           localStorage.removeItem('token');
           localStorage.removeItem('usuario');
-          setVerificando(false);
         }
-      } catch (err) {
-        setVerificando(false);
       }
+
+      // Si hay token de usuario loyalty, redirigir a mi-cuenta
+      if (tokenUsuario) {
+        router.push('/mi-cuenta');
+        return;
+      }
+
+      setVerificando(false);
     };
 
     verificarSesion();
   }, []);
 
-  // ✅ Función para redirigir según rol
+  // ✅ Función para redirigir según rol (comercios)
   const redirigirSegunRol = (role: string) => {
     switch (role) {
       case 'super_admin':
@@ -60,7 +74,7 @@ export default function LoginPage() {
         router.push('/comercios/dashboard');
         break;
       case 'usuario':
-        router.push('/usuario');
+        router.push('/mi-cuenta');
         break;
       default:
         router.push('/');
@@ -79,26 +93,50 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/auth/login`, {
+      // 1️⃣ Primero intentar login de comercios
+      const responseComercio = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al iniciar sesión');
+      if (responseComercio.ok) {
+        const data = await responseComercio.json();
+        
+        // Login de comercio exitoso
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        
+        console.log('✅ Login comercio exitoso:', data.usuario.email);
+        redirigirSegunRol(data.usuario.role);
+        return;
       }
 
-      // Guardar token y usuario
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('usuario', JSON.stringify(data.usuario));
+      // 2️⃣ Si comercio falla, intentar login de loyalty users
+      const responseLoyalty = await fetch(`${API_URL}/api/usuarios/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-      // ✅ Redirigir según el rol del usuario
-      redirigirSegunRol(data.usuario.role);
+      if (responseLoyalty.ok) {
+        const data = await responseLoyalty.json();
+        
+        // Login de loyalty exitoso
+        localStorage.setItem('usuario_token', data.token);
+        localStorage.setItem('usuario_data', JSON.stringify(data.usuario));
+        
+        console.log('✅ Login usuario exitoso:', data.usuario.email);
+        router.push('/mi-cuenta');
+        return;
+      }
+
+      // 3️⃣ Ambos fallaron - mostrar error
+      const errorData = await responseLoyalty.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Credenciales inválidas');
 
     } catch (err: any) {
+      console.log('❌ Error en login:', err.message);
       setError(err.message || 'Error al iniciar sesión');
     } finally {
       setLoading(false);
@@ -123,6 +161,15 @@ export default function LoginPage() {
     <div className="login-container">
       <div className="login-card">
         <div className="login-header">
+          <Link href="/">
+            <Image 
+              src="/icons/logo-turicanje.png" 
+              alt="Turicanje" 
+              width={180} 
+              height={50}
+              style={{ objectFit: 'contain', marginBottom: '20px' }}
+            />
+          </Link>
           <h1>Bienvenido de vuelta</h1>
           <p>Inicia sesión en Turicanje</p>
         </div>
@@ -173,12 +220,12 @@ export default function LoginPage() {
         </form>
 
         <div className="login-footer">
-          <p>
-            ¿No tienes cuenta?{' '}
-            <Link href="/registro" className="link-registro">Regístrate aquí</Link>
-          </p>
           <p className="link-olvidaste">
             <Link href="/recuperar-password">¿Olvidaste tu contraseña?</Link>
+          </p>
+          <p>
+            ¿No tienes cuenta?{' '}
+            <Link href="/registrarse" className="link-registro">Regístrate gratis</Link>
           </p>
         </div>
       </div>
