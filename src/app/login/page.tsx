@@ -93,47 +93,43 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // 1️⃣ Primero intentar login de comercios
-      const responseComercio = await fetch(`${API_URL}/api/auth/login`, {
+      // ✅ Login unificado - un solo endpoint que busca en ambas tablas
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
-      if (responseComercio.ok) {
-        const data = await responseComercio.json();
-        
-        // Login de comercio exitoso
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('usuario', JSON.stringify(data.usuario));
-        
-        console.log('✅ Login comercio exitoso:', data.usuario.email);
-        redirigirSegunRol(data.usuario.role);
-        return;
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Credenciales inválidas');
       }
 
-      // 2️⃣ Si comercio falla, intentar login de loyalty users
-      const responseLoyalty = await fetch(`${API_URL}/api/usuarios/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-
-      if (responseLoyalty.ok) {
-        const data = await responseLoyalty.json();
-        
-        // Login de loyalty exitoso
+      // ✅ Verificar tipo de usuario que devuelve el backend
+      if (data.tipoUsuario === 'loyalty') {
+        // Usuario loyalty - guardar en keys específicos
         localStorage.setItem('usuario_token', data.token);
         localStorage.setItem('usuario_data', JSON.stringify(data.usuario));
         
-        console.log('✅ Login usuario exitoso:', data.usuario.email);
+        // Limpiar tokens de comercio por si acaso
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario');
+        
+        console.log('✅ Login usuario loyalty exitoso:', data.usuario.email);
         router.push('/mi-cuenta');
-        return;
+      } else {
+        // Comercio/Admin - guardar en keys de comercio
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        
+        // Limpiar tokens de loyalty por si acaso
+        localStorage.removeItem('usuario_token');
+        localStorage.removeItem('usuario_data');
+        
+        console.log('✅ Login comercio exitoso:', data.usuario.email);
+        redirigirSegunRol(data.usuario.role);
       }
-
-      // 3️⃣ Ambos fallaron - mostrar error
-      const errorData = await responseLoyalty.json().catch(() => ({}));
-      throw new Error(errorData.error || 'Credenciales inválidas');
 
     } catch (err: any) {
       console.log('❌ Error en login:', err.message);
