@@ -92,8 +92,8 @@ export default function DashboardPage() {
 
       if (response.ok) {
         const data = await response.json();
-        if (data.negocio) {
-          setNegocio(data.negocio);
+        if (data && data.id) {
+          setNegocio(data);
           // Cargar saldo de puntos
           cargarSaldoPuntos(token);
         }
