@@ -100,7 +100,7 @@ export default function RegistroUsuarioPage() {
         throw new Error(data.message || 'Error al registrarse');
       }
 
-      router.push('/login-usuario?registro=exitoso');
+      router.push('/login?registro=exitoso');
 
     } catch (err: any) {
       setError(err.message || 'Error al crear la cuenta');
@@ -286,7 +286,7 @@ export default function RegistroUsuarioPage() {
 
           <div className="login-link">
             <p>¿Ya tienes cuenta?</p>
-            <Link href="/login-usuario">
+            <Link href="/login">
               Iniciar sesión
             </Link>
           </div>

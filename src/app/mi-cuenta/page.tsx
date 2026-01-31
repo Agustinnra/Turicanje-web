@@ -79,7 +79,7 @@ export default function MiCuenta() {
     const userData = localStorage.getItem('usuario_data');
 
     if (!token || !userData) {
-      router.push('/login-usuario');
+      router.push('/login');
       return;
     }
 
@@ -87,7 +87,7 @@ export default function MiCuenta() {
       setUsuario(JSON.parse(userData));
       cargarDatos(token);
     } catch (e) {
-      router.push('/login-usuario');
+      router.push('/login');
     }
 
     const handleClickOutside = (event: MouseEvent) => {

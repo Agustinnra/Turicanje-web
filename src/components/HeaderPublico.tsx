@@ -51,7 +51,7 @@ export default function HeaderPublico() {
   const iniciarSesion = () => {
     // Guardar URL actual para regresar después del login
     localStorage.setItem('redirect_after_login', window.location.pathname);
-    router.push('/login-usuario');
+    router.push('/login');
   };
 
   return (

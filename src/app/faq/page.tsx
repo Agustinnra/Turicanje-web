@@ -203,7 +203,7 @@ export default function FAQPage() {
               )}
             </div>
           ) : (
-            <Link href="/login-usuario" className="btn-login">
+            <Link href="/login" className="btn-login">
               👤 Iniciar sesión
             </Link>
           )}

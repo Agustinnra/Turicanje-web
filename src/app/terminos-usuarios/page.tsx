@@ -29,7 +29,7 @@ export default function TerminosUsuariosPage() {
             <Link href="/contacto" className="nav-link">CONTACTO</Link>
           </nav>
 
-          <Link href="/login-usuario" className="login-btn">
+          <Link href="/login" className="login-btn">
             <span className="login-icon">👤</span>
             Iniciar sesión
           </Link>

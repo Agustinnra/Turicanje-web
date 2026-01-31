@@ -341,7 +341,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   const handleFavorito = async () => {
     if (!usuarioLogueado) {
       // Redirigir a login
-      window.location.href = '/login-usuario?redirect=' + encodeURIComponent(window.location.pathname);
+      window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
       return;
     }
 
@@ -571,7 +571,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
               )}
             </div>
           ) : (
-            <Link href="/login-usuario" className="login-btn">
+            <Link href="/login" className="login-btn">
               <span className="login-icon">👤</span>
               Iniciar sesión
             </Link>
@@ -611,7 +611,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
             ) : (
               <>
                 <Link href="/registro-usuario" className="nav-link-mobile sub-item">👤 Crear cuenta</Link>
-                <Link href="/login-usuario" className="nav-link-mobile login-mobile">Iniciar sesión</Link>
+                <Link href="/login" className="nav-link-mobile login-mobile">Iniciar sesión</Link>
               </>
             )}
           </nav>
@@ -1203,7 +1203,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
             <div className="footer-column">
               <h4>Usuarios</h4>
               <Link href="/registro-usuario">Crear cuenta</Link>
-              <Link href="/login-usuario">Iniciar sesión</Link>
+              <Link href="/login">Iniciar sesión</Link>
               <Link href="/terminos-usuarios">Términos usuarios</Link>
             </div>
             

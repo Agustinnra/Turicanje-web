@@ -41,7 +41,7 @@ export default function MisFavoritosPage() {
     const usuarioData = localStorage.getItem('usuario_data');
     
     if (!token) {
-      router.push('/login-usuario?redirect=/mis-favoritos');
+      router.push('/login?redirect=/mis-favoritos');
       return;
     }
 

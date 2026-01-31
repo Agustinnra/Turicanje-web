@@ -25,7 +25,7 @@ export default function SuscripcionPage() {
   useEffect(() => {
     const userData = localStorage.getItem('usuario_data');
     if (!userData) {
-      router.push('/login-usuario');
+      router.push('/login');
       return;
     }
     setUsuario(JSON.parse(userData));
@@ -123,7 +123,7 @@ export default function SuscripcionPage() {
               )}
             </div>
           ) : (
-            <Link href="/login-usuario" className="btn-login">
+            <Link href="/login" className="btn-login">
               👤 Iniciar sesión
             </Link>
           )}

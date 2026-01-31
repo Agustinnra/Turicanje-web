@@ -87,7 +87,7 @@ export default function CreadoresPage() {
     
     if (!token) {
       localStorage.setItem('redirect_after_login', '/creadores');
-      router.push('/login-usuario');
+      router.push('/login');
       return;
     }
 
@@ -188,7 +188,7 @@ export default function CreadoresPage() {
               )}
             </div>
           ) : (
-            <Link href="/login-usuario" className="btn-login">
+            <Link href="/login" className="btn-login">
               Iniciar sesión
             </Link>
           )}

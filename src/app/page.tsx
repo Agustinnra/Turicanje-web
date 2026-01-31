@@ -145,7 +145,7 @@ export default function LandingPage() {
             </div>
           ) : (
             // No logueado - mostrar botón de login
-            <Link href="/login-usuario" className="login-btn">
+            <Link href="/login" className="login-btn">
               <span className="login-icon">👤</span>
               Iniciar sesión
             </Link>
@@ -181,7 +181,7 @@ export default function LandingPage() {
                 🚪 Cerrar sesión
               </button>
             ) : (
-              <Link href="/login-usuario" className="landing-nav-link-mobile login-mobile">Iniciar sesión</Link>
+              <Link href="/login" className="landing-nav-link-mobile login-mobile">Iniciar sesión</Link>
             )}
           </nav>
         )}
@@ -415,7 +415,7 @@ export default function LandingPage() {
             <div className="footer-column">
               <h4>Usuarios</h4>
               <Link href="/registrarse">Crear cuenta</Link>
-              <Link href="/login-usuario">Iniciar sesión</Link>
+              <Link href="/login">Iniciar sesión</Link>
               <Link href="/terminos-usuarios">Términos usuarios</Link>
             </div>
             

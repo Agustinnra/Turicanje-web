@@ -99,7 +99,7 @@ export default function RegistroUsuario() {
           <h1>¡Bienvenido a Turicanje!</h1>
           <p>Tu cuenta ha sido creada exitosamente.</p>
           <p className="success-sub">Ya puedes empezar a acumular puntos en tus restaurantes favoritos.</p>
-          <Link href="/login-usuario" className="btn-iniciar-sesion">
+          <Link href="/login" className="btn-iniciar-sesion">
             Iniciar Sesión
           </Link>
         </div>
@@ -297,7 +297,7 @@ export default function RegistroUsuario() {
         </form>
 
         <div className="registro-footer">
-          <p>¿Ya tienes cuenta? <Link href="/login-usuario">Inicia sesión</Link></p>
+          <p>¿Ya tienes cuenta? <Link href="/login">Inicia sesión</Link></p>
         </div>
 
         <div className="registro-beneficios">

@@ -142,7 +142,7 @@ export default function CreadorProfilePage() {
 
   const handleSeguir = async () => {
     if (!usuarioLogueado) {
-      window.location.href = '/login-usuario?redirect=' + encodeURIComponent(window.location.pathname);
+      window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
       return;
     }
 
@@ -266,7 +266,7 @@ export default function CreadorProfilePage() {
               )}
             </div>
           ) : (
-            <Link href="/login-usuario" className="btn-login">
+            <Link href="/login" className="btn-login">
               Iniciar sesión
             </Link>
           )}

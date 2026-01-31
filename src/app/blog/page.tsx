@@ -122,7 +122,7 @@ export default function BlogPage() {
     
     if (!token) {
       localStorage.setItem('redirect_after_login', '/blog');
-      router.push('/login-usuario');
+      router.push('/login');
       return;
     }
 
@@ -236,7 +236,7 @@ export default function BlogPage() {
               )}
             </div>
           ) : (
-            <Link href="/login-usuario" className="btn-login">
+            <Link href="/login" className="btn-login">
               Iniciar sesión
             </Link>
           )}
