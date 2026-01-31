@@ -149,26 +149,38 @@ export default function RegistrarVenta() {
     setScannerError(null);
 
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { 
-          facingMode: 'environment',
-          width: { ideal: 640 },
-          height: { ideal: 480 }
-        }
-      });
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { 
+            facingMode: 'environment',
+            width: { ideal: 640 },
+            height: { ideal: 480 }
+          }
+        });
+      } catch {
+        // Fallback: cualquier cámara disponible
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 480 } }
+        });
+      }
       
       streamRef.current = stream;
       
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      
+      // Primero activar el scanner para que el <video> se renderice
       setScannerActivo(true);
       
+      // Esperar a que React renderice el video element
       setTimeout(() => {
-        iniciarDeteccionQR();
-      }, 500);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          videoRef.current.play().then(() => {
+            iniciarDeteccionQR();
+          }).catch(err => {
+            console.error('Error playing video:', err);
+          });
+        }
+      }, 100);
       
     } catch (error: any) {
       console.error('Error accediendo a la cámara:', error);
@@ -184,7 +196,7 @@ export default function RegistrarVenta() {
       } else if (error.name === 'OverconstrainedError') {
         mensajeError = 'No se encontró una cámara compatible.';
       } else if (error.name === 'TypeError') {
-        mensajeError = 'Requiere HTTPS (en producción funcionará). Ingresa el código manualmente.';
+        mensajeError = 'Requiere HTTPS. Ingresa el código manualmente.';
       }
       
       setScannerError(mensajeError);
