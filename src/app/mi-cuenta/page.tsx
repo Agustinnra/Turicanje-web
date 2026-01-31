@@ -25,6 +25,7 @@ interface Transaccion {
   description: string;
   created_at: string;
   negocio_nombre: string;
+  negocio_imagen?: string;
 }
 
 interface Favorito {
@@ -699,7 +700,13 @@ export default function MiCuenta() {
                 <div className="transacciones-list">
                   {transacciones.slice(0, 5).map(trans => (
                     <div key={trans.id} className="transaccion-item">
-                      <div className="trans-icon">{trans.transaction_type === 'earn' ? '+' : '-'}{Math.round(parseFloat(String(trans.points)))}</div>
+                      <div className="trans-icon">
+                        {trans.negocio_imagen ? (
+                          <img src={trans.negocio_imagen} alt="" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px'}} />
+                        ) : (
+                          trans.transaction_type === 'earn' ? '💰' : '🎁'
+                        )}
+                      </div>
                       <div className="trans-info">
                         <span className="trans-negocio">{trans.negocio_nombre || 'Turicanje'}</span>
                         <span className="trans-fecha">{formatearFecha(trans.created_at)}</span>
@@ -792,7 +799,13 @@ export default function MiCuenta() {
                 <div className="transacciones-completo">
                   {transacciones.map(trans => (
                     <div key={trans.id} className="transaccion-item-full">
-                      <div className="trans-icon-full">{trans.transaction_type === 'earn' ? '💰' : '🎁'}</div>
+                      <div className="trans-icon">
+                        {trans.negocio_imagen ? (
+                          <img src={trans.negocio_imagen} alt="" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px'}} />
+                        ) : (
+                          trans.transaction_type === 'earn' ? '💰' : '🎁'
+                        )}
+                      </div>
                       <div className="trans-details">
                         <span className="trans-negocio">{trans.negocio_nombre || 'Turicanje'}</span>
                         <span className="trans-desc">{trans.description || 'Acumulación de puntos'}</span>
