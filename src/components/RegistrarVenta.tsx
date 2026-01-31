@@ -381,6 +381,10 @@ export default function RegistrarVenta() {
         
         // Actualizar puntos del usuario en el estado local
         setUsuario(prev => prev ? { ...prev, puntos: prev.puntos - puntos } : null);
+        setSaldoComercio(prev => prev ? {
+          ...prev,
+          saldo: prev.saldo + puntos,
+        } : null);
       } else {
         setMensaje({ tipo: 'error', texto: data.mensaje || data.error || 'Error al canjear puntos' });
       }
