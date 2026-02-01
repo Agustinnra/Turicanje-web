@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, useRef, use } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import './comercio.css';
@@ -112,10 +112,19 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   const [usuarioLogueado, setUsuarioLogueado] = useState(false);
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const lastTapRef = useRef(0);
+  const touchDistRef = useRef(0);
+
 
   // Estados para lightbox del menú
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+
+
+
+
 
   useEffect(() => {
     // Verificar si hay usuario logueado
@@ -297,11 +306,15 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   const nextImage = () => {
     const galeriaMenu = comercio?.galeria_menu || [];
     setLightboxIndex((prev) => (prev + 1) % galeriaMenu.length);
+    setZoomLevel(1);
+    setZoomPosition({ x: 50, y: 50 });
   };
 
   const prevImage = () => {
     const galeriaMenu = comercio?.galeria_menu || [];
     setLightboxIndex((prev) => (prev - 1 + galeriaMenu.length) % galeriaMenu.length);
+    setZoomLevel(1);
+    setZoomPosition({ x: 50, y: 50 });
   };
 
   // Manejar teclas en lightbox
@@ -1142,12 +1155,93 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
             </>
           )}
           
-          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+          <div 
+            className="lightbox-content" 
+            onClick={(e) => {
+              e.stopPropagation();
+              const now = Date.now();
+              if (now - lastTapRef.current < 300) {
+                if (zoomLevel > 1) {
+                  setZoomLevel(1);
+                  setZoomPosition({ x: 50, y: 50 });
+                } else {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = ((e.clientX - rect.left) / rect.width) * 100;
+                  const y = ((e.clientY - rect.top) / rect.height) * 100;
+                  setZoomLevel(3);
+                  setZoomPosition({ x, y });
+                }
+              }
+              lastTapRef.current = now;
+            }}
+            onWheel={(e) => {
+              e.stopPropagation();
+              const delta = e.deltaY > 0 ? -0.5 : 0.5;
+              setZoomLevel(prev => Math.min(Math.max(prev + delta, 1), 5));
+              if (zoomLevel + delta <= 1) {
+                setZoomPosition({ x: 50, y: 50 });
+              }
+            }}
+            onMouseMove={(e) => {
+              if (zoomLevel > 1) {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                setZoomPosition({ x, y });
+              }
+            }}
+            onTouchStart={(e) => {
+              if (e.touches.length === 2) {
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                touchDistRef.current = Math.sqrt(dx * dx + dy * dy);
+              }
+            }}
+            onTouchMove={(e) => {
+              if (e.touches.length === 2) {
+                e.preventDefault();
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const newDist = Math.sqrt(dx * dx + dy * dy);
+                const scale = newDist / touchDistRef.current;
+                setZoomLevel(prev => Math.min(Math.max(prev * scale, 1), 5));
+                touchDistRef.current = newDist;
+              }
+            }}
+          >
             <img 
               src={galeriaMenu[lightboxIndex]} 
               alt={`Menú ${lightboxIndex + 1}`}
               className="lightbox-image"
+              style={{
+                transform: `scale(${zoomLevel})`,
+                transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                cursor: zoomLevel > 1 ? 'move' : 'zoom-in',
+                transition: zoomLevel === 1 ? 'transform 0.3s ease' : 'none',
+              }}
+              draggable={false}
             />
+            {zoomLevel > 1 && (
+              <button
+                className="zoom-reset-btn"
+                onClick={(e) => { e.stopPropagation(); setZoomLevel(1); setZoomPosition({ x: 50, y: 50 }); }}
+                style={{
+                  position: 'absolute',
+                  bottom: '10px',
+                  right: '10px',
+                  background: 'rgba(0,0,0,0.7)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                  zIndex: 10,
+                }}
+              >
+                🔍 {Math.round(zoomLevel * 100)}% — Tap para resetear
+              </button>
+            )}
           </div>
           
           {galeriaMenu.length > 1 && (
@@ -1156,14 +1250,13 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
           
-          {/* Miniaturas */}
           {galeriaMenu.length > 1 && (
             <div className="lightbox-thumbnails">
               {galeriaMenu.map((img, idx) => (
                 <button
                   key={idx}
                   className={`lightbox-thumb ${idx === lightboxIndex ? 'active' : ''}`}
-                  onClick={(e) => { e.stopPropagation(); setLightboxIndex(idx); }}
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex(idx); setZoomLevel(1); setZoomPosition({ x: 50, y: 50 }); }}
                 >
                   <img src={img} alt={`Miniatura ${idx + 1}`} />
                 </button>

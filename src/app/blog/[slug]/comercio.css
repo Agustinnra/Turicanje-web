@@ -1889,3 +1889,12 @@
     font-size: 12px;
   }
 }
+.lightbox-content {
+  overflow: hidden;
+  touch-action: none;
+}
+
+.lightbox-image {
+  user-select: none;
+  -webkit-user-select: none;
+}
