@@ -5,11 +5,12 @@
    .floating-buttons {
     position: fixed;
     bottom: 24px;
-    right: 24px;
+    right: 0;
     display: flex;
     flex-direction: column;
     gap: 12px;
     z-index: 9998;
+    align-items: flex-end;
   }
   
   /* Base button styles */
@@ -19,35 +20,42 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   
-  .floating-btn:hover {
-    transform: translateY(-3px);
-  }
-  
   .floating-btn:active {
-    transform: translateY(-1px);
+    opacity: 0.9;
   }
   
   /* ============================================
      BOTÓN MAPA - Glass/Translúcido
      ============================================ */
-  .map-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 18px;
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 50px;
-    color: white;
-    font-size: 0.9rem;
-    font-weight: 600;
-    box-shadow: 
-      0 8px 32px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
+     .map-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 18px;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 50px 0 0 50px;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      transform: translateX(calc(100% - 52px));
+      transition: transform 0.3s ease;
+    }
+    
+    .map-btn:hover {
+      transform: translateX(0);
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
   
   .map-btn .btn-icon {
     font-size: 1.3rem;
@@ -69,16 +77,24 @@
   /* ============================================
      BOTÓN WHATSAPP - Grande y protagonista
      ============================================ */
-  .whatsapp-btn {
+.whatsapp-btn {
     position: relative;
     display: flex;
     align-items: center;
     padding: 14px 20px;
     background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
-    border-radius: 60px;
+    border-radius: 60px 0 0 60px;
     color: white;
     overflow: visible;
     box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+    transform: translateX(calc(100% - 62px));
+    transition: transform 0.3s ease;
+  }
+  
+  .whatsapp-btn:hover {
+    transform: translateX(0);
+    background: linear-gradient(135deg, #2EE370 0%, #1A9E6E 100%);
+    box-shadow: 0 8px 30px rgba(37, 211, 102, 0.5);
   }
   
   .whatsapp-content {
