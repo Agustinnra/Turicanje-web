@@ -432,9 +432,11 @@
      ============================================================ */
      .profile-page .redes-section {
       padding: 0 24px 24px;
+      margin-top: 12px;
       display: flex;
       justify-content: center;
     }
+  
   
   .profile-page .redes-grid {
     display: flex;
