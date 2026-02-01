@@ -240,7 +240,7 @@
 }
 
 .tab-icon {
-  display: none;
+  font-size: 16px;
 }
 
 .tab-badge {
@@ -709,6 +709,11 @@
   }
   
   .tab-text {
+    display: block;
+    font-size: 11px;
+  }
+  
+  .tab-icon {
     display: none;
   }
   
@@ -1045,16 +1050,22 @@
   /* Responsive tabs */
   @media (max-width: 768px) {
     .dashboard-tabs {
-      padding: 0 12px;
+      padding: 0 8px;
     }
     
     .tab {
-      padding: 12px 14px;
-      font-size: 13px;
+      padding: 10px 12px;
+      font-size: 12px;
+      gap: 4px;
+    }
+    
+    .tab .tab-icon {
+      display: none;
     }
     
     .tab .tab-text {
-      display: none;
+      display: block;
+      font-size: 12px;
     }
   }
 /* ============================================================
