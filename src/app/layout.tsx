@@ -64,9 +64,7 @@ export const metadata: Metadata = {
   // Iconos
   icons: {
     icon: [
-      { url: '/icons/turity-transparent.png?v=2', type: 'image/png', sizes: '500x500' },
-      { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icons/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/icons/turity-transparent.png?v=3', type: 'image/png', sizes: '500x500' },
     ],
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
