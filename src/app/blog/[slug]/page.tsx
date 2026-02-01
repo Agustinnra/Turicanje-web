@@ -69,6 +69,15 @@ interface Comercio {
   is_active?: boolean;
   plan_activo?: boolean;
   created_at?: string;
+  // Amenidades
+  area_fumar?: boolean;
+  terraza?: boolean;
+  area_infantil?: boolean;
+  pet_friendly?: boolean;
+  estacionamiento?: boolean;
+  acepta_reservaciones?: boolean;
+  delivery?: boolean;
+  opciones_menu?: string[];
   // Creador
   creador_id?: number;
   creador_username?: string;
@@ -793,6 +802,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
                 )}
               </Link>
               <div className="slug-creador-info">
+                <span className="slug-recomendado-label">Recomendado por:</span>
                 <Link href={`/profile/${comercio.creador_username}`} className="slug-creador-nombre">
                   {comercio.creador_nombre}
                 </Link>
@@ -812,6 +822,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
                 className="slug-creador-avatar turicanje"
               />
               <div className="slug-creador-info">
+                <span className="slug-recomendado-label">Recomendado por:</span>
                 <Link href="/" className="slug-creador-nombre">Turicanje</Link>
                 <span className="slug-creador-fecha">
                   {formatDate(comercio.created_at)} · 1 Min. de lectura
@@ -929,6 +940,63 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
               ></iframe>
             </div>
           )}
+
+                  {/* Amenidades */}
+        {(comercio.terraza || comercio.estacionamiento || comercio.pet_friendly || 
+          comercio.area_infantil || comercio.area_fumar || comercio.acepta_reservaciones || 
+          comercio.delivery) && (
+          <section className="info-section">
+            <div className="section-header">
+              <span className="section-icon">✨</span>
+              <h2 className="section-title">AMENIDADES</h2>
+            </div>
+            <div className="amenidades-grid">
+              {comercio.terraza && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🌿</span>
+                  <span className="amenidad-label">Terraza</span>
+                </div>
+              )}
+              {comercio.estacionamiento && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🅿️</span>
+                  <span className="amenidad-label">Estacionamiento</span>
+                </div>
+              )}
+              {comercio.pet_friendly && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🐾</span>
+                  <span className="amenidad-label">Pet Friendly</span>
+                </div>
+              )}
+              {comercio.area_infantil && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">👶</span>
+                  <span className="amenidad-label">Área Infantil</span>
+                </div>
+              )}
+              {comercio.area_fumar && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🚬</span>
+                  <span className="amenidad-label">Área de Fumar</span>
+                </div>
+              )}
+              {comercio.acepta_reservaciones && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">📅</span>
+                  <span className="amenidad-label">Reservaciones</span>
+                </div>
+              )}
+              {comercio.delivery && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🛵</span>
+                  <span className="amenidad-label">Delivery</span>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+        
           
           <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="maps-btn">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -1898,3 +1898,39 @@
   user-select: none;
   -webkit-user-select: none;
 }
+
+/* Recomendado por label */
+.slug-recomendado-label {
+  font-size: 12px;
+  color: #999;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* Amenidades */
+.amenidades-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.amenidad-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8f9fa;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+}
+
+.amenidad-icon {
+  font-size: 20px;
+}
+
+.amenidad-label {
+  font-size: 14px;
+  color: #444;
+  font-weight: 500;
+}
