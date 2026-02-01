@@ -235,7 +235,12 @@
 }
 
 .tab-text {
-  font-weight: 500;
+  display: block;
+  font-size: 11px;
+}
+
+.tab-icon {
+  display: none;
 }
 
 .tab-badge {
