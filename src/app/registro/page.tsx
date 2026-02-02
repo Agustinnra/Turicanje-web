@@ -277,7 +277,7 @@ function RegistroContent() {
                     className="btn-toggle-password"
                     onClick={() => setMostrarPassword(!mostrarPassword)}
                   >
-                    {mostrarPassword ? 'Ocultar' : 'Ver'}
+                    {mostrarPassword ? '🙈' : '👁️'}
                   </button>
                 </div>
               </div>
@@ -298,7 +298,7 @@ function RegistroContent() {
                     className="btn-toggle-password"
                     onClick={() => setMostrarConfirmarPassword(!mostrarConfirmarPassword)}
                   >
-                    {mostrarConfirmarPassword ? 'Ocultar' : 'Ver'}
+                    {mostrarConfirmarPassword ? '🙈' : '👁️'}
                   </button>
                 </div>
               </div>
