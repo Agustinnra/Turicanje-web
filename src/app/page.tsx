@@ -418,6 +418,12 @@ export default function LandingPage() {
               <Link href="/login">Iniciar sesión</Link>
               <Link href="/terminos-usuarios">Términos usuarios</Link>
             </div>
+
+            <div className="footer-column">
+              <h4>Nosotros</h4>
+              <Link href="/resenas">Reseñas</Link>
+              <Link href="/contacto">Contacto</Link>
+            </div>
             
             <div className="footer-column">
               <h4>Legal</h4>
