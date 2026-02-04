@@ -24,6 +24,8 @@ export default function ReportarPage() {
     telefono_reportante: '',
     email_reportante: '',
   });
+  const [foto, setFoto] = useState<File | null>(null);
+  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -36,16 +38,51 @@ export default function ReportarPage() {
     setFormData({ ...formData, tipo_reporte: value });
   };
 
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFoto(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFotoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeFoto = () => {
+    setFoto(null);
+    setFotoPreview(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
+      // Si hay foto, usar FormData
+      let body: any;
+      let headers: any = {};
+
+      if (foto) {
+        const formDataToSend = new FormData();
+        formDataToSend.append('nombre_negocio', formData.nombre_negocio);
+        formDataToSend.append('tipo_reporte', formData.tipo_reporte);
+        formDataToSend.append('descripcion', formData.descripcion);
+        formDataToSend.append('telefono_reportante', formData.telefono_reportante);
+        formDataToSend.append('email_reportante', formData.email_reportante);
+        formDataToSend.append('foto', foto);
+        body = formDataToSend;
+      } else {
+        headers['Content-Type'] = 'application/json';
+        body = JSON.stringify(formData);
+      }
+
       const res = await fetch(`${API_URL}/api/reportes`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        headers,
+        body,
       });
 
       if (!res.ok) {
@@ -95,20 +132,20 @@ export default function ReportarPage() {
         <form onSubmit={handleSubmit} className="reportar-form">
           {/* Nombre del negocio */}
           <div className="form-group">
-            <label>📍 Nombre del lugar *</label>
+            <label>📍 Nombre del lugar <span className="required">*</span></label>
             <input
               type="text"
               name="nombre_negocio"
               value={formData.nombre_negocio}
               onChange={handleChange}
               required
-              placeholder="Ej: Tacos El Güero, Café Roma..."
+              placeholder="Ej: Tacos El Güero, Café Roma, La Parroquia..."
             />
           </div>
 
           {/* Tipo de reporte */}
           <div className="form-group">
-            <label>🏷️ ¿Qué quieres reportar? *</label>
+            <label>🏷️ ¿Qué quieres reportar? <span className="required">*</span></label>
             <div className="radio-options">
               {TIPOS_REPORTE.map((tipo) => (
                 <label
@@ -133,34 +170,69 @@ export default function ReportarPage() {
 
           {/* Descripción */}
           <div className="form-group">
-            <label>📝 Cuéntanos más (opcional)</label>
+            <label>📝 Cuéntanos más <span className="optional">(opcional)</span></label>
             <textarea
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
               rows={3}
-              placeholder="Ej: Ahora abren de 10am a 8pm en lugar de 9am a 10pm..."
+              placeholder="Ej: Ahora abren de 10am a 8pm en lugar de 9am a 10pm, el menú subió de precio, etc..."
             />
+          </div>
+
+          {/* Subir foto */}
+          <div className="form-group">
+            <label>📷 Adjunta una foto <span className="optional">(opcional)</span></label>
+            <p className="field-hint">Si tienes foto del lugar, menú o evidencia del cambio, súbela aquí</p>
+            
+            {!fotoPreview ? (
+              <label className="foto-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFotoChange}
+                  className="foto-input"
+                />
+                <div className="foto-placeholder">
+                  <span className="foto-icon">📸</span>
+                  <span className="foto-text">Toca para subir foto</span>
+                  <span className="foto-hint">JPG, PNG hasta 5MB</span>
+                </div>
+              </label>
+            ) : (
+              <div className="foto-preview-container">
+                <img src={fotoPreview} alt="Preview" className="foto-preview" />
+                <button type="button" onClick={removeFoto} className="foto-remove">
+                  ✕ Quitar
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Datos de contacto opcionales */}
           <div className="form-group contact-section">
-            <p>📧 Si quieres que te avisemos cuando actualicemos la info (opcional):</p>
+            <label>📧 ¿Quieres que te avisemos cuando lo actualicemos? <span className="optional">(opcional)</span></label>
             <div className="contact-grid">
-              <input
-                type="tel"
-                name="telefono_reportante"
-                value={formData.telefono_reportante}
-                onChange={handleChange}
-                placeholder="Tu WhatsApp"
-              />
-              <input
-                type="email"
-                name="email_reportante"
-                value={formData.email_reportante}
-                onChange={handleChange}
-                placeholder="Tu email"
-              />
+              <div className="contact-field">
+                <input
+                  type="tel"
+                  name="telefono_reportante"
+                  value={formData.telefono_reportante}
+                  onChange={handleChange}
+                  placeholder="55 1234 5678"
+                />
+                <span className="field-label">Tu WhatsApp</span>
+              </div>
+              <div className="contact-field">
+                <input
+                  type="email"
+                  name="email_reportante"
+                  value={formData.email_reportante}
+                  onChange={handleChange}
+                  placeholder="tu@email.com"
+                />
+                <span className="field-label">Tu email</span>
+              </div>
             </div>
           </div>
 
