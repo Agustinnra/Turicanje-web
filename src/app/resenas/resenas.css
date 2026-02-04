@@ -59,10 +59,10 @@
 }
 
 .estadisticas-grid {
-  max-width: 1000px;
+  max-width: 900px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   justify-content: center;
 }

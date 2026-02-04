@@ -165,7 +165,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
     if (slug) cargarComercio();
   }, [slug]);
 
-  // Cargar script de Instagram para embeds
+// Cargar scripts de Instagram Y TikTok para embeds
 // Cargar scripts de Instagram Y TikTok para embeds
 useEffect(() => {
   if (comercio?.instagram_embed) {
@@ -174,27 +174,24 @@ useEffect(() => {
     // Detectar si es TikTok
     const isTikTok = embedContent.includes('tiktok.com') || embedContent.includes('tiktok-embed');
     
-    // Detectar si es Instagram
+    // Detectar si es Instagram  
     const isInstagram = embedContent.includes('instagram.com') || embedContent.includes('instagr.am');
     
     if (isTikTok) {
-      // Cargar script de TikTok
-      const existingTikTokScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
-      if (!existingTikTokScript) {
+      // Pequeño delay para asegurar que el DOM esté listo
+      setTimeout(() => {
+        const existingScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+        if (existingScript) {
+          existingScript.remove();
+        }
         const script = document.createElement('script');
         script.src = 'https://www.tiktok.com/embed.js';
         script.async = true;
         document.body.appendChild(script);
-      } else {
-        // Si el script ya existe, forzar re-render
-        if ((window as any).tiktokEmbed) {
-          (window as any).tiktokEmbed.lib.render();
-        }
-      }
+      }, 100);
     }
     
     if (isInstagram) {
-      // Cargar script de Instagram
       const existingInstaScript = document.querySelector('script[src="//www.instagram.com/embed.js"]');
       if (!existingInstaScript) {
         const script = document.createElement('script');
