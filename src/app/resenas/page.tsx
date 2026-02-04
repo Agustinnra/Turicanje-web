@@ -146,9 +146,8 @@ const testimoniosUsuarios = [
 
 // Estadísticas
 const estadisticas = [
-  { numero: "150+", label: "Negocios afiliados" },
-  { numero: "5,000+", label: "Usuarios activos" },
-  { numero: "50,000+", label: "Puntos canjeados" },
+  { numero: "150+", label: "Negocios registrados" },
+  { numero: "600+", label: "Usuarios activos" },
   { numero: "4.9", label: "Calificación promedio" }
 ];
 
