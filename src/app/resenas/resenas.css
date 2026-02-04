@@ -5,7 +5,7 @@
 
 /* Hero Section */
 .resenas-hero {
-  background: linear-gradient(135deg, var(--secondary) 0%, #1a1f35 100%);
+  background: linear-gradient(135deg, #2D3047 0%, #1a1f35 100%);
   padding: 5rem 2rem;
   text-align: center;
   position: relative;
@@ -29,7 +29,7 @@
 }
 
 .resenas-hero .highlight {
-  color: var(--primary);
+  color: #FF6B35;
 }
 
 .resenas-hero .hero-subtitle {
@@ -64,6 +64,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
+  justify-content: center;
 }
 
 .estadistica-card {
@@ -84,7 +85,7 @@
   font-family: var(--font-display);
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary);
+  color: #FF6B35;
   line-height: 1;
   margin-bottom: 0.5rem;
 }
@@ -92,6 +93,7 @@
 .stat-label {
   font-size: 0.9rem;
   color: #333;
+  font-weight: 500;
 }
 
 /* Secciones de Testimonios */
@@ -101,6 +103,14 @@
   margin: 0 auto;
 }
 
+.negocios-section {
+  background: #f9f9f9;
+}
+
+.usuarios-section {
+  background: #fff;
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 3rem;
@@ -108,9 +118,9 @@
 
 .section-tag {
   display: inline-block;
-  background: var(--primary);
+  background: #FF6B35;
   color: #fff;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 50px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -121,13 +131,13 @@
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 3vw, 2.5rem);
   font-weight: 700;
-  color: #333;
+  color: #222 !important;
   margin-bottom: 0.75rem;
 }
 
 .section-header p {
   font-size: 1.1rem;
-  color: #555;
+  color: #555 !important;
   max-width: 600px;
   margin: 0 auto;
 }
@@ -144,15 +154,15 @@
   background: #fff;
   border-radius: 16px;
   padding: 1.75rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   transition: all 0.3s ease;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e5e5e5;
   display: flex;
   flex-direction: column;
 }
 
 .testimonio-card:hover {
-  box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
   transform: translateY(-4px);
 }
 
@@ -176,7 +186,7 @@
 }
 
 .negocio-avatar {
-  background: linear-gradient(135deg, var(--primary), #E55A2B);
+  background: linear-gradient(135deg, #FF6B35, #E55A2B);
 }
 
 .avatar-emoji {
@@ -200,14 +210,14 @@
   font-family: var(--font-display);
   font-size: 1.1rem;
   font-weight: 600;
-  color: #222;
+  color: #222 !important;
   margin: 0 0 0.25rem 0;
 }
 
 .negocio-meta,
 .usuario-meta {
   font-size: 0.85rem;
-  color: #555;
+  color: #666 !important;
 }
 
 /* Texto del Testimonio */
@@ -215,7 +225,7 @@
   flex: 1;
   font-size: 1rem;
   line-height: 1.65;
-  color: #333;
+  color: #333 !important;
   margin: 0 0 1.5rem 0;
   padding: 0;
   border: none;
@@ -228,7 +238,7 @@
   justify-content: space-between;
   align-items: flex-end;
   padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid #e5e5e5;
 }
 
 .autor-info {
@@ -239,12 +249,12 @@
 .autor-nombre {
   font-weight: 600;
   font-size: 0.95rem;
-  color: #222;
+  color: #222 !important;
 }
 
 .autor-cargo {
   font-size: 0.8rem;
-  color: #555;
+  color: #666 !important;
 }
 
 .rating-fecha {
@@ -256,7 +266,7 @@
 
 .fecha {
   font-size: 0.75rem;
-  color: #555;
+  color: #666 !important;
 }
 
 /* Star Rating */
@@ -266,7 +276,7 @@
 }
 
 .star {
-  color: #ccc;
+  color: #ddd;
   font-size: 1rem;
 }
 
@@ -291,7 +301,7 @@
 .puntos-cantidad {
   font-weight: 600;
   font-size: 0.85rem;
-  color: #15776d;
+  color: #15776d !important;
 }
 
 /* CTA Sections */
@@ -301,11 +311,11 @@
 }
 
 .cta-section-resenas.cta-negocios {
-  background: #f8f8f8;
+  background: #f5f5f5;
 }
 
 .cta-section-resenas.cta-usuarios {
-  background: linear-gradient(135deg, var(--secondary) 0%, #1a1f35 100%);
+  background: linear-gradient(135deg, #2D3047 0%, #1a1f35 100%);
 }
 
 .cta-section-resenas .cta-content {
@@ -321,11 +331,11 @@
 }
 
 .cta-section-resenas.cta-negocios h3 {
-  color: #222;
+  color: #222 !important;
 }
 
 .cta-section-resenas.cta-usuarios h3 {
-  color: #fff;
+  color: #fff !important;
 }
 
 .cta-section-resenas .cta-content p {
@@ -334,14 +344,20 @@
 }
 
 .cta-section-resenas.cta-negocios p {
-  color: #555;
+  color: #555 !important;
 }
 
 .cta-section-resenas.cta-usuarios p {
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.85) !important;
 }
 
 /* Responsive */
+@media (max-width: 900px) {
+  .estadisticas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .estadisticas-grid {
     grid-template-columns: repeat(2, 1fr);

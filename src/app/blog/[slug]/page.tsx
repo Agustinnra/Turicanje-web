@@ -166,30 +166,55 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   }, [slug]);
 
   // Cargar script de Instagram para embeds
-  useEffect(() => {
-    if (comercio?.instagram_embed) {
-      // Cargar el script de Instagram
-      const script = document.createElement('script');
-      script.src = '//www.instagram.com/embed.js';
-      script.async = true;
-      document.body.appendChild(script);
+// Cargar scripts de Instagram Y TikTok para embeds
+useEffect(() => {
+  if (comercio?.instagram_embed) {
+    const embedContent = comercio.instagram_embed;
+    
+    // Detectar si es TikTok
+    const isTikTok = embedContent.includes('tiktok.com') || embedContent.includes('tiktok-embed');
+    
+    // Detectar si es Instagram
+    const isInstagram = embedContent.includes('instagram.com') || embedContent.includes('instagr.am');
+    
+    if (isTikTok) {
+      // Cargar script de TikTok
+      const existingTikTokScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+      if (!existingTikTokScript) {
+        const script = document.createElement('script');
+        script.src = 'https://www.tiktok.com/embed.js';
+        script.async = true;
+        document.body.appendChild(script);
+      } else {
+        // Si el script ya existe, forzar re-render
+        if ((window as any).tiktokEmbed) {
+          (window as any).tiktokEmbed.lib.render();
+        }
+      }
+    }
+    
+    if (isInstagram) {
+      // Cargar script de Instagram
+      const existingInstaScript = document.querySelector('script[src="//www.instagram.com/embed.js"]');
+      if (!existingInstaScript) {
+        const script = document.createElement('script');
+        script.src = '//www.instagram.com/embed.js';
+        script.async = true;
+        document.body.appendChild(script);
 
-      // Procesar embeds cuando el script cargue
-      script.onload = () => {
+        script.onload = () => {
+          if ((window as any).instgrm) {
+            (window as any).instgrm.Embeds.process();
+          }
+        };
+      } else {
         if ((window as any).instgrm) {
           (window as any).instgrm.Embeds.process();
         }
-      };
-
-      return () => {
-        // Cleanup
-        const existingScript = document.querySelector('script[src="//www.instagram.com/embed.js"]');
-        if (existingScript) {
-          existingScript.remove();
-        }
-      };
+      }
     }
-  }, [comercio?.instagram_embed]);
+  }
+}, [comercio?.instagram_embed]);
 
   // Cargar reviews y stats cuando tengamos el comercio
   useEffect(() => {
