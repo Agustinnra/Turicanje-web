@@ -107,10 +107,14 @@ export default function TabReportes() {
       const data = await res.json();
       
       if (accion === 'aprobado' && data.reporte?.codigo_generado) {
-        setMensaje({ 
-          tipo: 'exito', 
-          texto: `✅ Reporte aprobado. Código generado: ${data.reporte.codigo_generado}` 
-        });
+        let msg = `✅ Reporte aprobado. Código: ${data.reporte.codigo_generado}`;
+        if (data.envio?.email) {
+          msg += `\n📧 Código enviado a: ${data.envio.email}`;
+        }
+        if (data.envio?.telefono) {
+          msg += `\n📱 WhatsApp pendiente: ${data.envio.telefono}`;
+        }
+        setMensaje({ tipo: 'exito', texto: msg });
       } else if (accion === 'aprobado') {
         setMensaje({ tipo: 'exito', texto: '✅ Reporte aprobado' });
       } else if (accion === 'rechazado') {

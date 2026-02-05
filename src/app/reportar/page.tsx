@@ -1,484 +1,294 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import Link from 'next/link';
+import './reportar.css';
 
+const TIPOS_REPORTE = [
+  { value: 'cerrado_permanente', label: 'El lugar cerró permanentemente', icon: '🚫' },
+  { value: 'cambio_horario', label: 'Cambió de horario', icon: '🕐' },
+  { value: 'cambio_menu', label: 'Cambió su menú o precios', icon: '🍽️' },
+  { value: 'info_incorrecta', label: 'La información es incorrecta', icon: '❌' },
+  { value: 'recomendar_nuevo', label: 'Quiero recomendar un lugar nuevo', icon: '✨' },
+  { value: 'otro', label: 'Otro', icon: '💬' },
+];
+
+// URL del backend Express
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
-interface Reporte {
-  id: number;
-  nombre_negocio: string;
-  place_id: string | null;
-  tipo_reporte: string;
-  descripcion: string | null;
-  telefono_reportante: string | null;
-  email_reportante: string | null;
-  foto_url: string | null;
-  estado: string;
-  codigo_generado: string | null;
-  revisado: boolean;
-  notas_admin: string | null;
-  created_at: string;
-  eliminar_at: string;
-}
+export default function ReportarPage() {
+  const [formData, setFormData] = useState({
+    nombre_negocio: '',
+    tipo_reporte: '',
+    descripcion: '',
+    telefono_reportante: '',
+    email_reportante: '',
+  });
+  const [fotos, setFotos] = useState<File[]>([]);
+  const [fotoPreviews, setFotoPreviews] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
 
-const TIPO_LABELS: Record<string, { label: string; icon: string }> = {
-  cerrado_permanente: { label: 'Cerró permanentemente', icon: '🚫' },
-  cambio_horario: { label: 'Cambió horario', icon: '🕐' },
-  cambio_menu: { label: 'Cambió menú/precios', icon: '🍽️' },
-  info_incorrecta: { label: 'Info incorrecta', icon: '❌' },
-  recomendar_nuevo: { label: 'Lugar nuevo', icon: '✨' },
-  otro: { label: 'Otro', icon: '💬' },
-};
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-const ESTADO_COLORS: Record<string, { bg: string; color: string }> = {
-  pendiente: { bg: '#fef3c7', color: '#92400e' },
-  aprobado: { bg: '#d1fae5', color: '#065f46' },
-  rechazado: { bg: '#fee2e2', color: '#991b1b' },
-  duplicado: { bg: '#e5e7eb', color: '#374151' },
-};
+  const handleRadioChange = (value: string) => {
+    setFormData({ ...formData, tipo_reporte: value });
+  };
 
-export default function TabReportes() {
-  const [reportes, setReportes] = useState<Reporte[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [filtro, setFiltro] = useState<'todos' | 'pendiente' | 'aprobado' | 'rechazado'>('pendiente');
-  const [mensaje, setMensaje] = useState<{ tipo: 'exito' | 'error'; texto: string } | null>(null);
-  const [procesando, setProcesando] = useState<number | null>(null);
-  const [modalFoto, setModalFoto] = useState<string | null>(null);
-  const [notasTemp, setNotasTemp] = useState<Record<number, string>>({});
+  const handleFotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const espacioDisponible = 5 - fotos.length;
+    const nuevasfotos = files.slice(0, espacioDisponible);
+    
+    if (nuevasfotos.length === 0) return;
 
-  const cargarReportes = async () => {
+    const nuevosArchivos = [...fotos, ...nuevasfotos];
+    setFotos(nuevosArchivos);
+
+    // Generar previews
+    nuevasfotos.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFotoPreviews(prev => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Reset input para poder subir el mismo archivo
+    e.target.value = '';
+  };
+
+  const removeFoto = (index: number) => {
+    setFotos(prev => prev.filter((_, i) => i !== index));
+    setFotoPreviews(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    // Validar al menos 1 foto
+    if (fotos.length === 0) {
+      setError('Sube al menos 1 foto para enviar tu reporte');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const params = filtro === 'todos' ? '' : `?revisado=${filtro === 'pendiente' ? 'false' : 'true'}`;
-      const res = await fetch(`${API_URL}/api/reportes${params}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const formDataToSend = new FormData();
+      formDataToSend.append('nombre_negocio', formData.nombre_negocio);
+      formDataToSend.append('tipo_reporte', formData.tipo_reporte);
+      formDataToSend.append('descripcion', formData.descripcion);
+      formDataToSend.append('telefono_reportante', formData.telefono_reportante);
+      formDataToSend.append('email_reportante', formData.email_reportante);
+      
+      // Agregar todas las fotos
+      fotos.forEach(foto => {
+        formDataToSend.append('fotos', foto);
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        let reportesFiltrados = data.reportes || [];
-        
-        // Filtrar por estado si no es "todos"
-        if (filtro !== 'todos' && filtro !== 'pendiente') {
-          reportesFiltrados = reportesFiltrados.filter((r: Reporte) => r.estado === filtro);
-        }
-        
-        setReportes(reportesFiltrados);
+      const res = await fetch(`${API_URL}/api/reportes`, {
+        method: 'POST',
+        body: formDataToSend,
+      });
+
+      if (!res.ok) {
+        throw new Error('Error al enviar el reporte');
       }
-    } catch (error) {
-      console.error('Error cargando reportes:', error);
+
+      setSubmitted(true);
+    } catch (err) {
+      setError('Hubo un problema al enviar tu reporte. Por favor intenta de nuevo.');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    cargarReportes();
-  }, [filtro]);
-
-  const revisarReporte = async (id: number, accion: 'aprobado' | 'rechazado' | 'duplicado') => {
-    setProcesando(id);
-    setMensaje(null);
-
-    try {
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      const res = await fetch(`${API_URL}/api/reportes/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          revisado: true,
-          accion_tomada: accion,
-          notas_admin: notasTemp[id] || null,
-          revisado_por: 'admin',
-          // Si se aprueba, el backend genera el código
-          generar_codigo: accion === 'aprobado'
-        })
-      });
-
-      if (!res.ok) throw new Error('Error al procesar reporte');
-
-      const data = await res.json();
-      
-      if (accion === 'aprobado' && data.reporte?.codigo_generado) {
-        let msg = `✅ Reporte aprobado. Código: ${data.reporte.codigo_generado}`;
-        if (data.envio?.email) {
-          msg += `\n📧 Código enviado a: ${data.envio.email}`;
-        }
-        if (data.envio?.telefono) {
-          msg += `\n📱 WhatsApp pendiente: ${data.envio.telefono}`;
-        }
-        setMensaje({ tipo: 'exito', texto: msg });
-      } else if (accion === 'aprobado') {
-        setMensaje({ tipo: 'exito', texto: '✅ Reporte aprobado' });
-      } else if (accion === 'rechazado') {
-        setMensaje({ tipo: 'exito', texto: '❌ Reporte rechazado' });
-      } else {
-        setMensaje({ tipo: 'exito', texto: '🔄 Marcado como duplicado' });
-      }
-
-      // Recargar
-      await cargarReportes();
-    } catch (error: any) {
-      setMensaje({ tipo: 'error', texto: `❌ ${error.message}` });
-    } finally {
-      setProcesando(null);
-    }
-  };
-
-  const diasRestantes = (eliminarAt: string) => {
-    const diff = new Date(eliminarAt).getTime() - Date.now();
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-  };
-
-  const pendientes = reportes.filter(r => r.estado === 'pendiente').length;
-
-  if (loading) {
-    return <div style={{ textAlign: 'center', padding: '3rem' }}>⏳ Cargando reportes...</div>;
+  // Pantalla de éxito
+  if (submitted) {
+    return (
+      <div className="success-container">
+        <div className="success-card">
+          <div className="icon">🎉</div>
+          <h1>¡Gracias por tu ayuda!</h1>
+          <p>Tu reporte nos ayuda a mantener Turicanje actualizado para todos los usuarios.</p>
+          <div className="success-buttons">
+            <a href="https://wa.me/5215522545216" className="btn-whatsapp">
+              📲 Volver al Bot de WhatsApp
+            </a>
+            <Link href="/" className="btn-home">
+              🏠 Ir al inicio
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div>
-      {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 style={{ margin: 0, color: '#1f2937' }}>
-          📋 Reportes de Usuarios
-          {pendientes > 0 && (
-            <span style={{
-              background: '#ef4444',
-              color: 'white',
-              borderRadius: '999px',
-              padding: '2px 10px',
-              fontSize: '0.8rem',
-              marginLeft: '0.5rem',
-              verticalAlign: 'middle'
-            }}>
-              {pendientes} pendientes
-            </span>
-          )}
-        </h2>
-
-        {/* Filtros */}
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          {(['pendiente', 'aprobado', 'rechazado', 'todos'] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => setFiltro(f)}
-              style={{
-                padding: '0.5rem 1rem',
-                borderRadius: '0.5rem',
-                border: filtro === f ? '2px solid #ec4899' : '1px solid #e5e7eb',
-                background: filtro === f ? '#fdf2f8' : 'white',
-                color: filtro === f ? '#be185d' : '#6b7280',
-                fontWeight: filtro === f ? 600 : 400,
-                cursor: 'pointer',
-                fontSize: '0.85rem'
-              }}
-            >
-              {f === 'pendiente' && '⏳ '}
-              {f === 'aprobado' && '✅ '}
-              {f === 'rechazado' && '❌ '}
-              {f === 'todos' && '📋 '}
-              {f.charAt(0).toUpperCase() + f.slice(1)}
-            </button>
-          ))}
+    <div className="reportar-container">
+      <div className="reportar-wrapper">
+        {/* Header */}
+        <div className="reportar-header">
+          <div className="icon">🧠</div>
+          <h1>Ayúdanos a mejorar Turicanje</h1>
+          <p>Tu reporte ayuda a otros usuarios y a los negocios locales 💛</p>
         </div>
-      </div>
 
-      {/* Mensaje */}
-      {mensaje && (
-        <div style={{
-          padding: '1rem',
-          borderRadius: '0.75rem',
-          marginBottom: '1rem',
-          background: mensaje.tipo === 'exito' ? '#d1fae5' : '#fee2e2',
-          color: mensaje.tipo === 'exito' ? '#065f46' : '#991b1b',
-          border: `1px solid ${mensaje.tipo === 'exito' ? '#6ee7b7' : '#fca5a5'}`
-        }}>
-          {mensaje.texto}
-        </div>
-      )}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="reportar-form">
+          {/* Nombre del negocio */}
+          <div className="form-group">
+            <label>📍 Nombre del lugar <span className="required">*</span></label>
+            <input
+              type="text"
+              name="nombre_negocio"
+              value={formData.nombre_negocio}
+              onChange={handleChange}
+              required
+              placeholder="Ej: Tacos El Güero, Café Roma, La Parroquia..."
+            />
+          </div>
 
-      {/* Info sobre limpieza */}
-      <div style={{
-        background: '#f0f9ff',
-        border: '1px solid #bae6fd',
-        borderRadius: '0.75rem',
-        padding: '0.75rem 1rem',
-        marginBottom: '1.5rem',
-        fontSize: '0.85rem',
-        color: '#0369a1'
-      }}>
-        ℹ️ Los reportes se eliminan automáticamente <strong>30 días</strong> después de crearse. Los códigos no canjeados también expiran a los 30 días.
-      </div>
+          {/* Tipo de reporte */}
+          <div className="form-group">
+            <label>🏷️ ¿Qué quieres reportar? <span className="required">*</span></label>
+            <div className="radio-options">
+              {TIPOS_REPORTE.map((tipo) => (
+                <label
+                  key={tipo.value}
+                  className={`radio-option ${formData.tipo_reporte === tipo.value ? 'selected' : ''}`}
+                  onClick={() => handleRadioChange(tipo.value)}
+                >
+                  <input
+                    type="radio"
+                    name="tipo_reporte"
+                    value={tipo.value}
+                    checked={formData.tipo_reporte === tipo.value}
+                    onChange={() => handleRadioChange(tipo.value)}
+                    required
+                  />
+                  <span className="icon">{tipo.icon}</span>
+                  <span>{tipo.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
 
-      {/* Lista de reportes */}
-      {reportes.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>
-          {filtro === 'pendiente' ? '🎉 No hay reportes pendientes' : 'No hay reportes con este filtro'}
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {reportes.map(reporte => {
-            const tipo = TIPO_LABELS[reporte.tipo_reporte] || { label: reporte.tipo_reporte, icon: '📝' };
-            const estadoColor = ESTADO_COLORS[reporte.estado] || ESTADO_COLORS.pendiente;
-            const dias = diasRestantes(reporte.eliminar_at);
+          {/* Descripción */}
+          <div className="form-group">
+            <label>📝 Cuéntanos más <span className="required">*</span></label>
+            <textarea
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={handleChange}
+              rows={3}
+              required
+              placeholder="Ej: Ahora abren de 10am a 8pm en lugar de 9am a 10pm, el menú subió de precio, etc..."
+            />
+          </div>
 
-            return (
-              <div
-                key={reporte.id}
-                style={{
-                  background: 'white',
-                  borderRadius: '1rem',
-                  border: '1px solid #e5e7eb',
-                  padding: '1.5rem',
-                  boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-                }}
-              >
-                {/* Top row */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                  <div>
-                    <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1.1rem', color: '#1f2937' }}>
-                      📍 {reporte.nombre_negocio}
-                    </h3>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '999px',
-                      fontSize: '0.8rem',
-                      fontWeight: 500,
-                      background: '#fdf2f8',
-                      color: '#be185d',
-                      marginRight: '0.5rem'
-                    }}>
-                      {tipo.icon} {tipo.label}
-                    </span>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '0.25rem 0.75rem',
-                      borderRadius: '999px',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      background: estadoColor.bg,
-                      color: estadoColor.color
-                    }}>
-                      {reporte.estado}
-                    </span>
+          {/* Subir fotos - OBLIGATORIO */}
+          <div className="form-group">
+            <label>📷 Adjunta fotos <span className="required">*</span> <span className="foto-counter">({fotos.length}/5)</span></label>
+            <p className="field-hint">Sube de 1 a 5 fotos del lugar, menú, horarios o evidencia del cambio</p>
+            
+            {/* Grid de previews */}
+            {fotoPreviews.length > 0 && (
+              <div className="fotos-grid">
+                {fotoPreviews.map((preview, index) => (
+                  <div key={index} className="foto-preview-container">
+                    <img src={preview} alt={`Foto ${index + 1}`} className="foto-preview" />
+                    <button type="button" onClick={() => removeFoto(index)} className="foto-remove">
+                      ✕
+                    </button>
                   </div>
-                  <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#9ca3af' }}>
-                    <div>{new Date(reporte.created_at).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
-                    <div style={{ color: dias <= 7 ? '#ef4444' : '#9ca3af' }}>
-                      ⏰ Se elimina en {dias} días
-                    </div>
-                  </div>
-                </div>
-
-                {/* Descripción */}
-                {reporte.descripcion && (
-                  <div style={{
-                    background: '#f9fafb',
-                    borderRadius: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    marginBottom: '1rem',
-                    fontSize: '0.9rem',
-                    color: '#374151'
-                  }}>
-                    💬 {reporte.descripcion}
-                  </div>
-                )}
-
-                {/* Fotos */}
-                {reporte.foto_url && (
-                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                    {(() => {
-                      try {
-                        const urls = JSON.parse(reporte.foto_url);
-                        return (Array.isArray(urls) ? urls : [reporte.foto_url]).map((url: string, i: number) => (
-                          <img
-                            key={i}
-                            src={url}
-                            alt={`Foto ${i + 1}`}
-                            onClick={() => setModalFoto(url)}
-                            style={{
-                              width: '120px',
-                              height: '120px',
-                              borderRadius: '0.75rem',
-                              objectFit: 'cover',
-                              cursor: 'pointer',
-                              border: '2px solid #e5e7eb'
-                            }}
-                          />
-                        ));
-                      } catch {
-                        return (
-                          <img
-                            src={reporte.foto_url}
-                            alt="Foto del reporte"
-                            onClick={() => setModalFoto(reporte.foto_url)}
-                            style={{
-                              width: '120px',
-                              height: '120px',
-                              borderRadius: '0.75rem',
-                              objectFit: 'cover',
-                              cursor: 'pointer',
-                              border: '2px solid #e5e7eb'
-                            }}
-                          />
-                        );
-                      }
-                    })()}
-                  </div>
-                )}
-
-                {/* Contacto */}
-                {(reporte.telefono_reportante || reporte.email_reportante) && (
-                  <div style={{
-                    display: 'flex',
-                    gap: '1rem',
-                    marginBottom: '1rem',
-                    fontSize: '0.85rem',
-                    color: '#6b7280',
-                    flexWrap: 'wrap'
-                  }}>
-                    {reporte.telefono_reportante && (
-                      <span>📱 {reporte.telefono_reportante}</span>
-                    )}
-                    {reporte.email_reportante && (
-                      <span>📧 {reporte.email_reportante}</span>
-                    )}
-                  </div>
-                )}
-
-                {/* Código generado */}
-                {reporte.codigo_generado && (
-                  <div style={{
-                    background: '#d1fae5',
-                    borderRadius: '0.75rem',
-                    padding: '0.75rem 1rem',
-                    marginBottom: '1rem',
-                    fontSize: '0.9rem',
-                    color: '#065f46',
-                    fontWeight: 600
-                  }}>
-                    🎟️ Código generado: <code style={{ background: '#a7f3d0', padding: '0.15rem 0.5rem', borderRadius: '0.25rem' }}>{reporte.codigo_generado}</code>
-                  </div>
-                )}
-
-                {/* Acciones (solo si pendiente) */}
-                {reporte.estado === 'pendiente' && (
-                  <div style={{ borderTop: '1px solid #f3f4f6', paddingTop: '1rem' }}>
-                    {/* Notas admin */}
-                    <input
-                      type="text"
-                      placeholder="Notas del admin (opcional)..."
-                      value={notasTemp[reporte.id] || ''}
-                      onChange={e => setNotasTemp({ ...notasTemp, [reporte.id]: e.target.value })}
-                      style={{
-                        width: '100%',
-                        padding: '0.5rem 0.75rem',
-                        borderRadius: '0.5rem',
-                        border: '1px solid #e5e7eb',
-                        marginBottom: '0.75rem',
-                        fontSize: '0.85rem',
-                        color: '#374151',
-                        background: '#f9fafb'
-                      }}
-                    />
-                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      <button
-                        onClick={() => revisarReporte(reporte.id, 'aprobado')}
-                        disabled={procesando === reporte.id}
-                        style={{
-                          padding: '0.5rem 1.25rem',
-                          borderRadius: '0.5rem',
-                          border: 'none',
-                          background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-                          color: 'white',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          fontSize: '0.85rem',
-                          opacity: procesando === reporte.id ? 0.7 : 1
-                        }}
-                      >
-                        {procesando === reporte.id ? '⏳...' : '✅ Aprobar y generar código'}
-                      </button>
-                      <button
-                        onClick={() => revisarReporte(reporte.id, 'rechazado')}
-                        disabled={procesando === reporte.id}
-                        style={{
-                          padding: '0.5rem 1.25rem',
-                          borderRadius: '0.5rem',
-                          border: '1px solid #fca5a5',
-                          background: '#fff5f5',
-                          color: '#dc2626',
-                          fontWeight: 600,
-                          cursor: 'pointer',
-                          fontSize: '0.85rem'
-                        }}
-                      >
-                        ❌ Rechazar
-                      </button>
-                      <button
-                        onClick={() => revisarReporte(reporte.id, 'duplicado')}
-                        disabled={procesando === reporte.id}
-                        style={{
-                          padding: '0.5rem 1.25rem',
-                          borderRadius: '0.5rem',
-                          border: '1px solid #e5e7eb',
-                          background: '#f9fafb',
-                          color: '#6b7280',
-                          fontWeight: 500,
-                          cursor: 'pointer',
-                          fontSize: '0.85rem'
-                        }}
-                      >
-                        🔄 Duplicado
-                      </button>
-                    </div>
-                  </div>
-                )}
+                ))}
               </div>
-            );
-          })}
-        </div>
-      )}
+            )}
 
-      {/* Modal foto */}
-      {modalFoto && (
-        <div
-          onClick={() => setModalFoto(null)}
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.8)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            cursor: 'pointer'
-          }}
-        >
-          <img
-            src={modalFoto}
-            alt="Foto ampliada"
-            style={{
-              maxWidth: '90vw',
-              maxHeight: '90vh',
-              borderRadius: '1rem',
-              objectFit: 'contain'
-            }}
-          />
+            {/* Botón agregar más fotos */}
+            {fotos.length < 5 && (
+              <label className="foto-upload">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFotosChange}
+                  multiple
+                  className="foto-input"
+                />
+                <div className="foto-placeholder">
+                  <span className="foto-icon">{fotos.length === 0 ? '📸' : '➕'}</span>
+                  <span className="foto-text">{fotos.length === 0 ? 'Toca para subir fotos' : 'Agregar más fotos'}</span>
+                  <span className="foto-hint">JPG, PNG hasta 5MB c/u • Máximo 5 fotos</span>
+                </div>
+              </label>
+            )}
+          </div>
+
+          {/* Datos de contacto OBLIGATORIOS */}
+          <div className="form-group contact-section">
+            <label>📲 Tus datos de contacto <span className="required">*</span></label>
+            <div className="reward-banner">
+              🎁 Si tu reporte es válido, te enviaremos un <strong>código de 10 puntos</strong> que puedes canjear en tu cuenta de Turicanje
+            </div>
+            <div className="contact-grid">
+              <div className="contact-field">
+                <input
+                  type="tel"
+                  name="telefono_reportante"
+                  value={formData.telefono_reportante}
+                  onChange={handleChange}
+                  placeholder="55 1234 5678"
+                  required
+                />
+                <span className="field-label">Tu WhatsApp *</span>
+              </div>
+              <div className="contact-field">
+                <input
+                  type="email"
+                  name="email_reportante"
+                  value={formData.email_reportante}
+                  onChange={handleChange}
+                  placeholder="tu@email.com"
+                  required
+                />
+                <span className="field-label">Tu email *</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && <div className="error-message">{error}</div>}
+
+          {/* Submit */}
+          <button type="submit" disabled={loading} className="submit-btn">
+            {loading ? (
+              <span className="spinner">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25"/>
+                  <path d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" fill="currentColor" opacity="0.75"/>
+                </svg>
+                Enviando...
+              </span>
+            ) : (
+              '✅ Enviar reporte'
+            )}
+          </button>
+
+          <p className="form-footer">Toma menos de 1 minuto • Tu info está segura 🔒</p>
+        </form>
+
+        {/* Footer */}
+        <div className="page-footer">
+          <p>¿Prefieres escribirnos directo?</p>
+          <a href="https://wa.me/5215522545216">📲 Escríbenos por WhatsApp</a>
         </div>
-      )}
+      </div>
     </div>
   );
 }
