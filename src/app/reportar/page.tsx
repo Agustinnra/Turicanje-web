@@ -24,8 +24,8 @@ export default function ReportarPage() {
     telefono_reportante: '',
     email_reportante: '',
   });
-  const [foto, setFoto] = useState<File | null>(null);
-  const [fotoPreview, setFotoPreview] = useState<string | null>(null);
+  const [fotos, setFotos] = useState<File[]>([]);
+  const [fotoPreviews, setFotoPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
@@ -38,21 +38,32 @@ export default function ReportarPage() {
     setFormData({ ...formData, tipo_reporte: value });
   };
 
-  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFoto(file);
+  const handleFotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const espacioDisponible = 5 - fotos.length;
+    const nuevasfotos = files.slice(0, espacioDisponible);
+    
+    if (nuevasfotos.length === 0) return;
+
+    const nuevosArchivos = [...fotos, ...nuevasfotos];
+    setFotos(nuevosArchivos);
+
+    // Generar previews
+    nuevasfotos.forEach(file => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setFotoPreview(reader.result as string);
+        setFotoPreviews(prev => [...prev, reader.result as string]);
       };
       reader.readAsDataURL(file);
-    }
+    });
+
+    // Reset input para poder subir el mismo archivo
+    e.target.value = '';
   };
 
-  const removeFoto = () => {
-    setFoto(null);
-    setFotoPreview(null);
+  const removeFoto = (index: number) => {
+    setFotos(prev => prev.filter((_, i) => i !== index));
+    setFotoPreviews(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -60,29 +71,29 @@ export default function ReportarPage() {
     setLoading(true);
     setError('');
 
-    try {
-      // Si hay foto, usar FormData
-      let body: any;
-      let headers: any = {};
+    // Validar al menos 1 foto
+    if (fotos.length === 0) {
+      setError('Sube al menos 1 foto para enviar tu reporte');
+      setLoading(false);
+      return;
+    }
 
-      if (foto) {
-        const formDataToSend = new FormData();
-        formDataToSend.append('nombre_negocio', formData.nombre_negocio);
-        formDataToSend.append('tipo_reporte', formData.tipo_reporte);
-        formDataToSend.append('descripcion', formData.descripcion);
-        formDataToSend.append('telefono_reportante', formData.telefono_reportante);
-        formDataToSend.append('email_reportante', formData.email_reportante);
-        formDataToSend.append('foto', foto);
-        body = formDataToSend;
-      } else {
-        headers['Content-Type'] = 'application/json';
-        body = JSON.stringify(formData);
-      }
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('nombre_negocio', formData.nombre_negocio);
+      formDataToSend.append('tipo_reporte', formData.tipo_reporte);
+      formDataToSend.append('descripcion', formData.descripcion);
+      formDataToSend.append('telefono_reportante', formData.telefono_reportante);
+      formDataToSend.append('email_reportante', formData.email_reportante);
+      
+      // Agregar todas las fotos
+      fotos.forEach(foto => {
+        formDataToSend.append('fotos', foto);
+      });
 
       const res = await fetch(`${API_URL}/api/reportes`, {
         method: 'POST',
-        headers,
-        body,
+        body: formDataToSend,
       });
 
       if (!res.ok) {
@@ -170,48 +181,61 @@ export default function ReportarPage() {
 
           {/* Descripción */}
           <div className="form-group">
-            <label>📝 Cuéntanos más <span className="optional">(opcional)</span></label>
+            <label>📝 Cuéntanos más <span className="required">*</span></label>
             <textarea
               name="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
               rows={3}
+              required
               placeholder="Ej: Ahora abren de 10am a 8pm en lugar de 9am a 10pm, el menú subió de precio, etc..."
             />
           </div>
 
-          {/* Subir foto */}
+          {/* Subir fotos - OBLIGATORIO */}
           <div className="form-group">
-            <label>📷 Adjunta una foto <span className="optional">(opcional)</span></label>
-            <p className="field-hint">Si tienes foto del lugar, menú o evidencia del cambio, súbela aquí</p>
+            <label>📷 Adjunta fotos <span className="required">*</span> <span className="foto-counter">({fotos.length}/5)</span></label>
+            <p className="field-hint">Sube de 1 a 5 fotos del lugar, menú, horarios o evidencia del cambio</p>
             
-            {!fotoPreview ? (
+            {/* Grid de previews */}
+            {fotoPreviews.length > 0 && (
+              <div className="fotos-grid">
+                {fotoPreviews.map((preview, index) => (
+                  <div key={index} className="foto-preview-container">
+                    <img src={preview} alt={`Foto ${index + 1}`} className="foto-preview" />
+                    <button type="button" onClick={() => removeFoto(index)} className="foto-remove">
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Botón agregar más fotos */}
+            {fotos.length < 5 && (
               <label className="foto-upload">
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleFotoChange}
+                  onChange={handleFotosChange}
+                  multiple
                   className="foto-input"
                 />
                 <div className="foto-placeholder">
-                  <span className="foto-icon">📸</span>
-                  <span className="foto-text">Toca para subir foto</span>
-                  <span className="foto-hint">JPG, PNG hasta 5MB</span>
+                  <span className="foto-icon">{fotos.length === 0 ? '📸' : '➕'}</span>
+                  <span className="foto-text">{fotos.length === 0 ? 'Toca para subir fotos' : 'Agregar más fotos'}</span>
+                  <span className="foto-hint">JPG, PNG hasta 5MB c/u • Máximo 5 fotos</span>
                 </div>
               </label>
-            ) : (
-              <div className="foto-preview-container">
-                <img src={fotoPreview} alt="Preview" className="foto-preview" />
-                <button type="button" onClick={removeFoto} className="foto-remove">
-                  ✕ Quitar
-                </button>
-              </div>
             )}
           </div>
 
-          {/* Datos de contacto opcionales */}
+          {/* Datos de contacto OBLIGATORIOS */}
           <div className="form-group contact-section">
-            <label>📧 ¿Quieres que te avisemos cuando lo actualicemos? <span className="optional">(opcional)</span></label>
+            <label>📲 Tus datos de contacto <span className="required">*</span></label>
+            <div className="reward-banner">
+              🎁 Si tu reporte es válido, te enviaremos un <strong>código de 10 puntos</strong> que puedes canjear en tu cuenta de Turicanje
+            </div>
             <div className="contact-grid">
               <div className="contact-field">
                 <input
@@ -220,8 +244,9 @@ export default function ReportarPage() {
                   value={formData.telefono_reportante}
                   onChange={handleChange}
                   placeholder="55 1234 5678"
+                  required
                 />
-                <span className="field-label">Tu WhatsApp</span>
+                <span className="field-label">Tu WhatsApp *</span>
               </div>
               <div className="contact-field">
                 <input
@@ -230,8 +255,9 @@ export default function ReportarPage() {
                   value={formData.email_reportante}
                   onChange={handleChange}
                   placeholder="tu@email.com"
+                  required
                 />
-                <span className="field-label">Tu email</span>
+                <span className="field-label">Tu email *</span>
               </div>
             </div>
           </div>

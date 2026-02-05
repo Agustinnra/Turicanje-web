@@ -575,34 +575,56 @@
   color: #9ca3af;
 }
 
+/* Foto counter */
+.foto-counter {
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 0.85em;
+}
+
+/* Fotos grid */
+.fotos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
 /* Foto preview */
 .foto-preview-container {
   position: relative;
-  border-radius: 1rem;
+  border-radius: 0.75rem;
   overflow: hidden;
   box-shadow: 0 4px 15px -3px rgba(236, 72, 153, 0.3);
+  aspect-ratio: 1;
 }
 
 .foto-preview {
   width: 100%;
-  max-height: 200px;
+  height: 100%;
   object-fit: cover;
   display: block;
 }
 
 .foto-remove {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  top: 0.35rem;
+  right: 0.35rem;
   background: rgba(0, 0, 0, 0.7);
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s ease;
+  padding: 0;
+  line-height: 1;
 }
 
 .foto-remove:hover {
@@ -643,4 +665,17 @@
   color: #9ca3af;
   margin-top: 0.35rem;
   text-align: center;
+}
+
+/* Reward banner */
+.reward-banner {
+  background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+  border: 2px solid #f9a8d4;
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #be185d;
+  text-align: center;
+  line-height: 1.5;
 }

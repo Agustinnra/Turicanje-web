@@ -289,22 +289,46 @@ export default function TabReportes() {
                   </div>
                 )}
 
-                {/* Foto */}
+                {/* Fotos */}
                 {reporte.foto_url && (
-                  <div style={{ marginBottom: '1rem' }}>
-                    <img
-                      src={reporte.foto_url}
-                      alt="Foto del reporte"
-                      onClick={() => setModalFoto(reporte.foto_url)}
-                      style={{
-                        maxWidth: '200px',
-                        maxHeight: '150px',
-                        borderRadius: '0.75rem',
-                        objectFit: 'cover',
-                        cursor: 'pointer',
-                        border: '2px solid #e5e7eb'
-                      }}
-                    />
+                  <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
+                    {(() => {
+                      try {
+                        const urls = JSON.parse(reporte.foto_url);
+                        return (Array.isArray(urls) ? urls : [reporte.foto_url]).map((url: string, i: number) => (
+                          <img
+                            key={i}
+                            src={url}
+                            alt={`Foto ${i + 1}`}
+                            onClick={() => setModalFoto(url)}
+                            style={{
+                              width: '120px',
+                              height: '120px',
+                              borderRadius: '0.75rem',
+                              objectFit: 'cover',
+                              cursor: 'pointer',
+                              border: '2px solid #e5e7eb'
+                            }}
+                          />
+                        ));
+                      } catch {
+                        return (
+                          <img
+                            src={reporte.foto_url}
+                            alt="Foto del reporte"
+                            onClick={() => setModalFoto(reporte.foto_url)}
+                            style={{
+                              width: '120px',
+                              height: '120px',
+                              borderRadius: '0.75rem',
+                              objectFit: 'cover',
+                              cursor: 'pointer',
+                              border: '2px solid #e5e7eb'
+                            }}
+                          />
+                        );
+                      }
+                    })()}
                   </div>
                 )}
 
