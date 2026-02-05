@@ -143,7 +143,7 @@ export default function TabReportes() {
     <div>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <h2 style={{ margin: 0 }}>
+        <h2 style={{ margin: 0, color: '#1f2937' }}>
           📋 Reportes de Usuarios
           {pendientes > 0 && (
             <span style={{
@@ -240,7 +240,7 @@ export default function TabReportes() {
                 {/* Top row */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <div>
-                    <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1.1rem' }}>
+                    <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1.1rem', color: '#1f2937' }}>
                       📍 {reporte.nombre_negocio}
                     </h3>
                     <span style={{
