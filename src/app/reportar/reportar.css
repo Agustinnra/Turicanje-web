@@ -111,6 +111,7 @@
   border: 2px solid #f3e8ff;
   border-radius: 1rem;
   font-size: 1rem;
+  color: #1f2937;
   transition: all 0.3s ease;
   background: #fdf4ff;
 }
@@ -619,6 +620,7 @@
   border: 2px solid #f3e8ff;
   border-radius: 1rem;
   font-size: 1rem;
+  color: #1f2937;
   transition: all 0.3s ease;
   background: #fdf4ff;
 }
