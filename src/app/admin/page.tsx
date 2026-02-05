@@ -7,7 +7,7 @@ import GooglePlacesAutocomplete from '@/components/GooglePlacesAutocomplete';
 import SolicitudesPendientes from './components/SolicitudesPendientes';
 import TabClientes from './components/TabClientes';
 import TabAnalyticsWeb from './components/TabAnalyticsWeb';
-
+import TabReportes from './components/TabReportes';
 
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
@@ -156,8 +156,7 @@ export default function AdminPage() {
   const router = useRouter();
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'crear' | 'negocios' | 'invitaciones' | 'solicitudes' | 'analytics' | 'analyticsweb' | 'conversaciones' | 'usuarios' | 'reviews' | 'creadores' | 'clientes'>('analytics');
-
+  const [activeTab, setActiveTab] = useState<'crear' | 'negocios' | 'invitaciones' | 'solicitudes' | 'analytics' | 'analyticsweb' | 'conversaciones' | 'usuarios' | 'reviews' | 'creadores' | 'clientes' | 'reportes'>('analytics');
   // Estados para datos
   const [negocios, setNegocios] = useState<Negocio[]>([]);
   const [invitaciones, setInvitaciones] = useState<Invitacion[]>([]);
@@ -1155,6 +1154,9 @@ Este código expira el ${new Date(inv.expires_at).toLocaleDateString('es-MX')}.
         <button className={`tab ${activeTab === 'analyticsweb' ? 'active' : ''}`} onClick={() => setActiveTab('analyticsweb')}>
         🌐 Analytics Web
         </button>
+        <button className={`tab ${activeTab === 'reportes' ? 'active' : ''}`} onClick={() => setActiveTab('reportes')}>
+          📋 Reportes
+        </button>
       </div>
 
       {/* Contenido */}
@@ -1735,6 +1737,10 @@ Este código expira el ${new Date(inv.expires_at).toLocaleDateString('es-MX')}.
               </div>
             )}
           </div>
+        )}
+
+        {activeTab === 'reportes' && (
+          <TabReportes />
         )}
 
         {/* ============================================================
