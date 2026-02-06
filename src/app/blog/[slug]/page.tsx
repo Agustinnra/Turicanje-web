@@ -165,7 +165,7 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
     if (slug) cargarComercio();
   }, [slug]);
 
-// Cargar scripts de Instagram Y TikTok para embeds
+
 // Cargar scripts de Instagram Y TikTok para embeds
 useEffect(() => {
   if (comercio?.instagram_embed) {
@@ -875,6 +875,65 @@ useEffect(() => {
         </section>
       ) : null}
 
+
+
+
+                  {/* Amenidades */}
+      {(comercio.terraza || comercio.estacionamiento || comercio.pet_friendly || 
+          comercio.area_infantil || comercio.area_fumar || comercio.acepta_reservaciones || 
+          comercio.delivery) && (
+          <section className="info-section">
+            <div className="section-header">
+              <span className="section-icon">✨</span>
+              <h2 className="section-title">AMENIDADES</h2>
+            </div>
+            <div className="amenidades-grid">
+              {comercio.terraza && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🌿</span>
+                  <span className="amenidad-label">Terraza</span>
+                </div>
+              )}
+              {comercio.estacionamiento && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🅿️</span>
+                  <span className="amenidad-label">Estacionamiento</span>
+                </div>
+              )}
+              {comercio.pet_friendly && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🐾</span>
+                  <span className="amenidad-label">Pet Friendly</span>
+                </div>
+              )}
+              {comercio.area_infantil && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">👶</span>
+                  <span className="amenidad-label">Área Infantil</span>
+                </div>
+              )}
+              {comercio.area_fumar && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🚬</span>
+                  <span className="amenidad-label">Área de Fumar</span>
+                </div>
+              )}
+              {comercio.acepta_reservaciones && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">📅</span>
+                  <span className="amenidad-label">Reservaciones</span>
+                </div>
+              )}
+              {comercio.delivery && (
+                <div className="amenidad-item">
+                  <span className="amenidad-icon">🛵</span>
+                  <span className="amenidad-label">Delivery</span>
+                </div>
+              )}
+            </div>
+          </section>
+      )}
+
       {/* ===== CONTENIDO PRINCIPAL ===== */}
       <main className="comercio-content">
 
@@ -963,61 +1022,6 @@ useEffect(() => {
             </div>
           )}
 
-                  {/* Amenidades */}
-        {(comercio.terraza || comercio.estacionamiento || comercio.pet_friendly || 
-          comercio.area_infantil || comercio.area_fumar || comercio.acepta_reservaciones || 
-          comercio.delivery) && (
-          <section className="info-section">
-            <div className="section-header">
-              <span className="section-icon">✨</span>
-              <h2 className="section-title">AMENIDADES</h2>
-            </div>
-            <div className="amenidades-grid">
-              {comercio.terraza && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">🌿</span>
-                  <span className="amenidad-label">Terraza</span>
-                </div>
-              )}
-              {comercio.estacionamiento && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">🅿️</span>
-                  <span className="amenidad-label">Estacionamiento</span>
-                </div>
-              )}
-              {comercio.pet_friendly && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">🐾</span>
-                  <span className="amenidad-label">Pet Friendly</span>
-                </div>
-              )}
-              {comercio.area_infantil && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">👶</span>
-                  <span className="amenidad-label">Área Infantil</span>
-                </div>
-              )}
-              {comercio.area_fumar && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">🚬</span>
-                  <span className="amenidad-label">Área de Fumar</span>
-                </div>
-              )}
-              {comercio.acepta_reservaciones && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">📅</span>
-                  <span className="amenidad-label">Reservaciones</span>
-                </div>
-              )}
-              {comercio.delivery && (
-                <div className="amenidad-item">
-                  <span className="amenidad-icon">🛵</span>
-                  <span className="amenidad-label">Delivery</span>
-                </div>
-              )}
-            </div>
-          </section>
-        )}
         
           
           <a href={googleMapsUrl} target="_blank" rel="noopener noreferrer" className="maps-btn">
