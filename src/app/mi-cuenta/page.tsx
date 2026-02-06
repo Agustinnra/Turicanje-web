@@ -55,7 +55,7 @@ export default function MiCuenta() {
   const [favoritos, setFavoritos] = useState<Favorito[]>([]);
   const [creadores, setCreadores] = useState<CreadorSiguiendo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'resumen' | 'favoritos' | 'siguiendo' | 'historial' | 'perfil'>('resumen');
+  const [activeTab, setActiveTab] = useState<'resumen' | 'favoritos' | 'siguiendo' | 'historial' | 'recompensas' | 'perfil'>('resumen');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
@@ -72,6 +72,12 @@ export default function MiCuenta() {
   const [passwordNueva, setPasswordNueva] = useState('');
   const [passwordConfirmar, setPasswordConfirmar] = useState('');
   const [countdown, setCountdown] = useState(0);
+
+  // Estados para canjear recompensa
+  const [codigoRecompensa, setCodigoRecompensa] = useState('');
+  const [canjeando, setCanjeando] = useState(false);
+  const [canjeError, setCanjeError] = useState('');
+  const [canjeExito, setCanjeExito] = useState<{ puntos: number; total: number } | null>(null);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
@@ -199,6 +205,56 @@ export default function MiCuenta() {
       }
     } catch (error) {
       console.error('Error dejando de seguir:', error);
+    }
+  };
+
+  // Función para canjear código de recompensa
+  const handleCanjearCodigo = async () => {
+    if (!codigoRecompensa.trim()) {
+      setCanjeError('Ingresa un código');
+      return;
+    }
+
+    setCanjeando(true);
+    setCanjeError('');
+    setCanjeExito(null);
+
+    try {
+      const token = localStorage.getItem('usuario_token');
+      const res = await fetch(`${API_URL}/api/reportes/canjear`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ codigo: codigoRecompensa.trim().toUpperCase() })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setCanjeError(data.error || 'Código inválido o expirado');
+        return;
+      }
+
+      // Éxito
+      setCanjeExito({
+        puntos: data.puntos_sumados,
+        total: data.puntos_total
+      });
+      setCodigoRecompensa('');
+
+      // Actualizar puntos del usuario en el estado
+      if (usuario) {
+        const nuevoUsuario = { ...usuario, puntos: data.puntos_total };
+        setUsuario(nuevoUsuario);
+        localStorage.setItem('usuario_data', JSON.stringify(nuevoUsuario));
+      }
+
+    } catch (error) {
+      setCanjeError('Error de conexión. Intenta de nuevo.');
+    } finally {
+      setCanjeando(false);
     }
   };
 
@@ -362,13 +418,13 @@ export default function MiCuenta() {
 
   const handleSolicitarCambioTelefono = async () => {
     if (!nuevoTelefono.trim()) {
-      setModalError('Ingresa un número de teléfono');
+      setModalError('Ingresa un teléfono válido');
       return;
     }
 
-    const telefonoLimpio = nuevoTelefono.replace(/\D/g, '');
-    if (telefonoLimpio.length < 10) {
-      setModalError('El teléfono debe tener al menos 10 dígitos');
+    const tel = nuevoTelefono.replace(/\D/g, '');
+    if (tel.length !== 10) {
+      setModalError('El teléfono debe tener 10 dígitos');
       return;
     }
 
@@ -383,7 +439,7 @@ export default function MiCuenta() {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ nuevo_telefono: telefonoLimpio })
+        body: JSON.stringify({ nuevo_telefono: tel })
       });
 
       const data = await res.json();
@@ -447,37 +503,9 @@ export default function MiCuenta() {
     }
   };
 
-  const handleReenviarCodigo = async (tipo: 'email' | 'telefono') => {
-    if (countdown > 0) return;
-
-    setModalLoading(true);
-
-    try {
-      const token = localStorage.getItem('usuario_token');
-      const res = await fetch(`${API_URL}/api/usuarios/perfil/reenviar-codigo`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ tipo })
-      });
-
-      if (res.ok) {
-        setCountdown(60);
-        setModalSuccess('Código reenviado');
-      }
-
-    } catch (error) {
-      console.error('Error reenviando código');
-    } finally {
-      setModalLoading(false);
-    }
-  };
-
   const handleCambiarPassword = async () => {
-    if (!passwordActual || !passwordNueva || !passwordConfirmar) {
-      setModalError('Completa todos los campos');
+    if (!passwordActual) {
+      setModalError('Ingresa tu contraseña actual');
       return;
     }
 
@@ -516,9 +544,6 @@ export default function MiCuenta() {
       }
 
       setModalSuccess('¡Contraseña actualizada!');
-      setPasswordActual('');
-      setPasswordNueva('');
-      setPasswordConfirmar('');
       setTimeout(() => cerrarModal(), 1500);
 
     } catch (error) {
@@ -528,21 +553,22 @@ export default function MiCuenta() {
     }
   };
 
-  const formatearFecha = (fecha: string) => {
-    return new Date(fecha).toLocaleDateString('es-MX', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const handleReenviarCodigo = async (tipo: 'email' | 'telefono') => {
+    setCountdown(60);
+    if (tipo === 'email') {
+      await handleSolicitarCambioEmail();
+    } else {
+      await handleSolicitarCambioTelefono();
+    }
   };
 
-  const formatearMonto = (monto: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN'
-    }).format(monto);
+  const formatearFecha = (fecha: string) => {
+    const date = new Date(fecha);
+    return date.toLocaleDateString('es-MX', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    });
   };
 
   if (loading) {
@@ -664,6 +690,9 @@ export default function MiCuenta() {
           <button className={`tab-btn ${activeTab === 'historial' ? 'active' : ''}`} onClick={() => setActiveTab('historial')}>
             📜 Historial
           </button>
+          <button className={`tab-btn ${activeTab === 'recompensas' ? 'active' : ''}`} onClick={() => setActiveTab('recompensas')}>
+            🎁 Recompensas
+          </button>
           <button className={`tab-btn ${activeTab === 'perfil' ? 'active' : ''}`} onClick={() => setActiveTab('perfil')}>
             ⚙️ Perfil
           </button>
@@ -756,11 +785,11 @@ export default function MiCuenta() {
 
           {activeTab === 'siguiendo' && (
             <div className="tab-siguiendo">
-              <h3>Creadores que sigues</h3>
+              <h3>Creadores que sigo</h3>
               {creadores.length === 0 ? (
                 <div className="empty-state">
                   <span className="empty-icon">👤</span>
-                  <h3>No sigues a nadie aún</h3>
+                  <h3>No sigues a nadie</h3>
                   <p>Descubre creadores de contenido gastronómico</p>
                   <Link href="/creadores" className="btn-explorar">Ver creadores</Link>
                 </div>
@@ -770,15 +799,21 @@ export default function MiCuenta() {
                     <div key={creador.id} className="creador-card">
                       <Link href={`/profile/${creador.username}`} className="creador-link">
                         <div className="creador-avatar">
-                          {creador.foto_perfil ? <img src={creador.foto_perfil} alt={creador.nombre} /> : <div className="avatar-placeholder">{creador.nombre?.charAt(0).toUpperCase()}</div>}
+                          {creador.foto_perfil ? (
+                            <img src={creador.foto_perfil} alt={creador.nombre} />
+                          ) : (
+                            <span>{creador.nombre.charAt(0)}</span>
+                          )}
                         </div>
                         <div className="creador-info">
                           <h4>{creador.nombre}</h4>
-                          <span className="creador-username">@{creador.username}</span>
-                          <span className="creador-seguidores">{creador.total_seguidores} seguidores</span>
+                          <p className="creador-titulo">{creador.titulo}</p>
+                          <p className="creador-seguidores">{creador.total_seguidores} seguidores</p>
                         </div>
                       </Link>
-                      <button className="btn-dejar-seguir" onClick={() => dejarDeSeguir(creador.id)}>Dejar de seguir</button>
+                      <button className="btn-dejar-seguir" onClick={() => dejarDeSeguir(creador.id)}>
+                        Dejar de seguir
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -788,17 +823,16 @@ export default function MiCuenta() {
 
           {activeTab === 'historial' && (
             <div className="tab-historial">
-              <h3>Historial completo</h3>
+              <h3>Historial de puntos</h3>
               {transacciones.length === 0 ? (
                 <div className="empty-state">
                   <span className="empty-icon">📜</span>
-                  <h3>Sin movimientos</h3>
-                  <p>Tus transacciones aparecerán aquí</p>
+                  <p>Sin movimientos todavía</p>
                 </div>
               ) : (
-                <div className="transacciones-completo">
+                <div className="transacciones-list historial-completo">
                   {transacciones.map(trans => (
-                    <div key={trans.id} className="transaccion-item-full">
+                    <div key={trans.id} className="transaccion-item">
                       <div className="trans-icon">
                         {trans.negocio_imagen ? (
                           <img src={trans.negocio_imagen} alt="" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px'}} />
@@ -806,21 +840,99 @@ export default function MiCuenta() {
                           trans.transaction_type === 'earn' ? '💰' : '🎁'
                         )}
                       </div>
-                      <div className="trans-details">
+                      <div className="trans-info">
                         <span className="trans-negocio">{trans.negocio_nombre || 'Turicanje'}</span>
-                        <span className="trans-desc">{trans.description || 'Acumulación de puntos'}</span>
+                        <span className="trans-descripcion">{trans.description}</span>
                         <span className="trans-fecha">{formatearFecha(trans.created_at)}</span>
                       </div>
-                      <div className="trans-amounts">
-                        {trans.amount > 0 && <span className="trans-monto">{formatearMonto(trans.amount)}</span>}
-                        <span className={`trans-puntos-full ${trans.transaction_type}`}>
-                          {trans.transaction_type === 'earn' ? '+' : '-'}{trans.points} pts
-                        </span>
-                      </div>
+                      <span className={`trans-puntos ${trans.transaction_type}`}>
+                        {trans.transaction_type === 'earn' ? '+' : '-'}{trans.points}
+                      </span>
                     </div>
                   ))}
                 </div>
               )}
+            </div>
+          )}
+
+          {activeTab === 'recompensas' && (
+            <div className="tab-recompensas">
+              <div className="recompensas-header">
+                <h3>🎁 Canjear código de recompensa</h3>
+                <p>¿Recibiste un código por ayudarnos a reportar información? Ingrésalo aquí para sumar puntos a tu cuenta.</p>
+              </div>
+
+              <div className="canjear-form">
+                <div className="input-group">
+                  <input
+                    type="text"
+                    value={codigoRecompensa}
+                    onChange={(e) => {
+                      setCodigoRecompensa(e.target.value.toUpperCase());
+                      setCanjeError('');
+                      setCanjeExito(null);
+                    }}
+                    placeholder="Ej: TUR-ABC123"
+                    className="codigo-input"
+                    maxLength={12}
+                  />
+                  <button 
+                    onClick={handleCanjearCodigo}
+                    disabled={canjeando || !codigoRecompensa.trim()}
+                    className="btn-canjear"
+                  >
+                    {canjeando ? 'Canjeando...' : 'Canjear'}
+                  </button>
+                </div>
+
+                {canjeError && (
+                  <div className="canje-error">
+                    ❌ {canjeError}
+                  </div>
+                )}
+
+                {canjeExito && (
+                  <div className="canje-exito">
+                    <span className="exito-icon">🎉</span>
+                    <div className="exito-info">
+                      <strong>¡Código canjeado exitosamente!</strong>
+                      <p>+{canjeExito.puntos} puntos agregados</p>
+                      <p className="total-puntos">Tu nuevo saldo: <strong>{canjeExito.total} puntos</strong></p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="recompensas-info">
+                <h4>¿Cómo obtener códigos?</h4>
+                <div className="info-cards">
+                  <div className="info-card">
+                    <span className="info-icon">📋</span>
+                    <div>
+                      <strong>Reporta información</strong>
+                      <p>Ayúdanos a mantener los datos actualizados reportando cambios en horarios, menús o lugares nuevos.</p>
+                    </div>
+                  </div>
+                  <div className="info-card">
+                    <span className="info-icon">✅</span>
+                    <div>
+                      <strong>Verificamos tu reporte</strong>
+                      <p>Nuestro equipo revisará la información que enviaste.</p>
+                    </div>
+                  </div>
+                  <div className="info-card">
+                    <span className="info-icon">🎁</span>
+                    <div>
+                      <strong>Recibe tu código</strong>
+                      <p>Si tu reporte es válido, te enviaremos un código de 10 puntos por WhatsApp o email.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Link href="/reportar" className="btn-reportar">
+                  📝 Hacer un reporte
+                </Link>
+              </div>
             </div>
           )}
 
