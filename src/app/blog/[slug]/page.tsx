@@ -122,9 +122,12 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   const [usuario, setUsuario] = useState<Usuario | null>(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
-  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const lastTapRef = useRef(0);
   const touchDistRef = useRef(0);
+  const lastTouchRef = useRef({ x: 0, y: 0 });
 
 
   // Estados para lightbox del menú
@@ -1253,17 +1256,16 @@ useEffect(() => {
             className="lightbox-content" 
             onClick={(e) => {
               e.stopPropagation();
+              // Solo doble tap para zoom, no si está arrastrando
+              if (isDragging) return;
               const now = Date.now();
               if (now - lastTapRef.current < 300) {
                 if (zoomLevel > 1) {
                   setZoomLevel(1);
-                  setZoomPosition({ x: 50, y: 50 });
+                  setZoomPosition({ x: 0, y: 0 });
                 } else {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const x = ((e.clientX - rect.left) / rect.width) * 100;
-                  const y = ((e.clientY - rect.top) / rect.height) * 100;
                   setZoomLevel(3);
-                  setZoomPosition({ x, y });
+                  setZoomPosition({ x: 0, y: 0 });
                 }
               }
               lastTapRef.current = now;
@@ -1271,54 +1273,89 @@ useEffect(() => {
             onWheel={(e) => {
               e.stopPropagation();
               const delta = e.deltaY > 0 ? -0.5 : 0.5;
-              setZoomLevel(prev => Math.min(Math.max(prev + delta, 1), 5));
-              if (zoomLevel + delta <= 1) {
-                setZoomPosition({ x: 50, y: 50 });
+              const newZoom = Math.min(Math.max(zoomLevel + delta, 1), 5);
+              setZoomLevel(newZoom);
+              if (newZoom <= 1) {
+                setZoomPosition({ x: 0, y: 0 });
+              }
+            }}
+            onMouseDown={(e) => {
+              if (zoomLevel > 1) {
+                e.preventDefault();
+                setIsDragging(true);
+                setDragStart({ x: e.clientX - zoomPosition.x, y: e.clientY - zoomPosition.y });
               }
             }}
             onMouseMove={(e) => {
-              if (zoomLevel > 1) {
-                const rect = e.currentTarget.getBoundingClientRect();
-                const x = ((e.clientX - rect.left) / rect.width) * 100;
-                const y = ((e.clientY - rect.top) / rect.height) * 100;
-                setZoomPosition({ x, y });
+              if (isDragging && zoomLevel > 1) {
+                const newX = e.clientX - dragStart.x;
+                const newY = e.clientY - dragStart.y;
+                // Limitar el pan para no salirse demasiado
+                const maxPan = (zoomLevel - 1) * 200;
+                setZoomPosition({
+                  x: Math.max(-maxPan, Math.min(maxPan, newX)),
+                  y: Math.max(-maxPan, Math.min(maxPan, newY))
+                });
               }
             }}
+            onMouseUp={() => setIsDragging(false)}
+            onMouseLeave={() => setIsDragging(false)}
             onTouchStart={(e) => {
               if (e.touches.length === 2) {
+                // Pinch zoom
                 const dx = e.touches[0].clientX - e.touches[1].clientX;
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 touchDistRef.current = Math.sqrt(dx * dx + dy * dy);
+              } else if (e.touches.length === 1 && zoomLevel > 1) {
+                // Pan con un dedo
+                setIsDragging(true);
+                lastTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
               }
             }}
             onTouchMove={(e) => {
               if (e.touches.length === 2) {
+                // Pinch zoom
                 e.preventDefault();
                 const dx = e.touches[0].clientX - e.touches[1].clientX;
                 const dy = e.touches[0].clientY - e.touches[1].clientY;
                 const newDist = Math.sqrt(dx * dx + dy * dy);
                 const scale = newDist / touchDistRef.current;
-                setZoomLevel(prev => Math.min(Math.max(prev * scale, 1), 5));
+                const newZoom = Math.min(Math.max(zoomLevel * scale, 1), 5);
+                setZoomLevel(newZoom);
+                if (newZoom <= 1) {
+                  setZoomPosition({ x: 0, y: 0 });
+                }
                 touchDistRef.current = newDist;
+              } else if (e.touches.length === 1 && isDragging && zoomLevel > 1) {
+                // Pan con un dedo
+                e.preventDefault();
+                const deltaX = e.touches[0].clientX - lastTouchRef.current.x;
+                const deltaY = e.touches[0].clientY - lastTouchRef.current.y;
+                const maxPan = (zoomLevel - 1) * 200;
+                setZoomPosition(prev => ({
+                  x: Math.max(-maxPan, Math.min(maxPan, prev.x + deltaX)),
+                  y: Math.max(-maxPan, Math.min(maxPan, prev.y + deltaY))
+                }));
+                lastTouchRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
               }
             }}
+            onTouchEnd={() => setIsDragging(false)}
           >
             <img 
               src={galeriaMenu[lightboxIndex]} 
               alt={`Menú ${lightboxIndex + 1}`}
               className="lightbox-image"
               style={{
-                transform: `scale(${zoomLevel})`,
-                transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                cursor: zoomLevel > 1 ? 'move' : 'zoom-in',
-                transition: zoomLevel === 1 ? 'transform 0.3s ease' : 'none',
+                transform: `scale(${zoomLevel}) translate(${zoomPosition.x / zoomLevel}px, ${zoomPosition.y / zoomLevel}px)`,
+                cursor: zoomLevel > 1 ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in',
+                transition: isDragging ? 'none' : 'transform 0.2s ease',
               }}
               draggable={false}
             />
             {zoomLevel > 1 && (
               <button
                 className="zoom-reset-btn"
-                onClick={(e) => { e.stopPropagation(); setZoomLevel(1); setZoomPosition({ x: 50, y: 50 }); }}
+                onClick={(e) => { e.stopPropagation(); setZoomLevel(1); setZoomPosition({ x: 0, y: 0 }); }}
                 style={{
                   position: 'absolute',
                   bottom: '10px',
