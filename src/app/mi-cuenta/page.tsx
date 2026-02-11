@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import './mi-cuenta.css';
+import NotificacionesConfig from '@/components/NotificacionesConfig';
+
 
 interface Usuario {
   id: number;
@@ -992,6 +994,20 @@ export default function MiCuenta() {
                   </div>
                 </div>
               </div>
+
+              </div>
+
+              {/* NOTIFICACIONES */}
+              {usuario && (
+                <NotificacionesConfig 
+                  userId={usuario.id} 
+                  token={localStorage.getItem('usuario_token') || ''} 
+                />
+              )}
+
+              <div className="perfil-whatsapp">
+
+
 
               <div className="perfil-whatsapp">
                 <h4>📱 Consulta tus puntos por WhatsApp</h4>
