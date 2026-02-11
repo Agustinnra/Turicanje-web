@@ -546,3 +546,77 @@
       font-size: 2.5rem;
     }
   }
+
+  /* ============================================================
+   ESTILOS ADICIONALES PARA PLAN TRIAL 6 MESES GRATIS
+   Agregar al final de suscripcion.css
+   ============================================================ */
+
+/* Plan Trial Card */
+.plan-card.trial-card {
+  border: 2px solid #10b981;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%);
+}
+
+.plan-card.trial-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 10px 40px rgba(16, 185, 129, 0.2);
+}
+
+.plan-badge.trial-badge {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.trial-precio {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.trial-ahorro {
+  color: #10b981 !important;
+  font-weight: 600;
+}
+
+.trial-note {
+  color: rgba(255,255,255,0.5) !important;
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+/* Botón Trial */
+.btn-plan.trial {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  font-size: 1.1rem;
+}
+
+.btn-plan.trial:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+}
+
+.btn-plan.trial:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Animación de pulso para el botón trial */
+@keyframes pulse-green {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+  }
+  50% {
+    box-shadow: 0 4px 25px rgba(16, 185, 129, 0.6);
+  }
+}
+
+.btn-plan.trial:not(:disabled) {
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+.btn-plan.trial:hover:not(:disabled) {
+  animation: none;
+}

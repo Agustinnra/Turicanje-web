@@ -6,11 +6,15 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import './suscripcion.css';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
+
 interface Usuario {
   id: number;
   nombre: string;
   email: string;
   suscripcion_activa: boolean;
+  suscripcion_fecha_inicio?: string;
+  ha_tenido_trial?: boolean;
   fecha_vencimiento?: string;
 }
 
@@ -21,15 +25,12 @@ export default function SuscripcionPage() {
   const [procesando, setProcesando] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+  
+  // ✅ NUEVO: Estado para detectar si es elegible para trial
+  const [esElegibleTrial, setEsElegibleTrial] = useState(false);
 
   useEffect(() => {
-    const userData = localStorage.getItem('usuario_data');
-    if (!userData) {
-      router.push('/login');
-      return;
-    }
-    setUsuario(JSON.parse(userData));
-    setLoading(false);
+    cargarUsuario();
 
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
@@ -41,6 +42,53 @@ export default function SuscripcionPage() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [router]);
 
+  // ✅ NUEVO: Cargar usuario desde API para obtener datos actualizados
+  const cargarUsuario = async () => {
+    try {
+      const token = localStorage.getItem('usuario_token');
+      const userData = localStorage.getItem('usuario_data');
+      
+      if (!token || !userData) {
+        router.push('/login');
+        return;
+      }
+
+      // Cargar datos básicos del localStorage primero
+      const usuarioLocal = JSON.parse(userData);
+      setUsuario(usuarioLocal);
+
+      // Luego obtener datos actualizados del servidor
+      try {
+        const res = await fetch(`${API_URL}/api/usuarios/perfil`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          const usr = data.usuario || data;
+          setUsuario(usr);
+          
+          // ✅ Verificar elegibilidad para trial
+          const nuncaTuvoSuscripcion = !usr.suscripcion_fecha_inicio && !usr.ha_tenido_trial;
+          setEsElegibleTrial(nuncaTuvoSuscripcion);
+          
+          // Actualizar localStorage
+          localStorage.setItem('usuario_data', JSON.stringify(usr));
+        }
+      } catch (apiError) {
+        console.error('Error al obtener perfil:', apiError);
+        // Usar datos del localStorage si falla la API
+        const nuncaTuvoSuscripcion = !usuarioLocal.suscripcion_fecha_inicio && !usuarioLocal.ha_tenido_trial;
+        setEsElegibleTrial(nuncaTuvoSuscripcion);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      router.push('/login');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const cerrarSesion = () => {
     localStorage.removeItem('usuario_token');
     localStorage.removeItem('usuario_data');
@@ -51,8 +99,46 @@ export default function SuscripcionPage() {
 
   const handleSuscribirse = async (plan: string) => {
     setProcesando(true);
-    // TODO: Integrar con Stripe/Conekta
     window.location.href = `/checkout?plan=${plan}`;
+  };
+
+  // ✅ NUEVO: Activar trial directamente sin ir a checkout
+  const handleActivarTrial = async () => {
+    setProcesando(true);
+    try {
+      const token = localStorage.getItem('usuario_token');
+      
+      const res = await fetch(`${API_URL}/api/pagos/activar-trial`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json', 
+          'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ plan: 'trial' })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        // Actualizar localStorage
+        const userData = localStorage.getItem('usuario_data');
+        if (userData) {
+          const usr = JSON.parse(userData);
+          usr.suscripcion_activa = true;
+          usr.ha_tenido_trial = true;
+          localStorage.setItem('usuario_data', JSON.stringify(usr));
+        }
+        // Redirigir a mi cuenta con mensaje de éxito
+        router.push('/mi-cuenta?trial=activado');
+      } else {
+        alert(data.error || 'Error al activar prueba gratuita');
+        setProcesando(false);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Error de conexión. Intenta de nuevo.');
+      setProcesando(false);
+    }
   };
 
   if (loading) {
@@ -142,28 +228,60 @@ export default function SuscripcionPage() {
       <main className="suscripcion-main">
         <div className="planes-grid">
           
-          {/* Plan Gratuito */}
-          <div className="plan-card">
-            <div className="plan-header">
-              <h2>Gratuito</h2>
-              <div className="plan-precio">
-                <span className="precio">$0</span>
-                <span className="periodo">siempre</span>
+          {/* ✅ PLAN TRIAL O GRATUITO - Condicional */}
+          {esElegibleTrial ? (
+            // Usuario nuevo: Mostrar plan de 6 meses gratis
+            <div className="plan-card trial-card">
+              <div className="plan-badge trial-badge">🎁 Nuevo usuario</div>
+              <div className="plan-header">
+                <h2>6 Meses Gratis</h2>
+                <div className="plan-precio">
+                  <span className="precio trial-precio">$0</span>
+                  <span className="periodo">por 6 meses</span>
+                </div>
+                <p className="plan-ahorro trial-ahorro">¡Oferta de bienvenida!</p>
               </div>
+              <ul className="plan-features">
+                <li>✓ Todo lo premium incluido</li>
+                <li>✓ Acumula puntos en cada compra</li>
+                <li>✓ Canjea por descuentos reales</li>
+                <li>✓ 10% cashback en restaurantes</li>
+                <li>✓ Sin tarjeta requerida</li>
+                <li>✓ Cancela cuando quieras</li>
+                <li className="trial-note">Después: $99/mes o $999/año</li>
+              </ul>
+              <button 
+                className="btn-plan trial"
+                onClick={handleActivarTrial}
+                disabled={procesando}
+              >
+                {procesando ? 'Activando...' : '🎁 Activar gratis'}
+              </button>
             </div>
-            <ul className="plan-features">
-              <li>✓ Descubre restaurantes</li>
-              <li>✓ Guarda favoritos</li>
-              <li>✓ Sigue creadores</li>
-              <li className="disabled">✗ Acumula puntos</li>
-              <li className="disabled">✗ Canjea recompensas</li>
-              <li className="disabled">✗ Descuentos exclusivos</li>
-              <li className="disabled">✗ Beneficios de cumpleaños</li>
-            </ul>
-            <button className="btn-plan current" disabled>
-              Plan actual
-            </button>
-          </div>
+          ) : (
+            // Usuario que ya usó trial: Mostrar plan gratuito deshabilitado
+            <div className="plan-card">
+              <div className="plan-header">
+                <h2>Gratuito</h2>
+                <div className="plan-precio">
+                  <span className="precio">$0</span>
+                  <span className="periodo">siempre</span>
+                </div>
+              </div>
+              <ul className="plan-features">
+                <li>✓ Descubre restaurantes</li>
+                <li>✓ Guarda favoritos</li>
+                <li>✓ Sigue creadores</li>
+                <li className="disabled">✗ Acumula puntos</li>
+                <li className="disabled">✗ Canjea recompensas</li>
+                <li className="disabled">✗ Descuentos exclusivos</li>
+                <li className="disabled">✗ Beneficios de cumpleaños</li>
+              </ul>
+              <button className="btn-plan current" disabled>
+                Plan actual
+              </button>
+            </div>
+          )}
 
           {/* Plan Anual - Destacado */}
           <div className="plan-card destacado">
@@ -243,7 +361,7 @@ export default function SuscripcionPage() {
           
           <div className="faq-item">
             <h3>¿Qué métodos de pago aceptan?</h3>
-            <p>Aceptamos todas las tarjetas de crédito/débito y OXXO Pay.</p>
+            <p>Aceptamos todas las tarjetas de crédito/débito, OXXO Pay y transferencia SPEI.</p>
           </div>
         </section>
 
