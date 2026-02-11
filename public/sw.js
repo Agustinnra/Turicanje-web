@@ -80,31 +80,121 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Push notifications (para futuro)
-self.addEventListener('push', (event) => {
-  if (!event.data) return;
+// ============================================================
+// PUSH NOTIFICATIONS
+// ============================================================
 
-  const data = event.data.json();
-  const options = {
-    body: data.body || 'Tienes una nueva notificación',
+// Acciones según tipo de notificación
+function getActionsForType(type) {
+  switch(type) {
+    case 'puntos':
+      return [
+        { action: 'ver-puntos', title: '💰 Ver mis puntos' },
+        { action: 'cerrar', title: 'Cerrar' }
+      ];
+    case 'negocio':
+      return [
+        { action: 'ver-negocio', title: '🍽️ Ver restaurante' },
+        { action: 'cerrar', title: 'Cerrar' }
+      ];
+    case 'promocion':
+      return [
+        { action: 'ver-promo', title: '🎁 Ver promoción' },
+        { action: 'cerrar', title: 'Cerrar' }
+      ];
+    default:
+      return [];
+  }
+}
+
+// Recibir Push Notification
+self.addEventListener('push', (event) => {
+  console.log('[SW] 📬 Push recibido:', event);
+
+  let data = {
+    title: 'Turicanje',
+    body: 'Tienes una nueva notificación',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      url: data.url || '/'
+    tag: 'turicanje-notification',
+    data: {}
+  };
+
+  if (event.data) {
+    try {
+      const payload = event.data.json();
+      data = {
+        title: payload.title || data.title,
+        body: payload.body || data.body,
+        icon: payload.icon || data.icon,
+        badge: payload.badge || data.badge,
+        tag: payload.tag || data.tag,
+        data: payload.data || {}
+      };
+    } catch (e) {
+      data.body = event.data.text();
     }
+  }
+
+  const options = {
+    body: data.body,
+    icon: data.icon,
+    badge: data.badge,
+    tag: data.tag,
+    vibrate: [100, 50, 100],
+    data: data.data,
+    actions: getActionsForType(data.data?.type),
+    requireInteraction: false
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Turicanje', options)
+    self.registration.showNotification(data.title, options)
   );
 });
 
 // Click en notificación
 self.addEventListener('notificationclick', (event) => {
+  console.log('[SW] 👆 Click en notificación:', event.action);
+
   event.notification.close();
-  const url = event.notification.data?.url || '/';
+
+  let url = '/';
+
+  switch(event.action) {
+    case 'ver-puntos':
+      url = '/mi-cuenta';
+      break;
+    case 'ver-negocio':
+      url = event.notification.data?.negocio_url || '/blog';
+      break;
+    case 'ver-promo':
+      url = event.notification.data?.promo_url || '/';
+      break;
+    case 'cerrar':
+      return; // Solo cerrar, no navegar
+    default:
+      url = event.notification.data?.url || '/';
+  }
+
   event.waitUntil(
-    self.clients.openWindow(url)
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((windowClients) => {
+        // Si ya hay una ventana abierta de Turicanje, usarla
+        for (let client of windowClients) {
+          if (client.url.includes('turicanje.com') && 'focus' in client) {
+            client.navigate(url);
+            return client.focus();
+          }
+        }
+        // Si no hay ventana abierta, abrir una nueva
+        if (clients.openWindow) {
+          return clients.openWindow(url);
+        }
+      })
   );
+});
+
+// Cerrar notificación
+self.addEventListener('notificationclose', (event) => {
+  console.log('[SW] ❌ Notificación cerrada');
 });
