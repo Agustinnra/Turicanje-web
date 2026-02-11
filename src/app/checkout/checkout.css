@@ -661,3 +661,177 @@
       flex-wrap: wrap;
     }
   }
+
+  /* ============================================================
+   ESTILOS ADICIONALES PARA TRIAL 6 MESES GRATIS
+   Agregar al final de checkout.css
+   ============================================================ */
+
+/* Selector de Plan */
+.plan-selector {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.plan-selector h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+}
+
+.plan-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.plan-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.plan-option:hover {
+  border-color: #d1007d;
+  background: #fdf2f8;
+}
+
+.plan-option.active {
+  border-color: #d1007d;
+  background: linear-gradient(135deg, rgba(209, 0, 125, 0.05) 0%, rgba(107, 63, 160, 0.05) 100%);
+  box-shadow: 0 0 0 3px rgba(209, 0, 125, 0.1);
+}
+
+.plan-badge-free {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.plan-badge-premium {
+  background: linear-gradient(135deg, #d1007d 0%, #6b3fa0 100%);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.plan-option-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.plan-option-price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #d1007d;
+  margin-bottom: 4px;
+}
+
+.plan-option-desc {
+  font-size: 12px;
+  color: #666;
+}
+
+/* Trial Activation Section */
+.trial-activation {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.trial-info {
+  margin-bottom: 24px;
+}
+
+.trial-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.trial-info h4 {
+  font-size: 24px;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.trial-info p {
+  color: #666;
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.trial-info .trial-note {
+  font-size: 14px;
+  color: #888;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 16px;
+}
+
+.btn-trial {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  font-size: 18px;
+  padding: 16px 32px;
+  width: 100%;
+}
+
+.btn-trial:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Benefit item for trial note */
+.benefit-item.trial-note {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+/* Plan Card adjustments for free price */
+.plan-price .price-amount {
+  background: linear-gradient(135deg, #d1007d 0%, #6b3fa0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Mobile responsive */
+@media (max-width: 500px) {
+  .plan-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .plan-option {
+    padding: 16px;
+  }
+  
+  .plan-option-price {
+    font-size: 20px;
+  }
+}

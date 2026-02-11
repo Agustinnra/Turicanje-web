@@ -6,10 +6,22 @@ import Link from 'next/link';
 import Script from 'next/script';
 import './checkout.css';
 
-const PLAN = {
-  nombre: 'Membresía Anual',
-  precio: 999,
-  meses: 12
+// ============================================================
+// PLANES - AHORA INCLUYE TRIAL DE 6 MESES GRATIS
+// ============================================================
+const PLANES = {
+  trial: {
+    nombre: 'Prueba Gratis 6 Meses',
+    precio: 0,
+    meses: 6,
+    esTrial: true
+  },
+  anual: {
+    nombre: 'Membresía Anual',
+    precio: 999,
+    meses: 12,
+    esTrial: false
+  }
 };
 
 const COMISIONES = {
@@ -19,6 +31,7 @@ const COMISIONES = {
 };
 
 const calcularComision = (precio: number, metodo: 'tarjeta' | 'oxxo' | 'spei') => {
+  if (precio === 0) return 0; // Sin comisión para trial gratis
   const comision = COMISIONES[metodo];
   return Math.ceil((precio * comision.porcentaje / 100) + comision.fijo);
 };
@@ -41,10 +54,15 @@ export default function CheckoutPage() {
   const [exito, setExito] = useState(false);
   const [datosPago, setDatosPago] = useState<any>(null);
   
+  // ✅ NUEVO: Detectar si es elegible para trial
+  const [esElegibleTrial, setEsElegibleTrial] = useState(false);
+  const [planSeleccionado, setPlanSeleccionado] = useState<'trial' | 'anual'>('trial');
+  
   const [cardData, setCardData] = useState({ numero: '', nombre: '', expiracion: '', cvv: '' });
 
-  const comisionActual = calcularComision(PLAN.precio, metodoPago);
-  const totalActual = PLAN.precio + comisionActual;
+  const planActual = PLANES[planSeleccionado];
+  const comisionActual = calcularComision(planActual.precio, metodoPago);
+  const totalActual = planActual.precio + comisionActual;
 
   useEffect(() => {
     cargarUsuario();
@@ -61,8 +79,16 @@ export default function CheckoutPage() {
 
       if (res.ok) {
         const data = await res.json();
-        setUsuario(data.usuario || data);
-        if (data.usuario?.suscripcion_activa || data.suscripcion_activa) {
+        const usr = data.usuario || data;
+        setUsuario(usr);
+        
+        // ✅ NUEVO: Verificar si ya tuvo suscripción antes
+        // Si nunca ha tenido suscripción (fecha_inicio es null), es elegible para trial
+        const nuncaTuvoSuscripcion = !usr.suscripcion_fecha_inicio && !usr.ha_tenido_trial;
+        setEsElegibleTrial(nuncaTuvoSuscripcion);
+        setPlanSeleccionado(nuncaTuvoSuscripcion ? 'trial' : 'anual');
+        
+        if (usr.suscripcion_activa) {
           router.push('/mi-cuenta');
         }
       } else {
@@ -126,6 +152,26 @@ export default function CheckoutPage() {
         return;
       }
 
+      // ✅ NUEVO: Si es trial gratis, activar directamente sin pago
+      if (planSeleccionado === 'trial' && esElegibleTrial) {
+        const res = await fetch(`${API_URL}/api/pagos/activar-trial`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ plan: 'trial' })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setExito(true);
+        } else {
+          setError(data.error || 'Error al activar trial');
+        }
+        setProcesando(false);
+        return;
+      }
+
+      // Flujo normal de pago para plan anual
       if (metodoPago === 'tarjeta') {
         const cardToken = await tokenizarTarjeta();
         
@@ -219,20 +265,17 @@ export default function CheckoutPage() {
             
             {datosPago.tipo === 'spei' && (
               <>
-                <div className="data-row"><span>Banco:</span><strong>STP</strong></div>
-                <div className="data-row"><span>Beneficiario:</span><strong>Turicanje</strong></div>
+                <div className="data-row">
+                  <span className="data-label">Banco destino</span>
+                  <span className="data-value">{datosPago.banco || 'STP'}</span>
+                </div>
               </>
             )}
-            <div className="data-row"><span>Monto a pagar:</span><strong>${datosPago.monto.toLocaleString()} MXN</strong></div>
-            {datosPago.tipo === 'oxxo' && <div className="data-row"><span>Vence en:</span><strong>72 horas</strong></div>}
-          </div>
 
-          <div className="notice-box success">
-            ✅ Tu membresía se activa automáticamente al confirmar el pago
-          </div>
-          
-          <div className="notice-box info">
-            📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong> (nuestro procesador de pagos). Ambos correos son legítimos.
+            <div className="data-row">
+              <span className="data-label">Monto exacto</span>
+              <span className="data-value">${datosPago.monto.toLocaleString()} MXN</span>
+            </div>
           </div>
 
           <Link href="/" className="btn-primary">Volver al inicio</Link>
@@ -246,13 +289,20 @@ export default function CheckoutPage() {
       <div className="checkout-page">
         <div className="checkout-result">
           <div className="result-icon">🎉</div>
-          <h1>¡Bienvenido a Premium!</h1>
-          <p className="result-subtitle success">Tu membresía está activa</p>
+          <h1>¡Bienvenido a {planSeleccionado === 'trial' ? 'tu prueba gratis' : 'Premium'}!</h1>
+          <p className="result-subtitle success">
+            {planSeleccionado === 'trial' 
+              ? 'Tu membresía de 6 meses gratis está activa' 
+              : 'Tu membresía está activa'}
+          </p>
           
           <div className="benefits-list">
             <div className="benefit-item">✓ Cashback en restaurantes</div>
             <div className="benefit-item">✓ Ofertas exclusivas</div>
             <div className="benefit-item">✓ Recomendaciones personalizadas</div>
+            {planSeleccionado === 'trial' && (
+              <div className="benefit-item trial-note">⏰ Tu prueba termina en 6 meses</div>
+            )}
           </div>
           
           <Link href="/mi-cuenta" className="btn-primary">Ir a Mi Cuenta</Link>
@@ -272,13 +322,50 @@ export default function CheckoutPage() {
 
       <div className="checkout-content">
         <div className="checkout-form-section">
+          
+          {/* ✅ NUEVO: Selector de Plan si es elegible para trial */}
+          {esElegibleTrial && (
+            <div className="plan-selector">
+              <h3>Elige tu plan</h3>
+              <div className="plan-options">
+                <button 
+                  type="button"
+                  className={`plan-option ${planSeleccionado === 'trial' ? 'active' : ''}`}
+                  onClick={() => setPlanSeleccionado('trial')}
+                >
+                  <span className="plan-badge-free">🎁 GRATIS</span>
+                  <span className="plan-option-name">Prueba 6 Meses</span>
+                  <span className="plan-option-price">$0</span>
+                  <span className="plan-option-desc">Sin tarjeta requerida</span>
+                </button>
+                
+                <button 
+                  type="button"
+                  className={`plan-option ${planSeleccionado === 'anual' ? 'active' : ''}`}
+                  onClick={() => setPlanSeleccionado('anual')}
+                >
+                  <span className="plan-badge-premium">⭐ PREMIUM</span>
+                  <span className="plan-option-name">Membresía Anual</span>
+                  <span className="plan-option-price">$999</span>
+                  <span className="plan-option-desc">12 meses completos</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Plan Card */}
           <div className="plan-card">
-            <span className="plan-badge">🌟 Membresía Premium</span>
-            <h2>Membresía Anual</h2>
+            <span className="plan-badge">
+              {planSeleccionado === 'trial' ? '🎁 Prueba Gratis' : '🌟 Membresía Premium'}
+            </span>
+            <h2>{planActual.nombre}</h2>
             <div className="plan-price">
-              <span className="price-amount">${PLAN.precio}</span>
-              <span className="price-period">MXN / año</span>
+              <span className="price-amount">
+                {planActual.precio === 0 ? 'GRATIS' : `$${planActual.precio}`}
+              </span>
+              <span className="price-period">
+                {planActual.precio === 0 ? 'por 6 meses' : 'MXN / año'}
+              </span>
             </div>
             <ul className="plan-features">
               <li>✓ Cashback en todos los restaurantes</li>
@@ -289,167 +376,196 @@ export default function CheckoutPage() {
             </ul>
           </div>
 
-          {/* Método de pago */}
-          <div className="payment-methods">
-            <h3>Método de pago</h3>
-            
-            {error && <div className="error-box">⚠️ {error}</div>}
-
-            <div className="methods-grid">
-              <button 
-                type="button" 
-                className={`method-btn ${metodoPago === 'tarjeta' ? 'active' : ''}`} 
-                onClick={() => setMetodoPago('tarjeta')}
-              >
-                <span className="method-icon">💳</span>
-                <span className="method-name">Tarjeta</span>
-                <span className="method-desc">Inmediato</span>
-                <span className="method-fee">+${calcularComision(PLAN.precio, 'tarjeta')}</span>
-              </button>
+          {/* ✅ NUEVO: Si es trial gratis, no mostrar métodos de pago */}
+          {planSeleccionado === 'trial' && esElegibleTrial ? (
+            <div className="trial-activation">
+              <div className="trial-info">
+                <div className="trial-icon">🎉</div>
+                <h4>¡Felicidades!</h4>
+                <p>Eres elegible para 6 meses de prueba gratis.</p>
+                <p className="trial-note">No se requiere tarjeta de crédito. Al terminar los 6 meses podrás renovar por $999/año.</p>
+              </div>
+              
+              {error && <div className="error-box">⚠️ {error}</div>}
               
               <button 
-                type="button" 
-                className={`method-btn ${metodoPago === 'oxxo' ? 'active' : ''}`} 
-                onClick={() => setMetodoPago('oxxo')}
+                type="button"
+                className="btn-submit btn-trial" 
+                onClick={handleComprar}
+                disabled={procesando}
               >
-                <span className="method-icon">🏪</span>
-                <span className="method-name">OXXO</span>
-                <span className="method-desc">Efectivo</span>
-                <span className="method-fee">+$15</span>
-              </button>
-              
-              <button 
-                type="button" 
-                className={`method-btn ${metodoPago === 'spei' ? 'active' : ''}`} 
-                onClick={() => setMetodoPago('spei')}
-              >
-                <span className="method-icon">🏦</span>
-                <span className="method-name">SPEI</span>
-                <span className="method-desc">Transferencia</span>
-                <span className="method-fee">+$10</span>
+                {procesando ? (
+                  <><span className="spinner-small"></span>Activando...</>
+                ) : (
+                  '🎁 Activar mis 6 meses gratis'
+                )}
               </button>
             </div>
-          </div>
+          ) : (
+            <>
+              {/* Método de pago (solo para plan de pago) */}
+              <div className="payment-methods">
+                <h3>Método de pago</h3>
+                
+                {error && <div className="error-box">⚠️ {error}</div>}
 
-          {/* Formulario */}
-          <form onSubmit={handleComprar} className="checkout-form">
-            {metodoPago === 'tarjeta' ? (
-              <div className="card-form">
-                <div className="form-group">
-                  <label>Número de tarjeta</label>
-                  <input 
-                    type="text" 
-                    placeholder="1234 5678 9012 3456" 
-                    value={cardData.numero} 
-                    onChange={(e) => setCardData({...cardData, numero: formatCardNumber(e.target.value)})} 
-                    maxLength={19} 
-                    required 
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Nombre en la tarjeta</label>
-                  <input 
-                    type="text" 
-                    placeholder="NOMBRE APELLIDO" 
-                    value={cardData.nombre} 
-                    onChange={(e) => setCardData({...cardData, nombre: e.target.value.toUpperCase()})} 
-                    required 
-                  />
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Vencimiento</label>
-                    <input 
-                      type="text" 
-                      placeholder="MM/AA" 
-                      value={cardData.expiracion} 
-                      onChange={(e) => setCardData({...cardData, expiracion: formatExpiration(e.target.value)})} 
-                      maxLength={5} 
-                      required 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>CVV</label>
-                    <input 
-                      type="text" 
-                      placeholder="123" 
-                      value={cardData.cvv} 
-                      onChange={(e) => setCardData({...cardData, cvv: e.target.value.replace(/\D/g, '')})} 
-                      maxLength={4} 
-                      required 
-                    />
-                  </div>
+                <div className="methods-grid">
+                  <button 
+                    type="button" 
+                    className={`method-btn ${metodoPago === 'tarjeta' ? 'active' : ''}`} 
+                    onClick={() => setMetodoPago('tarjeta')}
+                  >
+                    <span className="method-icon">💳</span>
+                    <span className="method-name">Tarjeta</span>
+                    <span className="method-desc">Inmediato</span>
+                    <span className="method-fee">+${calcularComision(planActual.precio, 'tarjeta')}</span>
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    className={`method-btn ${metodoPago === 'oxxo' ? 'active' : ''}`} 
+                    onClick={() => setMetodoPago('oxxo')}
+                  >
+                    <span className="method-icon">🏪</span>
+                    <span className="method-name">OXXO</span>
+                    <span className="method-desc">Efectivo</span>
+                    <span className="method-fee">+$15</span>
+                  </button>
+                  
+                  <button 
+                    type="button" 
+                    className={`method-btn ${metodoPago === 'spei' ? 'active' : ''}`} 
+                    onClick={() => setMetodoPago('spei')}
+                  >
+                    <span className="method-icon">🏦</span>
+                    <span className="method-name">SPEI</span>
+                    <span className="method-desc">Transferencia</span>
+                    <span className="method-fee">+$10</span>
+                  </button>
                 </div>
               </div>
-            ) : (
-              <div className="alt-method-info">
-                <div className="alt-icon">{metodoPago === 'oxxo' ? '🏪' : '🏦'}</div>
-                <h4>Pago con {metodoPago === 'oxxo' ? 'OXXO' : 'Transferencia SPEI'}</h4>
-                <p>Al continuar, te generaremos {metodoPago === 'oxxo' ? 'una referencia para pagar en OXXO' : 'una CLABE para transferir'}.</p>
-                <ul className="alt-benefits">
-                  {metodoPago === 'oxxo' ? (
-                    <>
-                      <li>✓ Paga en efectivo en cualquier OXXO</li>
-                      <li>✓ Tienes 72 horas para pagar</li>
-                    </>
+
+              {/* Formulario */}
+              <form onSubmit={handleComprar} className="checkout-form">
+                {metodoPago === 'tarjeta' ? (
+                  <div className="card-form">
+                    <div className="form-group">
+                      <label>Número de tarjeta</label>
+                      <input 
+                        type="text" 
+                        placeholder="1234 5678 9012 3456" 
+                        value={cardData.numero} 
+                        onChange={(e) => setCardData({...cardData, numero: formatCardNumber(e.target.value)})} 
+                        maxLength={19} 
+                        required 
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Nombre en la tarjeta</label>
+                      <input 
+                        type="text" 
+                        placeholder="NOMBRE APELLIDO" 
+                        value={cardData.nombre} 
+                        onChange={(e) => setCardData({...cardData, nombre: e.target.value.toUpperCase()})} 
+                        required 
+                      />
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group">
+                        <label>Vencimiento</label>
+                        <input 
+                          type="text" 
+                          placeholder="MM/AA" 
+                          value={cardData.expiracion} 
+                          onChange={(e) => setCardData({...cardData, expiracion: formatExpiration(e.target.value)})} 
+                          maxLength={5} 
+                          required 
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>CVV</label>
+                        <input 
+                          type="text" 
+                          placeholder="123" 
+                          value={cardData.cvv} 
+                          onChange={(e) => setCardData({...cardData, cvv: e.target.value.replace(/\D/g, '')})} 
+                          maxLength={4} 
+                          required 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="alt-method-info">
+                    <div className="alt-icon">{metodoPago === 'oxxo' ? '🏪' : '🏦'}</div>
+                    <h4>Pago con {metodoPago === 'oxxo' ? 'OXXO' : 'Transferencia SPEI'}</h4>
+                    <p>Al continuar, te generaremos {metodoPago === 'oxxo' ? 'una referencia para pagar en OXXO' : 'una CLABE para transferir'}.</p>
+                    <ul className="alt-benefits">
+                      {metodoPago === 'oxxo' ? (
+                        <>
+                          <li>✓ Paga en efectivo en cualquier OXXO</li>
+                          <li>✓ Tienes 72 horas para pagar</li>
+                        </>
+                      ) : (
+                        <>
+                          <li>✓ Transfiere desde cualquier banco</li>
+                          <li>✓ Se refleja en minutos</li>
+                        </>
+                      )}
+                      <li>✓ Tu membresía se activa automáticamente</li>
+                    </ul>
+                  </div>
+                )}
+
+                {/* Resumen */}
+                <div className="order-summary">
+                  <div className="summary-row">
+                    <span>{planActual.nombre}</span>
+                    <span>${planActual.precio.toLocaleString()} MXN</span>
+                  </div>
+                  <div className="summary-row fee">
+                    <span>Comisión por pago</span>
+                    <span>+${comisionActual} MXN</span>
+                  </div>
+                  <div className="summary-row total">
+                    <span>Total a pagar</span>
+                    <span>${totalActual.toLocaleString()} MXN</span>
+                  </div>
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn-submit" 
+                  disabled={procesando || (metodoPago === 'tarjeta' && !conektaReady)}
+                >
+                  {procesando ? (
+                    <><span className="spinner-small"></span>Procesando...</>
+                  ) : metodoPago === 'tarjeta' ? (
+                    `🔒 Pagar $${totalActual.toLocaleString()} MXN`
+                  ) : metodoPago === 'oxxo' ? (
+                    `🏪 Generar referencia`
                   ) : (
-                    <>
-                      <li>✓ Transfiere desde cualquier banco</li>
-                      <li>✓ Se refleja en minutos</li>
-                    </>
+                    `🏦 Generar CLABE`
                   )}
-                  <li>✓ Tu membresía se activa automáticamente</li>
-                </ul>
-              </div>
-            )}
+                </button>
 
-            {/* Resumen */}
-            <div className="order-summary">
-              <div className="summary-row">
-                <span>Membresía Anual</span>
-                <span>${PLAN.precio.toLocaleString()} MXN</span>
-              </div>
-              <div className="summary-row fee">
-                <span>Comisión por pago</span>
-                <span>+${comisionActual} MXN</span>
-              </div>
-              <div className="summary-row total">
-                <span>Total a pagar</span>
-                <span>${totalActual.toLocaleString()} MXN</span>
-              </div>
-            </div>
-
-            <button 
-              type="submit" 
-              className="btn-submit" 
-              disabled={procesando || (metodoPago === 'tarjeta' && !conektaReady)}
-            >
-              {procesando ? (
-                <><span className="spinner-small"></span>Procesando...</>
-              ) : metodoPago === 'tarjeta' ? (
-                `🔒 Pagar $${totalActual.toLocaleString()} MXN`
-              ) : metodoPago === 'oxxo' ? (
-                `🏪 Generar referencia`
-              ) : (
-                `🏦 Generar CLABE`
-              )}
-            </button>
-
-            {/* Trust section */}
-            <div className="trust-section">
-              <div className="trust-header">
-                <span>🔒</span> Pago seguro procesado por <strong>Conekta</strong>
-              </div>
-              <div className="trust-badges">
-                <span className="badge">3D Secure</span>
-                <span className="badge">PCI DSS</span>
-                <span className="badge">SSL</span>
-              </div>
-              <p className="trust-note">
-                📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong>. Ambos correos son legítimos.
-              </p>
-            </div>
-          </form>
+                {/* Trust section */}
+                <div className="trust-section">
+                  <div className="trust-header">
+                    <span>🔒</span> Pago seguro procesado por <strong>Conekta</strong>
+                  </div>
+                  <div className="trust-badges">
+                    <span className="badge">3D Secure</span>
+                    <span className="badge">PCI DSS</span>
+                    <span className="badge">SSL</span>
+                  </div>
+                  <p className="trust-note">
+                    📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong>. Ambos correos son legítimos.
+                  </p>
+                </div>
+              </form>
+            </>
+          )}
         </div>
       </div>
     </div>
