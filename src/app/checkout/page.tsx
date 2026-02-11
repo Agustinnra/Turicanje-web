@@ -45,7 +45,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.on
 declare global {
   interface Window { 
     Conekta: any;
-    Clip: any;
+    ClipSDK: any;
   }
 }
 
@@ -143,12 +143,12 @@ function CheckoutContent() {
   // Inicializar Clip SDK
   const handleClipLoad = () => {
     console.log('🔄 Script de Clip cargado, inicializando...');
-    console.log('window.Clip:', window.Clip);
+    console.log('window.ClipSDK:', window.ClipSDK);
     console.log('CLIP_API_KEY:', CLIP_API_KEY);
     
-    if (window.Clip && CLIP_API_KEY) {
+    if (window.ClipSDK && CLIP_API_KEY) {
       try {
-        clipInstanceRef.current = new window.Clip(CLIP_API_KEY);
+        clipInstanceRef.current = new window.ClipSDK(CLIP_API_KEY);
         setClipReady(true);
         console.log('✅ Clip SDK listo');
       } catch (err) {
@@ -156,12 +156,12 @@ function CheckoutContent() {
         setError('Error al cargar el formulario de pago. Recarga la página.');
       }
     } else {
-      console.error('❌ Clip SDK no disponible:', { clip: !!window.Clip, key: !!CLIP_API_KEY });
+      console.error('❌ Clip SDK no disponible:', { clip: !!window.ClipSDK, key: !!CLIP_API_KEY });
       // Reintentar en 1 segundo
       setTimeout(() => {
-        if (window.Clip && CLIP_API_KEY && !clipInstanceRef.current) {
+        if (window.ClipSDK && CLIP_API_KEY && !clipInstanceRef.current) {
           try {
-            clipInstanceRef.current = new window.Clip(CLIP_API_KEY);
+            clipInstanceRef.current = new window.ClipSDK(CLIP_API_KEY);
             setClipReady(true);
             console.log('✅ Clip SDK listo (reintento)');
           } catch (err) {
