@@ -995,8 +995,6 @@ export default function MiCuenta() {
                 </div>
               </div>
 
-              </div>
-
               {/* NOTIFICACIONES */}
               {usuario && (
                 <NotificacionesConfig 
@@ -1004,10 +1002,6 @@ export default function MiCuenta() {
                   token={localStorage.getItem('usuario_token') || ''} 
                 />
               )}
-
-              <div className="perfil-whatsapp">
-
-
 
               <div className="perfil-whatsapp">
                 <h4>📱 Consulta tus puntos por WhatsApp</h4>
