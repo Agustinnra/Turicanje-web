@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
@@ -35,11 +35,18 @@ const calcularComision = (precio: number, metodo: 'tarjeta' | 'oxxo' | 'spei') =
   return Math.ceil((precio * comision.porcentaje / 100) + comision.fijo);
 };
 
+// ============================================================
+// KEYS - Clip para tarjetas, Conekta para OXXO/SPEI
+// ============================================================
+const CLIP_API_KEY = process.env.NEXT_PUBLIC_CLIP_API_KEY || '3da6e867-1794-4a33-bfd2-246ccd380636';
 const CONEKTA_PUBLIC_KEY = process.env.NEXT_PUBLIC_CONEKTA_PUBLIC_KEY || '';
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://turicanje-backend.onrender.com';
 
 declare global {
-  interface Window { Conekta: any; }
+  interface Window { 
+    Conekta: any;
+    Clip: any;
+  }
 }
 
 // ============================================================
@@ -49,7 +56,6 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // Leer plan de la URL (?plan=mensual o ?plan=anual)
   const planParam = searchParams.get('plan') || 'anual';
   const planSeleccionado = PLANES[planParam] ? planParam : 'anual';
   const PLAN = PLANES[planSeleccionado];
@@ -58,12 +64,15 @@ function CheckoutContent() {
   const [loading, setLoading] = useState(true);
   const [procesando, setProcesando] = useState(false);
   const [metodoPago, setMetodoPago] = useState<'tarjeta' | 'oxxo' | 'spei'>('tarjeta');
-  const [conektaReady, setConektaReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [exito, setExito] = useState(false);
   const [datosPago, setDatosPago] = useState<any>(null);
   
-  const [cardData, setCardData] = useState({ numero: '', nombre: '', expiracion: '', cvv: '' });
+  // Clip SDK
+  const [clipReady, setClipReady] = useState(false);
+  const [conektaReady, setConektaReady] = useState(false);
+  const clipInstanceRef = useRef<any>(null);
+  const cardElementRef = useRef<any>(null);
 
   const comisionActual = calcularComision(PLAN.precio, metodoPago);
   const totalActual = PLAN.precio + comisionActual;
@@ -71,6 +80,40 @@ function CheckoutContent() {
   useEffect(() => {
     cargarUsuario();
   }, []);
+
+  // Montar/desmontar Clip card element cuando cambia el método de pago
+  useEffect(() => {
+    if (metodoPago === 'tarjeta' && clipReady && clipInstanceRef.current) {
+      // Montar el formulario de Clip
+      setTimeout(() => {
+        const checkoutDiv = document.getElementById('clip-checkout');
+        if (checkoutDiv && !cardElementRef.current) {
+          try {
+            const card = clipInstanceRef.current.element.create("Card", { 
+              locale: "es",
+              paymentAmount: totalActual // Para MSI si aplica
+            });
+            card.mount("clip-checkout");
+            cardElementRef.current = card;
+          } catch (err) {
+            console.error('Error montando Clip:', err);
+          }
+        }
+      }, 100);
+    }
+    
+    return () => {
+      // Limpiar al cambiar de método
+      if (cardElementRef.current && metodoPago !== 'tarjeta') {
+        try {
+          cardElementRef.current.unmount();
+          cardElementRef.current = null;
+        } catch (err) {
+          console.error('Error desmontando Clip:', err);
+        }
+      }
+    };
+  }, [metodoPago, clipReady, totalActual]);
 
   const cargarUsuario = async () => {
     try {
@@ -97,41 +140,45 @@ function CheckoutContent() {
     }
   };
 
+  // Inicializar Clip SDK
+  const handleClipLoad = () => {
+    if (window.Clip && CLIP_API_KEY) {
+      try {
+        clipInstanceRef.current = new window.Clip(CLIP_API_KEY);
+        setClipReady(true);
+        console.log('✅ Clip SDK listo');
+      } catch (err) {
+        console.error('Error inicializando Clip:', err);
+      }
+    }
+  };
+
+  // Inicializar Conekta (para OXXO/SPEI)
   const handleConektaLoad = () => {
     if (window.Conekta) {
       window.Conekta.setPublicKey(CONEKTA_PUBLIC_KEY);
       setConektaReady(true);
+      console.log('✅ Conekta SDK listo');
     }
   };
 
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\D/g, '').slice(0, 16);
-    const parts = [];
-    for (let i = 0; i < v.length; i += 4) parts.push(v.slice(i, i + 4));
-    return parts.join(' ');
-  };
-
-  const formatExpiration = (value: string) => {
-    const v = value.replace(/\D/g, '').slice(0, 4);
-    return v.length >= 2 ? v.slice(0, 2) + '/' + v.slice(2) : v;
-  };
-
-  const tokenizarTarjeta = (): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const [mes, año] = cardData.expiracion.split('/');
-      window.Conekta.Token.create({
-        card: {
-          number: cardData.numero.replace(/\s/g, ''),
-          name: cardData.nombre,
-          exp_year: '20' + año,
-          exp_month: mes,
-          cvc: cardData.cvv
-        }
-      }, 
-        (token: any) => resolve(token.id),
-        (err: any) => reject(new Error(err.message_to_purchaser || 'Error en tarjeta'))
-      );
-    });
+  // Tokenizar tarjeta con Clip
+  const tokenizarTarjetaClip = async (): Promise<string> => {
+    if (!clipInstanceRef.current || !cardElementRef.current) {
+      throw new Error('Clip no está listo');
+    }
+    
+    try {
+      const result = await clipInstanceRef.current.elements.cardToken(cardElementRef.current);
+      if (result.card_token_id) {
+        return result.card_token_id;
+      } else {
+        throw new Error('No se pudo obtener el token de la tarjeta');
+      }
+    } catch (err: any) {
+      console.error('Error tokenizando con Clip:', err);
+      throw new Error(err.message || 'Error al procesar la tarjeta');
+    }
   };
 
   const handleComprar = async (e: React.FormEvent) => {
@@ -149,15 +196,17 @@ function CheckoutContent() {
       }
 
       if (metodoPago === 'tarjeta') {
-        const cardToken = await tokenizarTarjeta();
+        // ============================================================
+        // PAGO CON TARJETA - CLIP
+        // ============================================================
+        const cardToken = await tokenizarTarjetaClip();
         
-        const res = await fetch(`${API_URL}/api/pagos/suscripcion-usuario`, {
+        const res = await fetch(`${API_URL}/api/pagos/pago-tarjeta-clip`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ 
             plan: planSeleccionado,
-            token_tarjeta: cardToken, 
-            metodo: 'tarjeta',
+            card_token: cardToken,
             total_con_comision: totalActual
           })
         });
@@ -171,7 +220,11 @@ function CheckoutContent() {
         } else {
           setError(data.error || 'Error al procesar pago');
         }
+        
       } else if (metodoPago === 'oxxo') {
+        // ============================================================
+        // PAGO CON OXXO - CONEKTA (sin cambios)
+        // ============================================================
         const res = await fetch(`${API_URL}/api/pagos/suscripcion-usuario`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -191,7 +244,11 @@ function CheckoutContent() {
         } else {
           setError(data.error || 'Error al generar referencia');
         }
+        
       } else if (metodoPago === 'spei') {
+        // ============================================================
+        // PAGO CON SPEI - CONEKTA (sin cambios)
+        // ============================================================
         const res = await fetch(`${API_URL}/api/pagos/suscripcion-usuario`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -219,6 +276,9 @@ function CheckoutContent() {
     }
   };
 
+  // ============================================================
+  // PANTALLAS DE CARGA Y RESULTADOS
+  // ============================================================
   if (loading) {
     return (
       <div className="checkout-page">
@@ -299,9 +359,24 @@ function CheckoutContent() {
     );
   }
 
+  // ============================================================
+  // FORMULARIO PRINCIPAL
+  // ============================================================
   return (
     <div className="checkout-page">
-      <Script src="https://cdn.conekta.io/js/latest/conekta.js" onLoad={handleConektaLoad} />
+      {/* Cargar SDK de Clip para tarjetas */}
+      <Script 
+        src="https://sdk.clip.mx/js/clip-sdk.js" 
+        onLoad={handleClipLoad}
+        strategy="afterInteractive"
+      />
+      
+      {/* Cargar Conekta para OXXO/SPEI */}
+      <Script 
+        src="https://cdn.conekta.io/js/latest/conekta.js" 
+        onLoad={handleConektaLoad}
+        strategy="afterInteractive"
+      />
 
       <div className="checkout-header">
         <Link href="/suscripcion" className="back-link">← Volver a planes</Link>
@@ -310,7 +385,7 @@ function CheckoutContent() {
 
       <div className="checkout-content">
         <div className="checkout-form-section">
-          {/* Plan Card - Dinámico según URL */}
+          {/* Plan Card */}
           <div className="plan-card">
             <span className="plan-badge">🌟 Membresía Premium</span>
             <h2>{PLAN.nombre}</h2>
@@ -372,54 +447,26 @@ function CheckoutContent() {
           {/* Formulario */}
           <form onSubmit={handleComprar} className="checkout-form">
             {metodoPago === 'tarjeta' ? (
-              <div className="card-form">
-                <div className="form-group">
-                  <label>Número de tarjeta</label>
-                  <input 
-                    type="text" 
-                    placeholder="1234 5678 9012 3456" 
-                    value={cardData.numero} 
-                    onChange={(e) => setCardData({...cardData, numero: formatCardNumber(e.target.value)})} 
-                    maxLength={19} 
-                    required 
-                  />
+              // ============================================================
+              // FORMULARIO CLIP (iframe embebido)
+              // ============================================================
+              <div className="clip-form-container">
+                <div id="clip-checkout" className="clip-checkout-container">
+                  {!clipReady && (
+                    <div className="clip-loading">
+                      <div className="spinner-small"></div>
+                      <span>Cargando formulario seguro...</span>
+                    </div>
+                  )}
                 </div>
-                <div className="form-group">
-                  <label>Nombre en la tarjeta</label>
-                  <input 
-                    type="text" 
-                    placeholder="NOMBRE APELLIDO" 
-                    value={cardData.nombre} 
-                    onChange={(e) => setCardData({...cardData, nombre: e.target.value.toUpperCase()})} 
-                    required 
-                  />
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Vencimiento</label>
-                    <input 
-                      type="text" 
-                      placeholder="MM/AA" 
-                      value={cardData.expiracion} 
-                      onChange={(e) => setCardData({...cardData, expiracion: formatExpiration(e.target.value)})} 
-                      maxLength={5} 
-                      required 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>CVV</label>
-                    <input 
-                      type="text" 
-                      placeholder="123" 
-                      value={cardData.cvv} 
-                      onChange={(e) => setCardData({...cardData, cvv: e.target.value.replace(/\D/g, '')})} 
-                      maxLength={4} 
-                      required 
-                    />
-                  </div>
-                </div>
+                <p className="clip-secure-note">
+                  🔒 Formulario seguro proporcionado por Clip
+                </p>
               </div>
             ) : (
+              // ============================================================
+              // INFO OXXO/SPEI (sin cambios)
+              // ============================================================
               <div className="alt-method-info">
                 <div className="alt-icon">{metodoPago === 'oxxo' ? '🏪' : '🏦'}</div>
                 <h4>Pago con {metodoPago === 'oxxo' ? 'OXXO' : 'Transferencia SPEI'}</h4>
@@ -460,7 +507,7 @@ function CheckoutContent() {
             <button 
               type="submit" 
               className="btn-submit" 
-              disabled={procesando || (metodoPago === 'tarjeta' && !conektaReady)}
+              disabled={procesando || (metodoPago === 'tarjeta' && !clipReady) || (metodoPago !== 'tarjeta' && !conektaReady)}
             >
               {procesando ? (
                 <><span className="spinner-small"></span>Procesando...</>
@@ -476,7 +523,7 @@ function CheckoutContent() {
             {/* Trust section */}
             <div className="trust-section">
               <div className="trust-header">
-                <span>🔒</span> Pago seguro procesado por <strong>Conekta</strong>
+                <span>🔒</span> Pago seguro procesado por <strong>{metodoPago === 'tarjeta' ? 'Clip' : 'Conekta'}</strong>
               </div>
               <div className="trust-badges">
                 <span className="badge">3D Secure</span>
@@ -492,7 +539,7 @@ function CheckoutContent() {
 }
 
 // ============================================================
-// EXPORT CON SUSPENSE (requerido para useSearchParams)
+// EXPORT CON SUSPENSE
 // ============================================================
 export default function CheckoutPage() {
   return (

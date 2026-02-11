@@ -661,3 +661,66 @@
       flex-wrap: wrap;
     }
   }
+
+  /* ============================================================
+   ESTILOS ADICIONALES PARA CLIP CHECKOUT
+   Agregar al final de checkout.css
+   ============================================================ */
+
+/* Contenedor del formulario Clip */
+.clip-form-container {
+  margin-bottom: 1.5rem;
+}
+
+.clip-checkout-container {
+  min-height: 200px;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Loading state del formulario Clip */
+.clip-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.clip-loading .spinner-small {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e5e7eb;
+  border-top-color: #d1007d;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Nota de seguridad Clip */
+.clip-secure-note {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #6b7280;
+  margin-top: 0.75rem;
+}
+
+/* Estilos cuando el iframe de Clip está montado */
+.clip-checkout-container iframe {
+  width: 100% !important;
+  min-height: 180px !important;
+  border: none !important;
+}
+
+/* Responsive para Clip */
+@media (max-width: 640px) {
+  .clip-checkout-container {
+    padding: 0.75rem;
+    min-height: 220px;
+  }
+}
