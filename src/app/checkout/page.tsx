@@ -142,14 +142,33 @@ function CheckoutContent() {
 
   // Inicializar Clip SDK
   const handleClipLoad = () => {
+    console.log('🔄 Script de Clip cargado, inicializando...');
+    console.log('window.Clip:', window.Clip);
+    console.log('CLIP_API_KEY:', CLIP_API_KEY);
+    
     if (window.Clip && CLIP_API_KEY) {
       try {
         clipInstanceRef.current = new window.Clip(CLIP_API_KEY);
         setClipReady(true);
         console.log('✅ Clip SDK listo');
       } catch (err) {
-        console.error('Error inicializando Clip:', err);
+        console.error('❌ Error inicializando Clip:', err);
+        setError('Error al cargar el formulario de pago. Recarga la página.');
       }
+    } else {
+      console.error('❌ Clip SDK no disponible:', { clip: !!window.Clip, key: !!CLIP_API_KEY });
+      // Reintentar en 1 segundo
+      setTimeout(() => {
+        if (window.Clip && CLIP_API_KEY && !clipInstanceRef.current) {
+          try {
+            clipInstanceRef.current = new window.Clip(CLIP_API_KEY);
+            setClipReady(true);
+            console.log('✅ Clip SDK listo (reintento)');
+          } catch (err) {
+            console.error('❌ Error en reintento:', err);
+          }
+        }
+      }, 1000);
     }
   };
 
