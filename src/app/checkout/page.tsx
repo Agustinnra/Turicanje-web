@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
@@ -42,11 +42,14 @@ declare global {
   interface Window { Conekta: any; }
 }
 
-export default function CheckoutPage() {
+// ============================================================
+// COMPONENTE PRINCIPAL (envuelto en Suspense)
+// ============================================================
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  // ✅ Leer plan de la URL (?plan=mensual o ?plan=anual)
+  // Leer plan de la URL (?plan=mensual o ?plan=anual)
   const planParam = searchParams.get('plan') || 'anual';
   const planSeleccionado = PLANES[planParam] ? planParam : 'anual';
   const PLAN = PLANES[planSeleccionado];
@@ -152,7 +155,7 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ 
-            plan: planSeleccionado, // ✅ Enviar plan correcto
+            plan: planSeleccionado,
             token_tarjeta: cardToken, 
             metodo: 'tarjeta',
             total_con_comision: totalActual
@@ -173,7 +176,7 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ 
-            plan: planSeleccionado, // ✅ Enviar plan correcto
+            plan: planSeleccionado,
             metodo: 'oxxo', 
             total_con_comision: totalActual 
           })
@@ -193,7 +196,7 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ 
-            plan: planSeleccionado, // ✅ Enviar plan correcto
+            plan: planSeleccionado,
             metodo: 'spei', 
             total_con_comision: totalActual 
           })
@@ -267,7 +270,7 @@ export default function CheckoutPage() {
           </div>
 
           <div className="notice-box info">
-            📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong> (nuestro procesador de pagos). Ambos correos son legítimos.
+            📧 Recibirás confirmación de <strong>Turicanje</strong> cuando tu pago sea procesado.
           </div>
 
           <Link href="/" className="btn-primary">Volver al inicio</Link>
@@ -480,13 +483,28 @@ export default function CheckoutPage() {
                 <span className="badge">PCI DSS</span>
                 <span className="badge">SSL</span>
               </div>
-              <p className="trust-note">
-                📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong>. Ambos correos son legítimos.
-              </p>
             </div>
           </form>
         </div>
       </div>
     </div>
+  );
+}
+
+// ============================================================
+// EXPORT CON SUSPENSE (requerido para useSearchParams)
+// ============================================================
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={
+      <div className="checkout-page">
+        <div className="checkout-loading">
+          <div className="spinner"></div>
+          <p>Cargando...</p>
+        </div>
+      </div>
+    }>
+      <CheckoutContent />
+    </Suspense>
   );
 }
