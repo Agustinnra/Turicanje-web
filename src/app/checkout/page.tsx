@@ -1,15 +1,27 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Script from 'next/script';
 import './checkout.css';
 
-const PLAN = {
-  nombre: 'Membresía Anual',
-  precio: 999,
-  meses: 12
+// ============================================================
+// PLANES DE USUARIO - Mensual y Anual
+// ============================================================
+const PLANES: { [key: string]: { nombre: string; precio: number; meses: number; periodo: string } } = {
+  mensual: {
+    nombre: 'Membresía Mensual',
+    precio: 99,
+    meses: 1,
+    periodo: 'MXN / mes'
+  },
+  anual: {
+    nombre: 'Membresía Anual',
+    precio: 999,
+    meses: 12,
+    periodo: 'MXN / año'
+  }
 };
 
 const COMISIONES = {
@@ -32,6 +44,13 @@ declare global {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // ✅ Leer plan de la URL (?plan=mensual o ?plan=anual)
+  const planParam = searchParams.get('plan') || 'anual';
+  const planSeleccionado = PLANES[planParam] ? planParam : 'anual';
+  const PLAN = PLANES[planSeleccionado];
+  
   const [usuario, setUsuario] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [procesando, setProcesando] = useState(false);
@@ -133,7 +152,7 @@ export default function CheckoutPage() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
           body: JSON.stringify({ 
-            plan: 'anual', 
+            plan: planSeleccionado, // ✅ Enviar plan correcto
             token_tarjeta: cardToken, 
             metodo: 'tarjeta',
             total_con_comision: totalActual
@@ -153,7 +172,11 @@ export default function CheckoutPage() {
         const res = await fetch(`${API_URL}/api/pagos/suscripcion-usuario`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ plan: 'anual', metodo: 'oxxo', total_con_comision: totalActual })
+          body: JSON.stringify({ 
+            plan: planSeleccionado, // ✅ Enviar plan correcto
+            metodo: 'oxxo', 
+            total_con_comision: totalActual 
+          })
         });
 
         const data = await res.json();
@@ -169,7 +192,11 @@ export default function CheckoutPage() {
         const res = await fetch(`${API_URL}/api/pagos/suscripcion-usuario`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-          body: JSON.stringify({ plan: 'anual', metodo: 'spei', total_con_comision: totalActual })
+          body: JSON.stringify({ 
+            plan: planSeleccionado, // ✅ Enviar plan correcto
+            metodo: 'spei', 
+            total_con_comision: totalActual 
+          })
         });
 
         const data = await res.json();
@@ -218,19 +245,27 @@ export default function CheckoutPage() {
             </div>
             
             {datosPago.tipo === 'spei' && (
-              <>
-                <div className="data-row"><span>Banco:</span><strong>STP</strong></div>
-                <div className="data-row"><span>Beneficiario:</span><strong>Turicanje</strong></div>
-              </>
+              <div className="data-row">
+                <span className="data-label">Banco destino</span>
+                <span className="data-value">{datosPago.banco || 'STP'}</span>
+              </div>
             )}
-            <div className="data-row"><span>Monto a pagar:</span><strong>${datosPago.monto.toLocaleString()} MXN</strong></div>
-            {datosPago.tipo === 'oxxo' && <div className="data-row"><span>Vence en:</span><strong>72 horas</strong></div>}
+
+            <div className="data-row">
+              <span className="data-label">Monto exacto</span>
+              <span className="data-value">${datosPago.monto.toLocaleString()} MXN</span>
+            </div>
+
+            <div className="data-row">
+              <span className="data-label">Vence en</span>
+              <span className="data-value">72 horas</span>
+            </div>
           </div>
 
           <div className="notice-box success">
             ✅ Tu membresía se activa automáticamente al confirmar el pago
           </div>
-          
+
           <div className="notice-box info">
             📧 Recibirás confirmaciones de <strong>Turicanje</strong> y de <strong>Conekta</strong> (nuestro procesador de pagos). Ambos correos son legítimos.
           </div>
@@ -266,19 +301,19 @@ export default function CheckoutPage() {
       <Script src="https://cdn.conekta.io/js/latest/conekta.js" onLoad={handleConektaLoad} />
 
       <div className="checkout-header">
-        <Link href="/" className="back-link">← Volver</Link>
+        <Link href="/suscripcion" className="back-link">← Volver a planes</Link>
         <h1>Activa tu Membresía</h1>
       </div>
 
       <div className="checkout-content">
         <div className="checkout-form-section">
-          {/* Plan Card */}
+          {/* Plan Card - Dinámico según URL */}
           <div className="plan-card">
             <span className="plan-badge">🌟 Membresía Premium</span>
-            <h2>Membresía Anual</h2>
+            <h2>{PLAN.nombre}</h2>
             <div className="plan-price">
               <span className="price-amount">${PLAN.precio}</span>
-              <span className="price-period">MXN / año</span>
+              <span className="price-period">{PLAN.periodo}</span>
             </div>
             <ul className="plan-features">
               <li>✓ Cashback en todos los restaurantes</li>
@@ -406,7 +441,7 @@ export default function CheckoutPage() {
             {/* Resumen */}
             <div className="order-summary">
               <div className="summary-row">
-                <span>Membresía Anual</span>
+                <span>{PLAN.nombre}</span>
                 <span>${PLAN.precio.toLocaleString()} MXN</span>
               </div>
               <div className="summary-row fee">
