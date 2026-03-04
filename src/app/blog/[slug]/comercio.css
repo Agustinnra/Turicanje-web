@@ -647,7 +647,7 @@
    }
    
    .comercio-page .comercio-content {
-     padding: 0 24px;
+     padding: 0;
    }
    
    .comercio-page .descripcion-section {
@@ -1449,6 +1449,11 @@
        padding: 28px 20px !important;
        max-width: none !important;
      }
+
+     /* ✅ Quitar padding del contenedor para que las secciones midan igual */
+     .comercio-page .comercio-content {
+       padding: 0 !important;
+     }
    
      .comercio-page .categories-content {
        padding: 12px 16px;
@@ -1549,6 +1554,11 @@
        margin: 16px 12px !important;
        padding: 24px 16px !important;
        max-width: none !important;
+     }
+
+     /* ✅ Quitar padding del contenedor para que las secciones midan igual */
+     .comercio-page .comercio-content {
+       padding: 0 !important;
      }
    
      .comercio-page .redes-icons {
