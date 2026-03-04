@@ -169,51 +169,78 @@ export default function ComercioPage({ params }: { params: Promise<{ slug: strin
   }, [slug]);
 
 
-// Cargar scripts de Instagram Y TikTok para embeds
+// Cargar scripts de Instagram, TikTok y Facebook para embeds
 useEffect(() => {
-  if (comercio?.instagram_embed) {
-    const embedContent = comercio.instagram_embed;
-    
-    // Detectar si es TikTok
-    const isTikTok = embedContent.includes('tiktok.com') || embedContent.includes('tiktok-embed');
-    
-    // Detectar si es Instagram  
-    const isInstagram = embedContent.includes('instagram.com') || embedContent.includes('instagr.am');
-    
+  if (!comercio?.instagram_embed) return;
+  
+  const embedContent = comercio.instagram_embed;
+  
+  const isTikTok = embedContent.includes('tiktok.com') || embedContent.includes('tiktok-embed');
+  const isInstagram = embedContent.includes('instagram.com') || embedContent.includes('instagr.am');
+  const isFacebook = embedContent.includes('facebook.com') || embedContent.includes('fb-post') || embedContent.includes('fb-video');
+
+  // Dar tiempo a que el DOM renderice el HTML del embed
+  const timer = setTimeout(() => {
     if (isTikTok) {
-      // Pequeño delay para asegurar que el DOM esté listo
-      setTimeout(() => {
-        const existingScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
-        if (existingScript) {
-          existingScript.remove();
-        }
-        const script = document.createElement('script');
-        script.src = 'https://www.tiktok.com/embed.js';
-        script.async = true;
-        document.body.appendChild(script);
-      }, 100);
+      // TikTok necesita recargar el script cada vez
+      const existingScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
+      if (existingScript) existingScript.remove();
+      const script = document.createElement('script');
+      script.src = 'https://www.tiktok.com/embed.js';
+      script.async = true;
+      document.body.appendChild(script);
     }
     
     if (isInstagram) {
-      const existingInstaScript = document.querySelector('script[src="//www.instagram.com/embed.js"]');
-      if (!existingInstaScript) {
+      const existingScript = document.querySelector('script[src="//www.instagram.com/embed.js"]');
+      if (existingScript) {
+        // Script ya existe, solo reprocesar
+        if ((window as any).instgrm) {
+          (window as any).instgrm.Embeds.process();
+        }
+      } else {
         const script = document.createElement('script');
         script.src = '//www.instagram.com/embed.js';
         script.async = true;
-        document.body.appendChild(script);
-
         script.onload = () => {
           if ((window as any).instgrm) {
             (window as any).instgrm.Embeds.process();
           }
         };
-      } else {
-        if ((window as any).instgrm) {
-          (window as any).instgrm.Embeds.process();
-        }
+        document.body.appendChild(script);
       }
     }
-  }
+
+    if (isFacebook) {
+      const existingScript = document.querySelector('script[src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0"]');
+      if (existingScript) {
+        // Script ya existe, reprocesar
+        if ((window as any).FB) {
+          (window as any).FB.XFBML.parse();
+        }
+      } else {
+        // Agregar div root para FB SDK
+        if (!document.getElementById('fb-root')) {
+          const fbRoot = document.createElement('div');
+          fbRoot.id = 'fb-root';
+          document.body.prepend(fbRoot);
+        }
+        const script = document.createElement('script');
+        script.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0';
+        script.async = true;
+        script.defer = true;
+        script.crossOrigin = 'anonymous';
+        script.onload = () => {
+          if ((window as any).FB) {
+            (window as any).FB.XFBML.parse();
+          }
+        };
+        document.body.appendChild(script);
+      }
+    }
+  }, 300); // 300ms de delay para que el DOM tenga el HTML
+
+  return () => clearTimeout(timer);
 }, [comercio?.instagram_embed]);
 
   // Cargar reviews y stats cuando tengamos el comercio
