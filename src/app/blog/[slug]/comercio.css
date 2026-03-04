@@ -720,7 +720,8 @@
    
    .comercio-page .instagram-embed-container iframe,
    .comercio-page .instagram-embed-container blockquote {
-     max-width: 100% !important;
+     max-width: 540px !important;
+     width: 540px !important;
    }
    
    .comercio-page .section-header {
