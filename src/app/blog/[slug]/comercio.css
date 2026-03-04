@@ -639,11 +639,13 @@
    .comercio-page .content-section,
    .comercio-page .info-section {
      max-width: 960px !important;
+     width: calc(100% - 48px) !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
      background: var(--bg-light) !important;
      border-radius: 0 12px 12px 0 !important;
+     box-sizing: border-box !important;
    }
    
    .comercio-page .comercio-content {
@@ -671,11 +673,13 @@
    /* Galería destacada (cuando no hay embed de Instagram) */
    .comercio-page .galeria-destacada-section {
      max-width: 960px !important;
+     width: calc(100% - 48px) !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
      background: var(--bg-light) !important;
      border-radius: 0 12px 12px 0 !important;
+     box-sizing: border-box !important;
    }
    
    .comercio-page .galeria-destacada {
@@ -698,11 +702,13 @@
    /* Instagram embed section */
    .comercio-page .instagram-embed-section {
      max-width: 960px !important;
+     width: calc(100% - 48px) !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
      background: var(--bg-light) !important;
      border-radius: 0 12px 12px 0 !important;
+     box-sizing: border-box !important;
    }
    
    .comercio-page .instagram-embed-container {
@@ -873,9 +879,11 @@
       ========================================== */
       .comercio-page .share-stats-section {
         max-width: 960px;
+        width: calc(100% - 48px);
         margin: 0 auto;
         padding: 2rem;
         border-top: 1px solid #eee;
+        box-sizing: border-box;
       }
       
       .comercio-page .share-buttons {
@@ -1035,11 +1043,13 @@
       ========================================== */
    .comercio-page .reviews-section {
      max-width: 960px;
+     width: calc(100% - 48px);
      margin: 0 auto;
      padding: 2rem;
      background: #fafafa;
      border-radius: 12px;
      margin-bottom: 3rem;
+     box-sizing: border-box;
    }
    
    .comercio-page .reviews-header {
