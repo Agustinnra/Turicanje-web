@@ -638,7 +638,7 @@
       ========================================== */
    .comercio-page .content-section,
    .comercio-page .info-section {
-     max-width: 860px !important;
+     max-width: 960px !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
@@ -651,7 +651,7 @@
    }
    
    .comercio-page .descripcion-section {
-     max-width: 720px;
+     max-width: 960px;
      margin: 24px auto;
      padding: 24px;
    }
@@ -663,14 +663,14 @@
    }
    
    .comercio-page .galeria-section {
-     max-width: 900px;
+     max-width: 960px;
      margin: 24px auto;
      padding: 0 24px;
    }
    
    /* Galería destacada (cuando no hay embed de Instagram) */
    .comercio-page .galeria-destacada-section {
-     max-width: 860px !important;
+     max-width: 960px !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
@@ -697,7 +697,7 @@
    
    /* Instagram embed section */
    .comercio-page .instagram-embed-section {
-     max-width: 860px !important;
+     max-width: 960px !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
@@ -872,7 +872,7 @@
       SHARE & STATS SECTION
       ========================================== */
       .comercio-page .share-stats-section {
-        max-width: 900px;
+        max-width: 960px;
         margin: 0 auto;
         padding: 2rem;
         border-top: 1px solid #eee;
@@ -1034,7 +1034,7 @@
       REVIEWS SECTION
       ========================================== */
    .comercio-page .reviews-section {
-     max-width: 900px;
+     max-width: 960px;
      margin: 0 auto;
      padding: 2rem;
      background: #fafafa;
@@ -1442,7 +1442,9 @@
      /* ✅ Secciones consistentes en tablet */
      .comercio-page .info-section,
      .comercio-page .instagram-embed-section,
-     .comercio-page .galeria-destacada-section {
+     .comercio-page .galeria-destacada-section,
+     .comercio-page .share-stats-section,
+     .comercio-page .reviews-section {
        margin: 20px 16px !important;
        padding: 28px 20px !important;
        max-width: none !important;
@@ -1461,8 +1463,9 @@
      .comercio-page .share-stats-section,
      .comercio-page .reviews-section {
        padding: 1.5rem;
-       margin-left: 1rem;
-       margin-right: 1rem;
+       margin-left: 12px;
+       margin-right: 12px;
+       max-width: none !important;
      }
    
      .comercio-page .reviews-header {
@@ -1540,7 +1543,9 @@
      /* ✅ Todas las secciones con mismos márgenes en mobile */
      .comercio-page .info-section,
      .comercio-page .instagram-embed-section,
-     .comercio-page .galeria-destacada-section {
+     .comercio-page .galeria-destacada-section,
+     .comercio-page .share-stats-section,
+     .comercio-page .reviews-section {
        margin: 16px 12px !important;
        padding: 24px 16px !important;
        max-width: none !important;
