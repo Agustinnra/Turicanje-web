@@ -638,7 +638,7 @@
       ========================================== */
    .comercio-page .content-section,
    .comercio-page .info-section {
-     max-width: 720px !important;
+     max-width: 860px !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
@@ -670,7 +670,7 @@
    
    /* Galería destacada (cuando no hay embed de Instagram) */
    .comercio-page .galeria-destacada-section {
-     max-width: 720px !important;
+     max-width: 860px !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;
@@ -697,7 +697,7 @@
    
    /* Instagram embed section */
    .comercio-page .instagram-embed-section {
-     max-width: 720px !important;
+     max-width: 860px !important;
      margin: 24px auto !important;
      padding: 32px 24px !important;
      border-left: 3px solid var(--turicanje-magenta) !important;

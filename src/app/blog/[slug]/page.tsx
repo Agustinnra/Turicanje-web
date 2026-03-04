@@ -182,7 +182,6 @@ useEffect(() => {
   // Dar tiempo a que el DOM renderice el HTML del embed
   const timer = setTimeout(() => {
     if (isTikTok) {
-      // TikTok necesita recargar el script cada vez
       const existingScript = document.querySelector('script[src="https://www.tiktok.com/embed.js"]');
       if (existingScript) existingScript.remove();
       const script = document.createElement('script');
@@ -192,53 +191,52 @@ useEffect(() => {
     }
     
     if (isInstagram) {
-      const existingScript = document.querySelector('script[src="//www.instagram.com/embed.js"]');
-      if (existingScript) {
-        // Script ya existe, solo reprocesar
-        if ((window as any).instgrm) {
-          (window as any).instgrm.Embeds.process();
-        }
-      } else {
-        const script = document.createElement('script');
-        script.src = '//www.instagram.com/embed.js';
-        script.async = true;
-        script.onload = () => {
+      // Siempre remover y recargar el script para forzar re-render
+      const existingScript = document.querySelector('script[src*="instagram.com/embed"]');
+      if (existingScript) existingScript.remove();
+      // Limpiar el objeto global para forzar reinicio
+      if ((window as any).instgrm) {
+        delete (window as any).instgrm;
+      }
+      const script = document.createElement('script');
+      script.src = '//www.instagram.com/embed.js';
+      script.async = true;
+      script.onload = () => {
+        // Reprocesar con retry
+        const processEmbed = () => {
           if ((window as any).instgrm) {
             (window as any).instgrm.Embeds.process();
           }
         };
-        document.body.appendChild(script);
-      }
+        processEmbed();
+        // Retry después de 1 segundo por si no procesó a la primera
+        setTimeout(processEmbed, 1000);
+        setTimeout(processEmbed, 3000);
+      };
+      document.body.appendChild(script);
     }
 
     if (isFacebook) {
-      const existingScript = document.querySelector('script[src="https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0"]');
-      if (existingScript) {
-        // Script ya existe, reprocesar
+      const existingScript = document.querySelector('script[src*="connect.facebook.net"]');
+      if (existingScript) existingScript.remove();
+      if (!document.getElementById('fb-root')) {
+        const fbRoot = document.createElement('div');
+        fbRoot.id = 'fb-root';
+        document.body.prepend(fbRoot);
+      }
+      const script = document.createElement('script');
+      script.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0';
+      script.async = true;
+      script.defer = true;
+      script.crossOrigin = 'anonymous';
+      script.onload = () => {
         if ((window as any).FB) {
           (window as any).FB.XFBML.parse();
         }
-      } else {
-        // Agregar div root para FB SDK
-        if (!document.getElementById('fb-root')) {
-          const fbRoot = document.createElement('div');
-          fbRoot.id = 'fb-root';
-          document.body.prepend(fbRoot);
-        }
-        const script = document.createElement('script');
-        script.src = 'https://connect.facebook.net/es_LA/sdk.js#xfbml=1&version=v18.0';
-        script.async = true;
-        script.defer = true;
-        script.crossOrigin = 'anonymous';
-        script.onload = () => {
-          if ((window as any).FB) {
-            (window as any).FB.XFBML.parse();
-          }
-        };
-        document.body.appendChild(script);
-      }
+      };
+      document.body.appendChild(script);
     }
-  }, 300); // 300ms de delay para que el DOM tenga el HTML
+  }, 500);
 
   return () => clearTimeout(timer);
 }, [comercio?.instagram_embed]);
