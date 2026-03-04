@@ -366,14 +366,14 @@ useEffect(() => {
     const galeriaMenu = comercio?.galeria_menu || [];
     setLightboxIndex((prev) => (prev + 1) % galeriaMenu.length);
     setZoomLevel(1);
-    setZoomPosition({ x: 50, y: 50 });
+    setZoomPosition({ x: 0, y: 0 });
   };
 
   const prevImage = () => {
     const galeriaMenu = comercio?.galeria_menu || [];
     setLightboxIndex((prev) => (prev - 1 + galeriaMenu.length) % galeriaMenu.length);
     setZoomLevel(1);
-    setZoomPosition({ x: 50, y: 50 });
+    setZoomPosition({ x: 0, y: 0 });
   };
 
   // Manejar teclas en lightbox
@@ -1412,7 +1412,7 @@ useEffect(() => {
                 <button
                   key={idx}
                   className={`lightbox-thumb ${idx === lightboxIndex ? 'active' : ''}`}
-                  onClick={(e) => { e.stopPropagation(); setLightboxIndex(idx); setZoomLevel(1); setZoomPosition({ x: 50, y: 50 }); }}
+                  onClick={(e) => { e.stopPropagation(); setLightboxIndex(idx); setZoomLevel(1); setZoomPosition({ x: 0, y: 0 }); }}
                 >
                   <img src={img} alt={`Miniatura ${idx + 1}`} />
                 </button>
