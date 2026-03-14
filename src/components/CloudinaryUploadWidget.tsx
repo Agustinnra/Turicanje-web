@@ -50,10 +50,11 @@ export default function CloudinaryUploadWidget({
         multiple,
         maxFiles: multiple ? 10 : 1,
         sources: ['local', 'camera'],
-        clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif'],
         maxFileSize: 5_000_000,
         resourceType: 'image',
         cropping: false,
+        format: 'jpg',
       },
       (_error: any, result: any) => {
         // Acumular URL cuando se sube exitosamente
